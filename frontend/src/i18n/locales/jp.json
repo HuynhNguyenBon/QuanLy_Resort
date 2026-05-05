@@ -2,10 +2,11 @@
   "translation": {
     "Home": "ホーム",
     "Rooms": "部屋",
+    "Find My Booking": "予約を検索",
+    "Services": "サービス",
     "Login": "ログイン",
     "Logout": "ログアウト",
     "Register": "登録",
-    "Find My Booking": "予約を検索",
     "Loading...": "読み込み中...",
     "Password: ": "パスワード: ",
     "Don't have an account? ": "アカウントをお持ちではありませんか？ ",
