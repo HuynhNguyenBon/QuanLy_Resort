@@ -1,0 +1,21 @@
+{
+  "translation": {
+    "Home": "ホーム",
+    "Rooms": "部屋",
+    "Login": "ログイン",
+    "Logout": "ログアウト",
+    "Register": "登録",
+    "Find My Booking": "予約を検索",
+    "Loading...": "読み込み中...",
+    "Password: ": "パスワード: ",
+    "Don't have an account? ": "アカウントをお持ちではありませんか？ ",
+    "Name: ": "名前: ",
+    "Phone Number: ": "電話番号: ",
+    "Already have an account? ": "すでにアカウントをお持ちですか？ ",
+    "Please fill in all fields.": "すべての項目を入力してください。",
+    "Please enter a valid email address (e.g., name@gmail.com).": "有効なメールアドレスを入力してください（例: name@gmail.com）。",
+    "Password must be at least 6 characters, include uppercase, lowercase, number and special character (@$!%*?&).": "パスワードは6文字以上で、大文字・小文字・数字・特殊文字（@$!%*?&）を含める必要があります。",
+    "Phone number must be 10-11 digits and contain only numbers.": "電話番号は10〜11桁の数字のみで入力してください。",
+    "Welcome": "BBHHリゾートへようこそ"
+  }
+}
