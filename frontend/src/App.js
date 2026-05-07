@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './component/common/Navbar';
@@ -20,6 +19,10 @@ import EditProfilePage from './component/profile/EditProfilePage';
 import { ProtectedRoute, AdminRoute } from './service/guard';
 import ServicePage from './component/service/ServicePage';
 
+import ChatSupport from './component/common/ChatSupport';
+
+import ManageChat from './component/admin/ManageChat';
+
 function App() {
   return (
     <BrowserRouter>
@@ -33,6 +36,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/rooms" element={<AllRoomsPage />} />
             <Route path="/find-booking" element={<FindBookingPage />} />
+            <Route path="/services" element={<ServicePage />} />
 
             {/* Protected Routes */}
             <Route path="/room-details-book/:roomId"
@@ -64,13 +68,15 @@ function App() {
             <Route path="/admin/edit-booking/:bookingCode"
               element={<AdminRoute element={<EditBookingPage />} />}
             />
+            <Route path="/admin/chat" element={<ManageChat />} />
 
             {/* Fallback Route */}
-            <Route path="*" element={<Navigate to="/login" />} />
-
-            <Route path="/services" element={<ServicePage />} />
+            <Route path="*" element={<Navigate to="/home" />} />
           </Routes>
         </div>
+
+        <ChatSupport />
+        
         <FooterComponent />
       </div>
     </BrowserRouter>
