@@ -53,15 +53,18 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    const isLogout = window.confirm(
-      "Are you sure you want to logout this user?",
-    );
-    if (isLogout) {
-      ApiService.logout();
-      navigate("/home");
-    }
-  };
+ const handleLogout = (e) => {
+  e.preventDefault();
+
+  const isLogout = window.confirm(
+    "Are you sure you want to logout this user?",
+  );
+
+  if (isLogout) {
+    ApiService.logout();
+    navigate("/login");
+  }
+};
 
   const handleSelect = (code) => {
     i18n.changeLanguage(code);
@@ -128,10 +131,11 @@ function Navbar() {
         {isAuthenticated && (
           <li>
             <NavLink
-              to="/login"
-              activeclassname="active"
-              onClick={handleLogout}
-            >
+            to="/login"
+            activeclassname="active"
+            onClick={(e) => handleLogout(e)}
+          >
+            
               {t("Logout")}
             </NavLink>
           </li>
