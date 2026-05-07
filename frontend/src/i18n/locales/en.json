@@ -1,0 +1,22 @@
+{
+  "translation": {
+    "Home": "Home",
+    "Rooms": "Rooms",
+    "Find My Booking": "Find My Booking",
+    "Services": "Services",
+    "Login": "Login",
+    "Logout": "Logout",
+    "Register": "Register",
+    "Loading...": "Loading...",
+    "Password: ": "Password: ",
+    "Don't have an account? ": "Don't have an account? ",
+    "Name: ": "Name: ",
+    "Phone Number: ": "Phone Number: ",
+    "Already have an account? ": "Already have an account? ",
+    "Please fill in all fields.": "Please fill in all fields.",
+    "Please enter a valid email address (e.g., name@gmail.com).": "Please enter a valid email address (e.g., name@gmail.com).",
+    "Password must be at least 6 characters, include uppercase, lowercase, number and special character (@$!%*?&).": "Password must be at least 6 characters, include uppercase, lowercase, number and special character (@$!%*?&).",
+    "Phone number must be 10-11 digits and contain only numbers.": "Phone number must be 10-11 digits and contain only numbers.",
+    "Welcome": "Welcome to BBHH Resort"
+  }
+}
