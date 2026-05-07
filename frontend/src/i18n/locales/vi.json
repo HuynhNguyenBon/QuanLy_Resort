@@ -1,0 +1,22 @@
+{
+  "translation": {
+    "Home": "Trang chủ",
+    "Rooms": "Phòng",
+    "Find My Booking": "Tìm phòng",
+    "Services": "Dịch vụ",
+    "Login": "Đăng nhập",
+    "Logout": "Đăng xuất",
+    "Register": "Đăng ký",
+    "Loading...": "Đang tải...",
+    "Password: ": "Mật khẩu: ",
+    "Don't have an account? ": "Bạn chưa có tài khoản? ",
+    "Name: ": "Tên: ",
+    "Phone Number: ": "Số điện thoại: ",
+    "Already have an account? ": "Bạn đã có tài khoản? ",
+    "Please fill in all fields.": "Vui lòng điền đầy đủ thông tin.",
+    "Please enter a valid email address (e.g., name@gmail.com).": "Vui lòng nhập địa chỉ email hợp lệ (ví dụ: name@gmail.com).",
+    "Password must be at least 6 characters, include uppercase, lowercase, number and special character (@$!%*?&).": "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@$!%*?&).",
+    "Phone number must be 10-11 digits and contain only numbers.": "Số điện thoại phải có từ 10-11 chữ số và chỉ chứa các chữ số.",
+    "Welcome": "Chào mừng đến với BBHH Resort"
+  }
+}
