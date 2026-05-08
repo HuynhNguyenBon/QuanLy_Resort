@@ -27,6 +27,35 @@ export default class ApiService {
         return response.data
     }
 
+    static async forgotPassword(email) {
+        return axios.post(
+            `${this.BASE_URL}/auth/forgot-password`,
+            { email },
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+    }
+
+ static async resetPassword(email, otp, newPassword) {
+
+    return axios.post(
+        `${this.BASE_URL}/auth/reset-password`,
+        {
+            email,
+            otp,
+            newPassword
+        },
+        {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    );
+}
+
     /***USERS */
 
 
