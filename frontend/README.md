@@ -14,6 +14,10 @@ Cài đặt thư viện
 
 Cài đặt icon
 
+### `npm install firebase`
+
+Cài đặt Firebase SDK
+
 ### `npm start`
 
 Chạy ứng dụng ở chế độ phát triển.
