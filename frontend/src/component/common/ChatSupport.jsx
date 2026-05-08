@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ref, push, onValue } from "firebase/database";
 import { db } from "../../service/firebase";
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,42 +12,54 @@ const ChatSupport = () => {
     const chatBodyRef = useRef(null);
     const navigate = useNavigate();
 
+    const userRef = useRef(null);
+    useEffect(() => {
+        userRef.current = user;
+    }, [user]);
+
     const getFreshUser = () => {
         const token = localStorage.getItem("token");
         const email = localStorage.getItem("userEmail");
         const role = localStorage.getItem("role");
-        
-        if (token && email && role) { 
-            return { 
-                uid: email.replace(/[.$#[\]]/g, "_"), 
+        if (token && email && role) {
+            return {
+                uid: email.replace(/[.$#[\]]/g, "_"),
                 email: email,
-                role: role.toLowerCase() 
+                role: role.toLowerCase()
             };
         }
         return null;
     };
+    // Hàm sync user, dùng lại cho cả event lẫn interval
+    const syncUser = useCallback(() => {
+        const freshUser = getFreshUser();
+
+        if (!freshUser) {
+            if (userRef.current !== null) {
+                setIsOpen(false);
+                setChatHistory([]);
+                setUser(null);
+            }
+            return;
+        }
+        if (freshUser.role === 'admin') {
+            setIsOpen(false);
+        }
+        setUser(prev => {
+            if (JSON.stringify(prev) === JSON.stringify(freshUser)) return prev;
+            return freshUser;
+        });
+    }, []);
 
     useEffect(() => {
-        const syncUser = () => {
-            const freshUser = getFreshUser();
-            if (!freshUser) {
-                if (user) { 
-                    setIsOpen(false);
-                }
-                setUser(null);
-                setChatHistory([]); 
-            } else {
-                if (JSON.stringify(freshUser) !== JSON.stringify(user)) {
-                    setUser(freshUser);
-                }
-                if (freshUser.role === 'admin') {
-                    setIsOpen(false);
-                }
-            }
+        syncUser();
+        window.addEventListener("authChange", syncUser);
+        const interval = setInterval(syncUser, 2000);
+        return () => {
+            window.removeEventListener("authChange", syncUser);
+            clearInterval(interval);
         };
-        const interval = setInterval(syncUser, 1000);
-        return () => clearInterval(interval);
-    }, [user]);
+    }, [syncUser]);
 
     useEffect(() => {
         if (!user || user.role !== "user") return;
@@ -57,6 +69,8 @@ const ChatSupport = () => {
             if (data) {
                 const sortedMsgs = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
                 setChatHistory(sortedMsgs);
+            } else {
+                setChatHistory([]);
             }
         });
         return () => unsubscribe();
@@ -67,12 +81,11 @@ const ChatSupport = () => {
             chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
         }
     }, [chatHistory, isOpen]);
-    
 
     const handleTriggerClick = () => {
         const role = localStorage.getItem("role")?.toLowerCase();
         if (role === "admin") {
-            navigate("/admin/chat"); 
+            navigate("/admin/chat");
         } else {
             setIsOpen(prev => !prev);
         }
@@ -83,7 +96,7 @@ const ChatSupport = () => {
         if (!user || !message.trim()) return;
         push(ref(db, `chats/${user.uid}`), {
             text: message,
-            sender: "user", 
+            sender: "user",
             timestamp: Date.now()
         });
         setMessage("");
@@ -105,8 +118,8 @@ const ChatSupport = () => {
                                     <p className="empty-chat">Hãy bắt đầu trò chuyện!</p>
                                 ) : (
                                     chatHistory.map((msg, i) => (
-                                        <div 
-                                            key={i} 
+                                        <div
+                                            key={i}
                                             className={`message ${msg.sender === 'user' ? 'user-msg' : 'admin-msg'}`}
                                         >
                                             {msg.text}
@@ -125,7 +138,11 @@ const ChatSupport = () => {
 
                     {user && (
                         <form className="chat-footer" onSubmit={handleSendMessage}>
-                            <input value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Nhập tin nhắn..." />
+                            <input
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="Nhập tin nhắn..."
+                            />
                             <button type="submit"><i className="bi bi-send-fill"></i></button>
                         </form>
                     )}
