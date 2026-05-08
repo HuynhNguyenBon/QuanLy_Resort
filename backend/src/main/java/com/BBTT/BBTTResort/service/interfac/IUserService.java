@@ -19,4 +19,7 @@ public interface IUserService {
 
     Response getMyInfo(String email);
 
+    Response forgotPassword(String email);
+
+    Response resetPassword(String email, String otp, String newPassword);
 }
