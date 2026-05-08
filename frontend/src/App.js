@@ -4,6 +4,8 @@ import Navbar from './component/common/Navbar';
 import FooterComponent from './component/common/Footer';
 import LoginPage from './component/auth/LoginPage';
 import RegisterPage from './component/auth/RegisterPage';
+import ForgotPasswordPage from './component/auth/ForgotPasswordPage';
+import ResetPasswordPage from './component/auth/ResetPasswordPage';
 import HomePage from './component/home/HomePage';
 import AllRoomsPage from './component/booking_rooms/AllRoomsPage';
 import RoomDetailsBookingPage from './component/booking_rooms/RoomDetailsPage';
@@ -34,6 +36,8 @@ function App() {
             <Route exact path="/home" element={<HomePage />} />
             <Route exact path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />        
             <Route path="/rooms" element={<AllRoomsPage />} />
             <Route path="/find-booking" element={<FindBookingPage />} />
             <Route path="/services" element={<ServicePage />} />
