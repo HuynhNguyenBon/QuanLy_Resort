@@ -6,6 +6,14 @@ Dự án này được khởi tạo bằng Create React App.
 
 Trong thư mục dự án, bạn có thể chạy các lệnh sau:
 
+### `npm install`
+
+Cài đặt thư viện
+
+### `npm install bootstrap-icons`
+
+Cài đặt icon
+
 ### `npm start`
 
 Chạy ứng dụng ở chế độ phát triển.
