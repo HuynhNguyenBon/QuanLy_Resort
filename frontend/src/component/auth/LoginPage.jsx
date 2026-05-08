@@ -13,8 +13,7 @@ function LoginPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/home';
-
+    const from = location.state?.from?.pathname || '/home';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,26 +28,35 @@ function LoginPage() {
 
         try {
             const response = await ApiService.loginUser({email, password});
+
             if (response.statusCode === 200) {
                 localStorage.setItem('token', response.token);
                 localStorage.setItem('role', response.role);
+
                 navigate(from, { replace: true });
             }
+
         } catch (error) {
             setError(error.response?.data?.message || error.message);
             setTimeout(() => setError(''), 5000);
+
         } finally {
-        setIsLoading(false);
-        }  
+            setIsLoading(false);
+        }
     };
 
     return (
         <div className="auth-container">
+
             <h2>{t('Login')}</h2>
+
             {error && <p className="error-message">{error}</p>}
+
             <form onSubmit={handleSubmit}>
+
                 <div className="form-group">
                     <label>Email: </label>
+
                     <input
                         type="email"
                         className="input-uiverse"
@@ -57,8 +65,10 @@ function LoginPage() {
                         required
                     />
                 </div>
+
                 <div className="form-group">
                     <label>{t('Password: ')} </label>
+
                     <input
                         type="password"
                         className="input-uiverse"
@@ -67,15 +77,47 @@ function LoginPage() {
                         required
                     />
                 </div>
-                <button type="submit" className="btn-uiverse" disabled={isLoading}>
+
+                <button
+                    type="submit"
+                    className="btn-uiverse"
+                    disabled={isLoading}
+                >
                     {isLoading ? t('Loading...') : t('Login')}
+
                     {isLoading && <div className="loader-uiverse"></div>}
                 </button>
+
             </form>
 
-            <p className="register-link">
-                {t("Don't have an account? ")} <a href="/register">{t('Register')}</a>
-            </p>
+            <div style={{ marginTop: '15px' }}>
+
+                <div style={{ textAlign: 'right', marginBottom: '10px', paddingRight: '20px' }}>
+                    <a
+                        href="/forgot-password"
+                        style={{
+                            color: '#007bff',
+                            textDecoration: 'none',
+                            fontSize: '13px'
+                        }}
+                    >
+                        Quên mật khẩu?
+                    </a>
+                </div>
+
+                <p
+                    className="register-link"
+                    style={{
+                        margin: 0,
+                        textAlign: 'left'
+                    }}
+                >
+                    {t("Don't have an account? ")}
+                    <a href="/register">{t('Register')}</a>
+                </p>
+
+            </div>
+
         </div>
     );
 }
