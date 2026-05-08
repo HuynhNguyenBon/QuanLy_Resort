@@ -23,6 +23,18 @@ const ManageChat = () => {
         return () => clearTimeout(timer);
     }, [chats, activeUser]);
 
+    useEffect(() => {
+        const chatTrigger = document.querySelector('.chat-trigger');
+        if (chatTrigger) {
+            chatTrigger.style.display = 'none'; 
+        }
+        return () => {
+            if (chatTrigger) {
+                chatTrigger.style.display = 'flex'; 
+            }
+        };
+    }, [])
+
     const sendReply = (e) => {
         if (e) e.preventDefault();
         if (!reply.trim() || !activeUser) return;

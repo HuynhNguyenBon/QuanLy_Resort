@@ -31,13 +31,21 @@ const ChatSupport = () => {
         const syncUser = () => {
             const freshUser = getFreshUser();
             if (!freshUser) {
+                if (user) { 
+                    setIsOpen(false);
+                }
                 setUser(null);
-                setChatHistory([]);
-            } else if (JSON.stringify(freshUser) !== JSON.stringify(user)) {
-                setUser(freshUser);
+                setChatHistory([]); 
+            } else {
+                if (JSON.stringify(freshUser) !== JSON.stringify(user)) {
+                    setUser(freshUser);
+                }
+                if (freshUser.role === 'admin') {
+                    setIsOpen(false);
+                }
             }
         };
-        const interval = setInterval(syncUser, 1000); 
+        const interval = setInterval(syncUser, 1000);
         return () => clearInterval(interval);
     }, [user]);
 
@@ -59,6 +67,7 @@ const ChatSupport = () => {
             chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
         }
     }, [chatHistory, isOpen]);
+    
 
     const handleTriggerClick = () => {
         const role = localStorage.getItem("role")?.toLowerCase();
@@ -122,9 +131,11 @@ const ChatSupport = () => {
                     )}
                 </div>
             )}
-            <div className="chat-trigger" onClick={handleTriggerClick}>
-                <i className="bi bi-chat-dots-fill"></i>
-            </div>
+            {!isOpen && (
+                <div className="chat-trigger" onClick={handleTriggerClick}>
+                    <i className="bi bi-chat-dots-fill"></i>
+                </div>
+            )}
         </div>
     );
 };
