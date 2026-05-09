@@ -163,6 +163,13 @@ export default class ApiService {
         return result.data;
     }
 
+    static async checkRoomAvailability(roomId, checkInDate, checkOutDate) {
+        const response = await axios.get(
+            `${this.BASE_URL}/bookings/check-availability?roomId=${roomId}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`
+        );
+        return response.data;
+    }
+
 
     /**BOOKING */
     /* Thao tác này sẽ lưu một đặt chỗ mới vào cơ sở dữ liệu */
@@ -197,6 +204,8 @@ export default class ApiService {
         })
         return result.data
     }
+
+    
 
 
     /**AUTHENTICATION CHECKER */
