@@ -89,7 +89,6 @@ public class BookingService implements IBookingService {
             bookingRequest.setCreatedAt(LocalDate.now());
 
             String bookingCode = Utils.generateRandomConfirmationCode(10);
-
             bookingRequest.setBookingConfirmationCode(bookingCode);
 
             bookingRepository.save(bookingRequest);
@@ -123,11 +122,7 @@ public class BookingService implements IBookingService {
             response.setMessage("successful");
             response.setBookingConfirmationCode(bookingConfirmationCode);
 
-        } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-
-        } catch (Exception e) {
+        }  catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error Saving a booking: " + e.getMessage());
         }
