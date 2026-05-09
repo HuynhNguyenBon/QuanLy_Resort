@@ -39,7 +39,7 @@ public class Booking {
     private String bookingStatus;
 
     private LocalDate createdAt;
-
+  
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;

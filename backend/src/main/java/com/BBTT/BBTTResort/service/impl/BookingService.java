@@ -37,7 +37,6 @@ public class BookingService implements IBookingService {
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     public Response saveBooking(Long roomId, Long userId, Booking bookingRequest) {
 
@@ -103,7 +102,34 @@ public class BookingService implements IBookingService {
 
             response.setStatusCode(400);
             response.setMessage(e.getMessage());
+            if (bookingRequest.getCheckOutDate().isBefore(bookingRequest.getCheckInDate())) {
+                throw new IllegalArgumentException("Check in date must come after check out date");
+            }
+            Room room = roomRepository.findById(roomId).orElseThrow(() -> new OurException("Room Not Found"));
+            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
 
+            List<Booking> existingBookings = room.getBookings();
+
+            if (!roomIsAvailable(bookingRequest, existingBookings)) {
+                throw new OurException("Room not Available for selected date range");
+            }
+
+            bookingRequest.setRoom(room);
+            bookingRequest.setUser(user);
+            String bookingConfirmationCode = Utils.generateRandomConfirmationCode(10);
+            bookingRequest.setBookingConfirmationCode(bookingConfirmationCode);
+            bookingRepository.save(bookingRequest);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setBookingConfirmationCode(bookingConfirmationCode);
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error Saving a booking: " + e.getMessage());
         }
         return response;
     }
@@ -222,9 +248,6 @@ public class BookingService implements IBookingService {
         }
         return response;
     }
-
-
-
     private boolean roomIsAvailable(Booking bookingRequest, List<Booking> existingBookings) {
 
         return existingBookings.stream()

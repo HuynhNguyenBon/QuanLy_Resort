@@ -17,7 +17,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByUserId(Long userId);
 
-
     @Query("""
         SELECT COUNT(b) > 0
         FROM Booking b

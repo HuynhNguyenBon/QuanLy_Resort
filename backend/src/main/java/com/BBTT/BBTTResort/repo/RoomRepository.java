@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
+    boolean existsByRoomPhotoUrl(String roomPhotoUrl);
+
     @Query("SELECT DISTINCT r.roomType FROM Room r")
     List<String> findDistinctRoomTypes();
 

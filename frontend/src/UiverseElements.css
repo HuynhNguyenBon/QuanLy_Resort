@@ -1,0 +1,1030 @@
+/* --- UIverse Style Button --- */
+    .btn-uiverse {
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px;    
+    position: relative;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007F86; /* Giữ lại màu thương hiệu của ông */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 127, 134, 0.3);
+    }
+
+    .btn-uiverse::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: all 0.5s ease;
+    }
+
+    .btn-uiverse:hover {
+    transform: translateY(-2px); /* Nổi lên một chút khi rà chuột */
+    box-shadow: 0 6px 20px rgba(0, 127, 134, 0.5);
+    }
+
+    .btn-uiverse:hover::before {
+    left: 100%; /* Hiệu ứng vệt sáng lướt qua */
+    }
+
+    .btn-uiverse:active {
+    transform: translateY(1px); /* Lún xuống khi click */
+    }
+
+    .loader-uiverse {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff; /* Vệt trắng xoay */
+    animation: spin 1s ease-in-out infinite;
+    display: inline-block;
+    }
+
+    @keyframes spin {
+    to { transform: rotate(360deg); }
+    }
+
+    /* Nút bấm vẫn nằm trong Navbar bình thường */
+    .lang-container-fixed {
+        list-style: none;
+        margin-left: 20px;
+    }
+
+    .flag-btn-trigger {
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* ĐÂY LÀ CHIÊU CUỐI: POSITION FIXED */
+    .flag-dropdown-fixed {
+        position: fixed !important; /* Ép nó bám vào màn hình, không bám vào Navbar nữa */
+        background: #ffffff !important;
+        border: 1px solid #eee !important;
+        border-radius: 8px;
+        min-width: 200px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+        z-index: 9999999 !important; /* Ưu tiên tuyệt đối */
+        padding: 8px 0;
+        animation: slideUp 0.2s ease-out;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .flag-option-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        cursor: pointer;
+        color: #333 !important;
+        font-size: 15px;
+        white-space: nowrap; /* Không cho rớt dòng */
+    }
+
+    .flag-option-item:hover {
+        background: #f0f7f8;
+        color: #007F86 !important;
+    }
+
+    .flag-option-item img {
+        border-radius: 2px;
+    }
+    /* Container bao ngoài để căn giữa danh sách */
+    .room-list-uiverse {
+        display: grid;
+        /* Tự động chia cột: mỗi cột tối thiểu 320px, tối đa là 1 phần đều nhau */
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 30px;
+        padding: 20px;
+        margin: 0 auto;
+        justify-content: start;
+    }
+
+    /* Style cho cái Card */
+    .room-card-uiverse {
+        width: 320px;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 1px solid #eee;
+    }
+
+    .room-card-uiverse:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 127, 134, 0.15);
+    }
+
+    .room-image-box {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .room-image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .room-card-uiverse:hover .room-image-box img {
+        transform: scale(1.1);
+    }
+
+    .room-content-box {
+        padding: 20px;
+    }
+
+    .room-title {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .room-price {
+        color: #007F86;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .room-desc {
+        font-size: 0.9rem;
+        color: #666;
+        height: 40px;
+        overflow: hidden;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* Chiều cao tự động tính toán theo số dòng để không bị cắt nửa chữ */
+        height: 4.5em;
+    }
+
+    /* Tiện ích ẩn hiện */
+    .room-amenities-tags {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: 0.3s ease;
+    }
+
+    .room-card-uiverse:hover .room-amenities-tags {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .room-amenities-tags span {
+        background: #f0f7f8;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+
+    /* Nút bấm chung */
+    .btn-uiverse {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-uiverse.user {
+        background: #007F86;
+        color: white;
+    }
+
+    .btn-uiverse.admin {
+        background: #ff9800;
+        color: white;
+    }
+
+    .btn-uiverse:hover {
+        filter: brightness(0.9);
+        transform: scale(1.02);
+    }
+
+    .service-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #eee;
+    text-align: center;
+    }
+
+    .service-card:hover {
+    transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: #ff9800;
+    }
+
+    .service-card img {
+    width: 60px;
+    margin-bottom: 15px;
+    }
+
+    /* Container chính cho trang Find Booking */
+    .find-booking-page {
+        padding: 80px 20px;
+        max-width: 1000px;
+        margin: 0 auto;
+        min-height: 80vh;
+    }
+
+    /* Group nhập liệu kiểu Uiverse */
+    .search-container-uiverse {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 50px;
+    }
+
+    .uiverse-input-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 450px;
+        padding: 2px;
+    }
+
+    .uiverse-input-field {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2.5px solid #007F86;
+        border-radius: 12px;
+        background: transparent;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        outline: none;
+        box-sizing: border-box;
+        display: block;
+    }
+
+    .uiverse-input-field:focus {
+        border-color: #ff9800;
+        box-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
+    }
+
+    /* Card kết quả kiểu Luxury */
+    .booking-details-card {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .booking-section-title {
+        color: #007F86;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        border-left: 5px solid #ff9800;
+        padding-left: 15px;
+    }
+
+    .booking-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .info-item label {
+        display: block;
+        font-size: 0.8rem;
+        color: #888;
+        margin-bottom: 5px;
+    }
+
+    .info-item span {
+        font-weight: 600;
+        color: #333;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Container bao bọc trang Dịch vụ */
+    .service-page-container {
+        padding: 100px 20px 50px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        min-height: 80vh;
+    }
+
+    /* Khung chứa ảnh dịch vụ */
+    .service-card-uiverse img {
+        width: 80px;    
+        height: 80px;    
+        object-fit: contain; 
+        margin: 20px auto;  
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    /* Hiệu ứng khi di chuột vào */
+    .service-card-uiverse:hover img {
+        transform: scale(1.1); 
+    }
+
+    /* Lưới hiển thị các thẻ dịch vụ */
+    .service-grid-uiverse {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+        margin-bottom: 50px;
+    }
+
+    /* Làm đẹp tiêu đề và mô tả */
+    .service-title {
+        color: #004d40; /* Màu xanh teal đậm */
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+    }
+
+    .service-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        padding: 0 15px;
+    }
+
+    /* Luxury Loader (Vòng xoay chờ tải dữ liệu) */
+    .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+    }
+
+    .luxury-loader {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        position: relative;
+        animation: rotate 1s linear infinite;
+    }
+
+    .luxury-loader::before {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 5px solid transparent;
+        border-top-color: #007F86;
+        border-right-color: #ff9800;
+        animation: prixClipFix 2s linear infinite;
+    }
+
+    @keyframes rotate {
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes prixClipFix {
+        0% { clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0); }
+        25% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0); }
+        50% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%); }
+        75% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%); }
+        100% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0); }
+    }
+
+    /*Profile*/
+    .bbhh-profile-container {
+        min-height: 100vh;
+        padding: 130px 20px 50px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e0eaf5 100%);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .bbhh-profile-card {
+        width: 100%;
+        max-width: 1000px;
+        min-height: 75vh; 
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- Phần Tiêu đề & Nút --- */
+    .bbhh-profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .bbhh-profile-header h2 {
+        font-size: 2.2rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .text-orange {
+        color: #ff9800;
+    }
+
+    /* Box chứa nút */
+    .bbhh-action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        padding: 10px; 
+    }
+
+    button.bbhh-btn {
+        appearance: none;
+        border: none;
+        outline: 2px solid transparent;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #ffffff !important;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        overflow: visible !important;
+    }
+
+    button.bbhh-btn-edit { background-color: #007F86; }
+    button.bbhh-btn-logout { background-color: #f87171; }
+
+    button.bbhh-btn:hover {
+        transform: translateY(-4px); 
+        box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        outline: 2px solid rgba(255, 255, 255, 0.8);
+        outline-offset: -2px;
+    }
+
+    /* --- Nội dung chính --- */
+    .bbhh-profile-body {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 25px;
+        flex-grow: 1;
+    }
+
+    .bbhh-box {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        border: 1px solid #eee;
+    }
+
+    .bbhh-box h3 { color: #007F86; margin-bottom: 5px; }
+    .bbhh-divider { width: 50px; height: 3px; background: #ff9800; margin-bottom: 20px; }
+
+    /* --- Lịch sử --- */
+    .bbhh-booking-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .bbhh-booking-item {
+        display: flex;
+        gap: 15px;
+        padding: 15px;
+        background: #f9fbfd;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #eef2f6;
+        transition: 0.3s;
+    }
+
+    .bbhh-booking-item:hover { border-color: #007F86; }
+
+    .bbhh-booking-item img {
+        width: 120px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .bbhh-booking-info p { margin: 3px 0; font-size: 0.9rem; color: #555; }
+    .bbhh-code { color: #007F86 !important; font-weight: bold; }
+
+    /* --- Footer --- */
+    .bbhh-profile-footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        text-align: center;
+        border-top: 1px solid #eee;
+        color: #007F86;
+        font-weight: 600;
+    }
+
+    /* Container cho trang Edit Profile */
+    .bbhh-edit-profile-wrapper {
+        min-height: 100vh;
+        padding: 140px 20px 60px;
+        background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    /* Card chính */
+    .bbhh-edit-card {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(15px);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .bbhh-edit-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .bbhh-divider-center {
+        width: 80px;
+        height: 4px;
+        background: #ff9800;
+        margin: 15px auto;
+        border-radius: 2px;
+    }
+
+    /* Fields hiển thị thông tin */
+    .bbhh-info-group {
+        margin-bottom: 20px;
+    }
+
+    .bbhh-info-group label {
+        display: block;
+        font-weight: 600;
+        color: #007F86;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .bbhh-read-only-field {
+        background: white;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        color: #333;
+        font-size: 1rem;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* Actions */
+    .bbhh-edit-actions {
+        margin-top: 40px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .warning-text {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+
+    /* Buttons */
+    .bbhh-btn-danger {
+        background-color: #ef4444;
+        color: white !important;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .bbhh-btn-danger:hover {
+        background-color: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .bbhh-btn-back {
+        background: transparent;
+        color: #007F86 !important;
+        border: 2px solid #007F86;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .bbhh-btn-back:hover {
+        background: #007F86;
+        color: white !important;
+    }
+
+    /* Loader */
+    .bbhh-loader-container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bbhh-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007F86;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* --- ROOM DETAILS PAGE - LUXURY STYLE --- */
+    .bbhh-details-wrapper {
+        min-height: 100vh;
+        padding: 150px 20px 80px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        justify-content: center;
+    }
+
+    .bbhh-details-container {
+        width: 100%;
+        max-width: 1100px;
+        box-sizing: border-box;
+    }
+
+    .bbhh-details-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 40px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(15px);
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        box-sizing: border-box;
+    }
+
+    /* Cột trái: Ảnh và thông tin */
+    .bbhh-image-frame {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        height: 400px;
+    }
+
+    .bbhh-image-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .bbhh-room-badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #007F86;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .bbhh-info-text h3 { color: #102a43; margin: 25px 0 10px; font-size: 1.5rem; }
+    .bbhh-price-circle {
+        margin-top: 20px;
+        font-size: 1.1rem;
+        color: #486581;
+    }
+    .bbhh-price-circle span { color: #007F86; font-size: 2rem; font-weight: 800; }
+
+    /* Cột phải: Card đặt phòng (Fix lỗi của ông) */
+    .bbhh-booking-card {
+        background: white;
+        padding: 35px;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    .bbhh-underline-left { width: 50px; height: 4px; background: #ff9800; margin-top: 8px; border-radius: 2px; }
+
+    .bbhh-input-box label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: #007F86;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    .bbhh-date-input, .bbhh-input-box input {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid #d9e2ec;
+        outline: none;
+        background: #f8fafc;
+        transition: 0.3s;
+    }
+
+    .bbhh-date-selection, .bbhh-guest-selection {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        box-sizing: border-box;
+    }
+
+    /* Nút bấm Uiverse Style */
+    .bbhh-btn-calculate {
+        width: 100%;
+        box-sizing: border-box;
+        background: #102a43;
+        color: white !important;
+        border: none;
+        padding: 15px;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .bbhh-btn-calculate:hover { background: #007F86; transform: translateY(-2px); }
+
+    .bbhh-summary-box {
+        background: #f0fdfa;
+        padding: 20px;
+        border-radius: 15px;
+        border: 1px dashed #007F86;
+        margin-top: 10px;
+        box-sizing: border-box;
+    }
+
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .bbhh-btn-confirm-final {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 15px;
+        background: #ff9800;
+        color: white !important;
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 900px) {
+        .bbhh-details-grid { 
+            grid-template-columns: 1fr; 
+            padding: 20px;
+        }
+    }
+
+    /* --- LUXURY MANAGE BOOKING PAGE --- */
+    .bbhh-manage-booking-wrapper {
+        min-height: 100vh;
+        padding: 130px 20px 60px; 
+        background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        overflow-x: hidden; 
+    }
+
+    /* Card kính mờ chính */
+    .bbhh-manage-glass-card {
+        width: 100%;
+        max-width: 800px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(15px);
+        border-radius: 25px;
+        padding: 40px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-sizing: border-box;
+    }
+
+    .bbhh-manage-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .bbhh-manage-header h2 { font-size: 2rem; color: #102a43; margin-bottom: 15px; }
+
+    .bbhh-divider-uiverse { width: 60px; height: 4px; background: #ff9800; margin: 0 auto 20px auto; border-radius: 2px; }
+
+    /* Nút Back nằm trên */
+    .bbhh-btn-back-uiverse {
+        background: #486581;
+        color: white !important;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .bbhh-btn-back-uiverse:hover { background: #102a43; }
+
+    /* --- Bố cục nội dung --- */
+    .bbhh-manage-body {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    /* Phần 1: Tóm tắt phòng */
+    .room-reservation-summary {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .summary-img-frame { width: 150px; height: 100px; border-radius: 12px; overflow: hidden; }
+    .summary-img-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+    .summary-details { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    /* Phần 2: Chi tiết (Gom vào card con) */
+    .booking-info-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .info-glass-box {
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 18px;
+        padding: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .info-glass-box h3 { color: #007F86; margin-bottom: 20px; font-size: 1.1rem; }
+
+    /* Các ô hiển thị thông tin */
+    .field-group { margin-bottom: 15px; }
+    .field-group label { display: block; font-size: 0.8rem; color: #627d98; margin-bottom: 5px; }
+    .field-group span { font-weight: bold; color: #102a43; font-size: 1rem; }
+    .field-group.price span { color: #ff9800; font-size: 1.2rem; font-weight: 800; }
+
+    .field-value {
+        background: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #d9e2ec;
+        color: #102a43;
+        font-weight: 500;
+    }
+
+    .guests-flex { display: flex; gap: 15px; }
+    .guests-flex .field-group { flex: 1; }
+
+    .bbhh-manage-hr { border: none; border-top: 1px dashed #d9e2ec; margin: 10px 0; }
+
+    /* Nút hành động */
+    .bbhh-manage-actions {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .bbhh-btn-achieve {
+        width: 100%;
+        max-width: 400px;
+        padding: 15px;
+        border-radius: 12px;
+        background: #e53e3e;
+        color: white !important;
+        font-weight: 800;
+        font-size: 1.1rem;
+        cursor: pointer;
+        border: none;
+        transition: all 0.3s;
+        box-sizing: border-box !important;
+    }
+
+    .bbhh-btn-achieve:hover {
+        background: #c53030;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(229, 62, 62, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .booking-info-details { grid-template-columns: 1fr; }
+        .room-reservation-summary { flex-direction: column; text-align: center; }
+        .summary-details { grid-template-columns: 1fr; }
+    }
+
+    /* Container admin managebooking */
+    .bbhh-booking-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
+    }
+
+    /* Card*/
+    .bbhh-booking-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .bbhh-booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .bbhh-tag {
+        background: #e9ecef;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .bbhh-card-body p {
+        margin: 8px 0;
+        font-size: 0.95rem;
+    }
+
+    .w-100 {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .bbhh-input {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
+        width: 250px;
+        transition: border-color 0.3s;
+    }
+
+    .bbhh-input:focus {
+        border-color: #f39c12;
+    }

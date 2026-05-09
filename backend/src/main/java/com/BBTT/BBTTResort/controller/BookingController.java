@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import com.BBTT.BBTTResort.repo.BookingRepository;
 
@@ -20,7 +21,7 @@ public class BookingController {
 
     @Autowired
     private BookingRepository bookingRepository;
-
+  
     @PostMapping("/book-room/{roomId}/{userId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<Response> saveBookings(@PathVariable Long roomId,
@@ -32,7 +33,6 @@ public class BookingController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
 
     }
-
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> getAllBookings() {
