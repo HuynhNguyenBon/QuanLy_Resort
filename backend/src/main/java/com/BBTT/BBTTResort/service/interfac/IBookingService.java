@@ -11,8 +11,9 @@ public interface IBookingService {
 
     Response getAllBookings();
 
+    Response getBookingsByUserId(Long userId);
+  
     Response cancelBooking(Long bookingId);
 
     Response getBookingServicesByBookingId(Long bookingId);
-
 }
