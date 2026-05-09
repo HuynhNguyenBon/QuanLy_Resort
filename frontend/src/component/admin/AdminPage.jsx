@@ -33,7 +33,7 @@ const AdminPage = () => {
                 
                 <div className="bbhh-profile-header">
                     <h2 className="welcome-message">
-                        Welcome, ADMIN <span className="text-orange">{adminName}</span>
+                        Welcome, <span className="text-orange">{adminName}</span>
                     </h2>
                     
                     <div className="bbhh-action-buttons">
