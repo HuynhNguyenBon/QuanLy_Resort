@@ -212,6 +212,7 @@ export default class ApiService {
     static logout() {
         localStorage.removeItem('token')
         localStorage.removeItem('role')
+        localStorage.removeItem('userEmail')
     }
 
     static isAuthenticated() {
@@ -221,12 +222,12 @@ export default class ApiService {
 
     static isAdmin() {
         const role = localStorage.getItem('role')
-        return role === 'ADMIN'
+        return role?.toUpperCase() === 'ADMIN'
     }
 
     static isUser() {
         const role = localStorage.getItem('role')
-        return role === 'USER'
+        return role?.toUpperCase() === 'USER'
     }
 
     // Lấy danh sách tất cả dịch vụ
