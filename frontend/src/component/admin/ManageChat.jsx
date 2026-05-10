@@ -5,7 +5,7 @@ import "../../ChatSupport.css";
 import { useTranslation } from "react-i18next";
 
 const ManageChat = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("admin");
 
   const [chats, setChats] = useState({});
   const [activeUser, setActiveUser] = useState(null);
