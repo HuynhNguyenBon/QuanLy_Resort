@@ -38,6 +38,11 @@ public class Booking {
 
     private String bookingStatus;
 
+    private String paymentStatus; // PENDING | PAID | FAILED
+
+    private String vnpayTransactionId;
+
+
     private LocalDate createdAt;
   
     @ManyToOne(fetch = FetchType.EAGER)

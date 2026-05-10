@@ -101,63 +101,53 @@ const RoomDetailsPage = () => {
   };
 
   const acceptBooking = async () => {
-    try {
+  try {
+    const userProfile = await ApiService.getUserProfile();
+    const userId = userProfile.user.id;
 
-      const userProfile = await ApiService.getUserProfile();
-
-      const userId = userProfile.user.id;
-
-      if (!userId) {
-
-        alert(
-          "You need to log in again to make your booking!"
-        );
-
-        return;
-      }
-
-      const formattedCheckInDate =
-        checkInDate.toISOString().split('T')[0];
-
-      const formattedCheckOutDate =
-        checkOutDate.toISOString().split('T')[0];
-
-      const booking = {
-        checkInDate: formattedCheckInDate,
-        checkOutDate: formattedCheckOutDate,
-        numOfAdults: numAdults,
-        numOfChildren: numChildren,
-      };
-
-      const response =
-        await ApiService.bookRoom(
-          roomId,
-          userId,
-          booking
-        );
-
-      if (response.statusCode === 200) {
-
-        alert(
-          `Booking Successful! Confirmation Code: ${response.bookingConfirmationCode}`
-        );
-
-        navigate('/profile');
-
-      } else {
-
-        setError(response.message);
-      }
-
-    } catch (error) {
-
-      setError(
-        error.response?.data?.message ||
-        error.message
-      );
+    if (!userId) {
+      alert("You need to log in again to make your booking!");
+      return;
     }
-  };
 
+    const booking = {
+      checkInDate:  checkInDate.toISOString().split('T')[0],
+      checkOutDate: checkOutDate.toISOString().split('T')[0],
+      numOfAdults:   numAdults,
+      numOfChildren: numChildren,
+    };
+
+    // Bước 1: Tạo booking → backend trả về bookingId
+    const bookingRes = await ApiService.bookRoom(
+      roomId, userId, booking
+    );
+
+    console.log("Booking response:", bookingRes); // debug
+
+    if (bookingRes.statusCode !== 200) {
+      setError(bookingRes.message);
+      return;
+    }
+
+    // Bước 2: Gọi tạo URL thanh toán VNPAY
+    const paymentRes = await ApiService.createVNPayPayment(
+      bookingRes.bookingId
+    );
+
+    console.log("Payment response:", paymentRes); // debug
+
+    if (paymentRes.status === "OK") {
+      // Bước 3: Redirect sang cổng VNPAY
+      window.location.href = paymentRes.paymentUrl;
+    } else {
+      setError("Không thể tạo link thanh toán: "
+        + paymentRes.message);
+    }
+
+  } catch (error) {
+    setError(error.response?.data?.message || error.message);
+  }
+};
   if (isLoading) return <div className="bbhh-loader-container"><div className="bbhh-spinner"></div></div>;
 
   return (
