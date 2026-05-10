@@ -1,100 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ApiService from '../../service/ApiService';
-import '../../UiverseElements.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import ApiService from "../../service/ApiService";
+import "../../UiverseElements.css";
 
 const ProfilePage = () => {
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
+  const { t } = useTranslation("profile");
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const response = await ApiService.getUserProfile();
-                // Fetch user bookings using the fetched user ID
-                const userPlusBookings = await ApiService.getUserBookings(response.user.id);
-                setUser(userPlusBookings.user)
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-            } catch (error) {
-                setError(error.response?.data?.message || error.message);
-            }
-        };
-
-        fetchUserProfile();
-    }, []);
-
-    const handleLogout = () => {
-        ApiService.logout();
-        navigate('/home');
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await ApiService.getUserProfile();
+        const userPlusBookings = await ApiService.getUserBookings(
+          response.user.id,
+        );
+        setUser(userPlusBookings.user);
+      } catch (error) {
+        setError(error.response?.data?.message || error.message);
+      }
     };
 
-    const handleEditProfile = () => {
-        navigate('/edit-profile');
-    };
+    fetchUserProfile();
+  }, []);
 
-    return (
-        <div className="bbhh-profile-container">
-            <div className="bbhh-profile-card">
-                
-                {/* Header */}
-                <div className="bbhh-profile-header">
-                    {user && <h2>Welcome, <span className="text-orange">{user.name}</span></h2>}
-                    
-                    <div className="bbhh-action-buttons">
-                        <button className="bbhh-btn bbhh-btn-edit" onClick={handleEditProfile}>
-                            Edit Profile
-                        </button>
-                        <button className="bbhh-btn bbhh-btn-logout" onClick={handleLogout}>
-                            Logout
-                        </button>
-                    </div>
-                </div>
+  const handleLogout = () => {
+    ApiService.logout();
+    navigate("/home");
+  };
 
-                {error && <p className="bbhh-error">{error}</p>}
+  const handleEditProfile = () => {
+    navigate("/edit-profile");
+  };
 
-                {/* Nội dung chia 2 cột */}
-                <div className="bbhh-profile-body">
-                    {/* Cột 1: Info */}
-                    {user && (
-                        <div className="bbhh-box">
-                            <h3>Profile Details</h3>
-                            <div className="bbhh-divider"></div>
-                            <p><strong>Email:</strong> {user.email}</p>
-                            <p><strong>Phone:</strong> {user.phoneNumber}</p>
-                        </div>
-                    )}
+  return (
+    <div className="bbhh-profile-container">
+      <div className="bbhh-profile-card">
+        {/* HEADER */}
+        <div className="bbhh-profile-header">
+          {user && (
+            <h2>
+              {t("welcome")}, <span className="text-orange">{user.name}</span>
+            </h2>
+          )}
 
-                    {/* Cột 2: History */}
-                    <div className="bbhh-box">
-                        <h3>Booking History</h3>
-                        <div className="bbhh-divider"></div>
-                        <div className="bbhh-booking-list">
-                            {user && user.bookings && user.bookings.length > 0 ? (
-                                user.bookings.map((booking) => (
-                                    <div key={booking.id} className="bbhh-booking-item">
-                                        <img src={booking.room?.roomPhotoUrl} alt="Room" />
-                                        <div className="bbhh-booking-info">
-                                            <p className="bbhh-code">Code: {booking.bookingConfirmationCode}</p>
-                                            <p>Check-in: {booking.checkInDate}</p>
-                                            <p>Room: {booking.room?.roomType}</p>
-                                            <p>Guests: {booking.totalNumOfGuest}</p>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>You have no booking history yet.</p>
-                            )}
-                        </div>
-                    </div>
-                </div>
+          <div className="bbhh-action-buttons">
+            <button onClick={handleEditProfile}>{t("editProfile")}</button>
 
-                {/* Footer tự động đẩy xuống đáy */}
-                <div className="bbhh-profile-footer">
-                    <p>BBHH Resort | Your Luxury Sanctuary</p>
-                </div>
-            </div>
+            <button onClick={handleLogout}>{t("logout")}</button>
+          </div>
         </div>
-    );
+
+        {error && <p className="bbhh-error">{error}</p>}
+
+        <div className="bbhh-profile-body">
+          {/* INFO */}
+          {user && (
+            <div className="bbhh-box">
+              <h3>{t("profileDetails")}</h3>
+              <p>
+                <strong>{t("email")}:</strong> {user.email}
+              </p>
+              <p>
+                <strong>{t("phone")}:</strong> {user.phoneNumber}
+              </p>
+            </div>
+          )}
+
+          {/* BOOKINGS */}
+          <div className="bbhh-box">
+            <h3>{t("bookingHistory")}</h3>
+
+            {user && user.bookings?.length > 0 ? (
+              user.bookings.map((b) => (
+                <div key={b.id} className="bbhh-booking-item">
+                  <img src={b.room?.roomPhotoUrl} alt="room" />
+
+                  <div>
+                    <p>
+                      {t("code")}: {b.bookingConfirmationCode}
+                    </p>
+                    <p>
+                      {t("checkIn")}: {b.checkInDate}
+                    </p>
+                    <p>
+                      {t("room")}: {b.room?.roomType}
+                    </p>
+                    <p>
+                      {t("guests")}: {b.totalNumOfGuest}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>{t("noBooking")}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="bbhh-profile-footer">
+          <p>{t("footer")}</p>
+        </div>
+      </div>
+    </div>
+  );
 };
+
 export default ProfilePage;

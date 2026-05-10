@@ -28,5 +28,25 @@
     "roomDetails": "Thông tin phòng",
     "thankYou": "Cảm ơn bạn đã chọn BBHH Resort. Chúc bạn có một kỳ nghỉ tuyệt vời!",
     "verified": "Phòng đã xác nhận ✓"
+  },
+  "roomDetailsPage": {
+    "amenities": "Tiện nghi phòng",
+    "defaultDesc": "Tận hưởng không gian sang trọng với tiện nghi hiện đại và dịch vụ cao cấp.",
+    "night": "đêm",
+
+    "bookRoom": "Đặt phòng này",
+    "checkIn": "Ngày nhận phòng",
+    "checkOut": "Ngày trả phòng",
+
+    "checkPrice": "Kiểm tra tổng tiền",
+    "confirm": "Xác nhận đặt phòng",
+
+    "guests": "Số khách",
+    "total": "Tổng tiền",
+
+    "selectDates": "Vui lòng chọn ngày nhận và trả phòng",
+    "roomNotAvailable": "Phòng không khả dụng trong khoảng thời gian này",
+    "loginAgain": "Vui lòng đăng nhập lại",
+    "paymentError": "Lỗi thanh toán: "
   }
 }

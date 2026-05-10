@@ -28,5 +28,25 @@
     "roomDetails": "Room Details",
     "thankYou": "Thank you for choosing BBHH Resort. We wish you a wonderful vacation!",
     "verified": "Room Verified ✓"
+  },
+  "roomDetailsPage": {
+    "amenities": "Room Amenities",
+    "defaultDesc": "Enjoy our luxury space with modern facilities and premium service.",
+    "night": "night",
+
+    "bookRoom": "Book This Room",
+    "checkIn": "Check-in Date",
+    "checkOut": "Check-out Date",
+
+    "checkPrice": "Check Total Price",
+    "confirm": "Confirm Reservation",
+
+    "guests": "Guests",
+    "total": "Total Amount",
+
+    "selectDates": "Please select check-in and check-out dates",
+    "roomNotAvailable": "Room is not available for selected dates",
+    "loginAgain": "Please login again",
+    "paymentError": "Payment error: "
   }
 }

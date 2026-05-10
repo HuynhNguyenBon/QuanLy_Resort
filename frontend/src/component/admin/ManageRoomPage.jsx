@@ -7,7 +7,7 @@ import Pagination from "../common/Pagination";
 import RoomResult from "../common/RoomResult";
 
 const ManageRoomPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("admin");
 
   const [rooms, setRooms] = useState([]);
   const [filteredRooms, setFilteredRooms] = useState([]);
