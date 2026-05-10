@@ -1,104 +1,107 @@
-import React, { useState } from 'react';
-import ApiService from '../../service/ApiService'; // Giả sử dịch vụ của bạn nằm trong một tệp có tên là ApiService.js
-import '../../UiverseElements.css';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import ApiService from "../../service/ApiService";
+import "../../UiverseElements.css";
 
 const FindBookingPage = () => {
-    const [confirmationCode, setConfirmationCode] = useState(''); // Biến trạng thái cho mã xác nhận
-    const [bookingDetails, setBookingDetails] = useState(null); // Biến trạng thái cho chi tiết đặt phòng
-    const [error, setError] = useState(null); // Theo dõi bất kỳ lỗi nào
+  const { t } = useTranslation("rooms");
 
-    const handleSearch = async () => {
-        if (!confirmationCode.trim()) {
-            setError("Please Enter a booking confirmation code");
-            setTimeout(() => setError(''), 5000);
-            return;
-        }
-        try {
-            // Gọi API để lấy chi tiết đặt phòng
-            const response = await ApiService.getBookingByConfirmationCode(confirmationCode);
-            setBookingDetails(response.booking);
-            setError(null); // Xóa lỗi nếu thành công
-        } catch (error) {
-            setError(error.response?.data?.message || error.message);
-            setTimeout(() => setError(''), 5000);
-        }
-    };
+  const [confirmationCode, setConfirmationCode] = useState("");
+  const [bookingDetails, setBookingDetails] = useState(null);
+  const [error, setError] = useState(null);
 
-    return (
-        <div className="find-booking-page">
-            <h2 className="home-services text-center">Find Your <span className="bbhh-color">Reservation</span></h2>
-            
-            <div className="search-container-uiverse">
-                <div className="uiverse-input-wrapper">
-                    <input
-                        required
-                        type="text"
-                        className="uiverse-input-field"
-                        placeholder="Enter confirmation code (e.g. ABC123)"
-                        value={confirmationCode}
-                        onChange={(e) => setConfirmationCode(e.target.value)}
-                    />
-                </div>
-                <button className="btn-uiverse user" style={{maxWidth: '200px'}} onClick={handleSearch}>
-                    Search Booking
-                </button>
-            </div>
+  const handleSearch = async () => {
+    if (!confirmationCode.trim()) {
+      setError(t("findBookingPage.enterCode"));
+      setTimeout(() => setError(""), 5000);
+      return;
+    }
 
-            {error && <p className="text-center" style={{ color: 'red', fontWeight: '500' }}>{error}</p>}
+    try {
+      const response =
+        await ApiService.getBookingByConfirmationCode(confirmationCode);
 
-            {bookingDetails && (
-                <div className="booking-details-card">
-                    <h3 className="booking-section-title">Booking Information</h3>
-                    <div className="booking-info-grid">
-                        <div className="info-item">
-                            <label>Confirmation Code</label>
-                            <span style={{color: '#ff9800'}}>{bookingDetails.bookingConfirmationCode}</span>
-                        </div>
-                        <div className="info-item">
-                            <label>Check-in Date</label>
-                            <span>{bookingDetails.checkInDate}</span>
-                        </div>
-                        <div className="info-item">
-                            <label>Check-out Date</label>
-                            <span>{bookingDetails.checkOutDate}</span>
-                        </div>
-                        <div className="info-item">
-                            <label>Adults/Children</label>
-                            <span>{bookingDetails.numOfAdults} Adults - {bookingDetails.numOfChildren} Children</span>
-                        </div>
-                    </div>
+      setBookingDetails(response.booking);
+      setError(null);
+    } catch (error) {
+      setError(error.response?.data?.message || error.message);
 
-                    <h3 className="booking-section-title">Guest Details</h3>
-                    <div className="booking-info-grid">
-                        <div className="info-item">
-                            <label>Full Name</label>
-                            <span>{bookingDetails.user.name}</span>
-                        </div>
-                        <div className="info-item">
-                            <label>Email Address</label>
-                            <span>{bookingDetails.user.email}</span>
-                        </div>
-                        <div className="info-item">
-                            <label>Phone Number</label>
-                            <span>{bookingDetails.user.phoneNumber}</span>
-                        </div>
-                    </div>
+      setTimeout(() => setError(""), 5000);
+    }
+  };
 
-                    <h3 className="booking-section-title">Room Details</h3>
-                    <div className="room-card-uiverse" style={{width: '100%', display: 'flex', flexDirection: 'row'}}>
-                        <div className="room-image-box" style={{width: '40%', height: '250px'}}>
-                            <img src={bookingDetails.room.roomPhotoUrl} alt="Room" />
-                        </div>
-                        <div className="room-content-box" style={{width: '60%'}}>
-                            <h4 className="room-title">{bookingDetails.room.roomType}</h4>
-                            <p className="room-desc">Cảm ơn ông đã tin tưởng lựa chọn BBHH Resort. Chúc ông có một kỳ nghỉ tuyệt vời!</p>
-                            <div className="room-price">Room Verified ✓</div>
-                        </div>
-                    </div>
-                </div>
-            )}
+  return (
+    <div className="find-booking-page">
+      <h2 className="home-services text-center">
+        {t("findBookingPage.findYour")}{" "}
+        <span className="bbhh-color">{t("findBookingPage.reservation")}</span>
+      </h2>
+
+      <div className="search-container-uiverse">
+        <div className="uiverse-input-wrapper">
+          <input
+            required
+            type="text"
+            className="uiverse-input-field"
+            placeholder={t("findBookingPage.placeholder")}
+            value={confirmationCode}
+            onChange={(e) => setConfirmationCode(e.target.value)}
+          />
         </div>
-    );
+
+        <button
+          className="btn-uiverse user"
+          style={{ maxWidth: "200px" }}
+          onClick={handleSearch}
+        >
+          {t("findBookingPage.searchBooking")}
+        </button>
+      </div>
+
+      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+
+      {bookingDetails && (
+        <div className="booking-details-card">
+          <h3>{t("findBookingPage.bookingInfo")}</h3>
+
+          <div>
+            <p>
+              {t("findBookingPage.confirmationCode")}:{" "}
+              {bookingDetails.bookingConfirmationCode}
+            </p>
+
+            <p>
+              {t("findBookingPage.checkIn")}: {bookingDetails.checkInDate}
+            </p>
+
+            <p>
+              {t("findBookingPage.checkOut")}: {bookingDetails.checkOutDate}
+            </p>
+
+            <p>
+              {t("findBookingPage.adultsChildren")}:{" "}
+              {bookingDetails.numOfAdults} / {bookingDetails.numOfChildren}
+            </p>
+          </div>
+
+          <h3>{t("findBookingPage.guestDetails")}</h3>
+
+          <p>{bookingDetails.user.name}</p>
+          <p>{bookingDetails.user.email}</p>
+          <p>{bookingDetails.user.phoneNumber}</p>
+
+          <h3>{t("findBookingPage.roomDetails")}</h3>
+
+          <p>{bookingDetails.room.roomType}</p>
+
+          <p>{t("findBookingPage.thankYou")}</p>
+
+          <span>{t("findBookingPage.verified")}</span>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default FindBookingPage;

@@ -1,0 +1,18 @@
+{
+  "welcome": "ようこそ",
+  "subtitle": "快適さとおもてなしの空間へ",
+  "allRooms": "すべての部屋",
+  "servicesTitle": "サービス",
+
+  "airConditioning": "エアコン",
+  "airConditioningDesc": "各部屋に個別制御可能なエアコンを完備し、快適にお過ごしいただけます。",
+
+  "miniBar": "ミニバー",
+  "miniBarDesc": "お部屋のミニバーには無料の飲み物や軽食をご用意しております。",
+
+  "parking": "駐車場",
+  "parkingDesc": "お客様の利便性のため、敷地内駐車場をご利用いただけます。",
+
+  "wifi": "WiFi",
+  "wifiDesc": "全客室および公共エリアで無料高速Wi-Fiをご利用いただけます。"
+}

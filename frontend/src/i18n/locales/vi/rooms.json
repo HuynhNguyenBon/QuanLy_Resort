@@ -1,0 +1,32 @@
+{
+  "addRoomPage": {
+    "allRooms": "Tất cả phòng",
+    "filterByType": "Lọc theo loại phòng:",
+    "all": "Tất cả"
+  },
+
+  "findBookingPage": {
+    "findYour": "Tìm",
+    "reservation": "Đặt phòng",
+    "placeholder": "Nhập mã xác nhận (ví dụ: ABC123)",
+    "searchBooking": "Tìm đặt phòng",
+    "enterCode": "Vui lòng nhập mã xác nhận đặt phòng",
+
+    "bookingInfo": "Thông tin đặt phòng",
+    "confirmationCode": "Mã xác nhận",
+    "checkIn": "Ngày nhận phòng",
+    "checkOut": "Ngày trả phòng",
+    "adultsChildren": "Người lớn/Trẻ em",
+    "adults": "Người lớn",
+    "children": "Trẻ em",
+
+    "guestDetails": "Thông tin khách hàng",
+    "fullName": "Họ và tên",
+    "emailAddress": "Địa chỉ email",
+    "phoneNumber": "Số điện thoại",
+
+    "roomDetails": "Thông tin phòng",
+    "thankYou": "Cảm ơn bạn đã chọn BBHH Resort. Chúc bạn có một kỳ nghỉ tuyệt vời!",
+    "verified": "Phòng đã xác nhận ✓"
+  }
+}

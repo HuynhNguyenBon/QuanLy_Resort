@@ -1,0 +1,111 @@
+{
+  "adminPage": {
+    "welcome": "Welcome",
+    "manageRooms": "Manage Rooms",
+    "manageBookings": "Manage Bookings",
+
+    "systemStatus": "System Status",
+    "server": "Server",
+    "online": "Online",
+    "database": "Database",
+    "connected": "Connected",
+    "totalStaff": "Total Staff",
+
+    "quickTip": "Quick Tip: Check the booking management daily to keep high guest satisfaction.",
+
+    "roomPopularity": "Room Popularity",
+
+    "single": "Single",
+    "double": "Double",
+    "luxury": "Luxury",
+    "suite": "Suite",
+
+    "footer": "BBHH Resort | Administrator Control Panel"
+  },
+
+  "addRoomPage": {
+    "addNewRoom": "Add New Room",
+
+    "roomType": "Room Type",
+    "selectRoomType": "Select a room type",
+    "otherRoomType": "Other (please specify)",
+    "enterRoomType": "Enter new room type",
+
+    "roomPrice": "Room Price",
+    "roomDescription": "Room Description",
+
+    "addRoom": "Add Room",
+
+    "allDetailsRequired": "All room details must be provided.",
+    "confirmAddRoom": "Do you want to add this room?",
+    "roomAdded": "Room added successfully."
+  },
+
+  "editBookingPage": {
+    "manageBooking": "Manage Booking",
+    "back": "Back",
+
+    "roomType": "Room Type",
+    "price": "Price",
+
+    "bookingDetails": "Booking Details",
+    "checkIn": "Check-in Date",
+    "checkOut": "Check-out Date",
+    "adults": "Adults",
+    "children": "Children",
+
+    "bookerInfo": "Booker Information",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+
+    "achieveBooking": "Achieve Booking",
+    "confirmAchieve": "Are you sure you want to achieve this booking?",
+    "achievedSuccess": "The booking was successfully achieved"
+  },
+
+  "editRoomPage": {
+    "editRoom": "Edit Room",
+
+    "roomType": "Room Type",
+    "roomPrice": "Room Price",
+    "roomDescription": "Room Description",
+
+    "updateRoom": "Update Room",
+    "deleteRoom": "Delete Room",
+
+    "updateSuccess": "Room updated successfully.",
+    "deleteSuccess": "Room deleted successfully.",
+
+    "confirmDelete": "Do you want to delete this room?"
+  },
+
+  "manageBookingsPage": {
+    "manageBookings": "Manage Bookings",
+    "searchPlaceholder": "Search by confirmation code...",
+
+    "code": "Code",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+
+    "manageDetails": "Manage Details",
+
+    "noBookings": "No bookings found matching your search."
+  },
+
+  "manageChatPage": {
+    "messages": "Messages",
+    "replyPlaceholder": "Enter your reply...",
+    "selectCustomer": "Select a customer to chat",
+    "deleteConfirm": "Delete chat with {{user}}?"
+  },
+
+  "manageRoomPage": {
+    "allRooms": "All Rooms",
+    "filterByType": "Filter by Room Type:",
+    "all": "All",
+
+    "addRoom": "Add Room"
+  }
+}

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import ApiService from '../../service/ApiService'; // Giả sử dịch vụ của bạn nằm trong một tệp có tên là ApiService.js
-import DatePicker from 'react-datepicker';
-import '../../UiverseElements.css';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import ApiService from "../../service/ApiService"; // Giả sử dịch vụ của bạn nằm trong một tệp có tên là ApiService.js
+import DatePicker from "react-datepicker";
+import "../../UiverseElements.css";
 // import 'react-datepicker/dist/react-datepicker.css';
 
 const RoomDetailsPage = () => {
@@ -18,10 +18,10 @@ const RoomDetailsPage = () => {
   const [totalPrice, setTotalPrice] = useState(0); // Biến trạng thái cho tổng giá đặt phòng
   const [totalGuests, setTotalGuests] = useState(1); // Biến trạng thái cho tổng số lượng khách
   const [showDatePicker, setShowDatePicker] = useState(false); // Biến trạng thái để kiểm soát khả năng hiển thị của date picker
-  const [userId, setUserId] = useState(''); // Đặt ID người dùng
+  const [userId, setUserId] = useState(""); // Đặt ID người dùng
   const [showMessage, setShowMessage] = useState(false); // Biến trạng thái để kiểm soát khả năng hiển thị của thông báo
-  const [confirmationCode, setConfirmationCode] = useState(''); // Biến trạng thái cho mã xác nhận đặt phòng
-  const [errorMessage, setErrorMessage] = useState(''); // Biến trạng thái cho thông báo lỗi
+  const [confirmationCode, setConfirmationCode] = useState(""); // Biến trạng thái cho mã xác nhận đặt phòng
+  const [errorMessage, setErrorMessage] = useState(""); // Biến trạng thái cho thông báo lỗi
 
   useEffect(() => {
     const fetchRoomDetails = async () => {
@@ -38,89 +38,65 @@ const RoomDetailsPage = () => {
   }, [roomId]);
 
   const handleConfirmBooking = async () => {
-
     if (!checkInDate || !checkOutDate) {
-
       setError("Please select check-in and check-out dates.");
 
       return;
     }
 
     try {
+      const formattedCheckInDate = checkInDate.toISOString().split("T")[0];
 
-      const formattedCheckInDate =
-        checkInDate.toISOString().split('T')[0];
-
-      const formattedCheckOutDate =
-        checkOutDate.toISOString().split('T')[0];
+      const formattedCheckOutDate = checkOutDate.toISOString().split("T")[0];
 
       // Check phòng trống trước khi tính tiền
-      const available =
-        await ApiService.checkRoomAvailability(
-          roomId,
-          formattedCheckInDate,
-          formattedCheckOutDate
-        );
+      const available = await ApiService.checkRoomAvailability(
+        roomId,
+        formattedCheckInDate,
+        formattedCheckOutDate,
+      );
 
       if (!available) {
-
-        setError(
-          "Room already booked for selected dates."
-        );
+        setError("Room already booked for selected dates.");
 
         return;
       }
 
       // Tính tổng số ngày
       const days = Math.ceil(
-        (checkOutDate - checkInDate) /
-        (1000 * 60 * 60 * 24)
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24),
       );
 
       // Tính tổng tiền
-      const total =
-        days * roomDetails.roomPrice;
+      const total = days * roomDetails.roomPrice;
 
       setTotalPrice(total);
 
       // Tổng khách
-      setTotalGuests(
-        numAdults + numChildren
-      );
+      setTotalGuests(numAdults + numChildren);
 
       // Reset lỗi
       setError("");
-
     } catch (error) {
-
-      setError(
-        error.response?.data?.message ||
-        error.message
-      );
+      setError(error.response?.data?.message || error.message);
     }
   };
 
   const acceptBooking = async () => {
     try {
-
       const userProfile = await ApiService.getUserProfile();
 
       const userId = userProfile.user.id;
 
       if (!userId) {
-
-        alert(
-          "You need to log in again to make your booking!"
-        );
+        alert("You need to log in again to make your booking!");
 
         return;
       }
 
-      const formattedCheckInDate =
-        checkInDate.toISOString().split('T')[0];
+      const formattedCheckInDate = checkInDate.toISOString().split("T")[0];
 
-      const formattedCheckOutDate =
-        checkOutDate.toISOString().split('T')[0];
+      const formattedCheckOutDate = checkOutDate.toISOString().split("T")[0];
 
       const booking = {
         checkInDate: formattedCheckInDate,
@@ -129,55 +105,53 @@ const RoomDetailsPage = () => {
         numOfChildren: numChildren,
       };
 
-      const response =
-        await ApiService.bookRoom(
-          roomId,
-          userId,
-          booking
-        );
+      const response = await ApiService.bookRoom(roomId, userId, booking);
 
       if (response.statusCode === 200) {
-
         alert(
-          `Booking Successful! Confirmation Code: ${response.bookingConfirmationCode}`
+          `Booking Successful! Confirmation Code: ${response.bookingConfirmationCode}`,
         );
 
-        navigate('/profile');
-
+        navigate("/profile");
       } else {
-
         setError(response.message);
       }
-
     } catch (error) {
-
-      setError(
-        error.response?.data?.message ||
-        error.message
-      );
+      setError(error.response?.data?.message || error.message);
     }
   };
 
-  if (isLoading) return <div className="bbhh-loader-container"><div className="bbhh-spinner"></div></div>;
+  if (isLoading)
+    return (
+      <div className="bbhh-loader-container">
+        <div className="bbhh-spinner"></div>
+      </div>
+    );
 
   return (
     <div className="bbhh-details-wrapper">
       <div className="bbhh-details-container">
         {error && <p className="bbhh-error-banner">{error}</p>}
-        
+
         {roomDetails && (
           <div className="bbhh-details-grid">
             {/* Cột trái: Thông tin phòng */}
             <div className="bbhh-details-info">
               <div className="bbhh-image-frame">
-                <img src={roomDetails.roomPhotoUrl} alt={roomDetails.roomType} />
+                <img
+                  src={roomDetails.roomPhotoUrl}
+                  alt={roomDetails.roomType}
+                />
                 <div className="bbhh-room-badge">{roomDetails.roomType}</div>
               </div>
               <div className="bbhh-info-text">
                 <h3>Room Amenities</h3>
-                <p>{roomDetails.roomDescription || "Enjoy our luxury space with modern facilities and sea view."}</p>
+                <p>
+                  {roomDetails.roomDescription ||
+                    "Enjoy our luxury space with modern facilities and sea view."}
+                </p>
                 <div className="bbhh-price-circle">
-                    <span>${roomDetails.roomPrice}</span> / night
+                  <span>${roomDetails.roomPrice}</span> / night
                 </div>
               </div>
             </div>
@@ -225,9 +199,7 @@ const RoomDetailsPage = () => {
                     type="number"
                     min="1"
                     value={numAdults}
-                    onChange={(e) =>
-                      setNumAdults(parseInt(e.target.value))
-                    }
+                    onChange={(e) => setNumAdults(parseInt(e.target.value))}
                   />
                 </div>
 
@@ -237,9 +209,7 @@ const RoomDetailsPage = () => {
                     type="number"
                     min="0"
                     value={numChildren}
-                    onChange={(e) =>
-                      setNumChildren(parseInt(e.target.value))
-                    }
+                    onChange={(e) => setNumChildren(parseInt(e.target.value))}
                   />
                 </div>
               </div>
@@ -253,7 +223,6 @@ const RoomDetailsPage = () => {
 
               {totalPrice > 0 && (
                 <div className="bbhh-summary-box">
-
                   <div className="summary-row">
                     <span>Total Guests:</span>
                     <strong>{totalGuests}</strong>
@@ -261,9 +230,7 @@ const RoomDetailsPage = () => {
 
                   <div className="summary-row">
                     <span>Total Amount:</span>
-                    <strong className="text-orange">
-                      ${totalPrice}
-                    </strong>
+                    <strong className="text-orange">${totalPrice}</strong>
                   </div>
 
                   <button
@@ -272,7 +239,6 @@ const RoomDetailsPage = () => {
                   >
                     Confirm Reservation
                   </button>
-
                 </div>
               )}
             </div>

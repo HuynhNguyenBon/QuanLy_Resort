@@ -1,0 +1,111 @@
+{
+  "adminPage": {
+    "welcome": "Chào mừng",
+    "manageRooms": "Quản lý phòng",
+    "manageBookings": "Quản lý đặt phòng",
+
+    "systemStatus": "Trạng thái hệ thống",
+    "server": "Máy chủ",
+    "online": "Đang hoạt động",
+    "database": "Cơ sở dữ liệu",
+    "connected": "Đã kết nối",
+    "totalStaff": "Tổng nhân viên",
+
+    "quickTip": "Mẹo nhanh: Kiểm tra quản lý đặt phòng hằng ngày để giữ mức hài lòng cao cho khách hàng.",
+
+    "roomPopularity": "Độ phổ biến của phòng",
+
+    "single": "Phòng đơn",
+    "double": "Phòng đôi",
+    "luxury": "Sang trọng",
+    "suite": "Suite",
+
+    "footer": "BBHH Resort | Bảng điều khiển quản trị viên"
+  },
+
+  "addRoomPage": {
+    "addNewRoom": "Thêm phòng mới",
+
+    "roomType": "Loại phòng",
+    "selectRoomType": "Chọn loại phòng",
+    "otherRoomType": "Khác (vui lòng nhập)",
+    "enterRoomType": "Nhập loại phòng mới",
+
+    "roomPrice": "Giá phòng",
+    "roomDescription": "Mô tả phòng",
+
+    "addRoom": "Thêm phòng",
+
+    "allDetailsRequired": "Vui lòng nhập đầy đủ thông tin phòng.",
+    "confirmAddRoom": "Bạn có muốn thêm phòng này không?",
+    "roomAdded": "Thêm phòng thành công."
+  },
+
+  "editBookingPage": {
+    "manageBooking": "Quản lý đặt phòng",
+    "back": "Quay lại",
+
+    "roomType": "Loại phòng",
+    "price": "Giá",
+
+    "bookingDetails": "Chi tiết đặt phòng",
+    "checkIn": "Ngày nhận phòng",
+    "checkOut": "Ngày trả phòng",
+    "adults": "Người lớn",
+    "children": "Trẻ em",
+
+    "bookerInfo": "Thông tin người đặt",
+    "fullName": "Họ và tên",
+    "email": "Địa chỉ email",
+    "phone": "Số điện thoại",
+
+    "achieveBooking": "Lưu trữ đặt phòng",
+    "confirmAchieve": "Bạn có chắc muốn lưu trữ đặt phòng này không?",
+    "achievedSuccess": "Đặt phòng đã được lưu trữ thành công"
+  },
+
+  "editRoomPage": {
+    "editRoom": "Chỉnh sửa phòng",
+
+    "roomType": "Loại phòng",
+    "roomPrice": "Giá phòng",
+    "roomDescription": "Mô tả phòng",
+
+    "updateRoom": "Cập nhật phòng",
+    "deleteRoom": "Xóa phòng",
+
+    "updateSuccess": "Cập nhật phòng thành công.",
+    "deleteSuccess": "Xóa phòng thành công.",
+
+    "confirmDelete": "Bạn có muốn xóa phòng này không?"
+  },
+
+  "manageBookingsPage": {
+    "manageBookings": "Quản lý đặt phòng",
+    "searchPlaceholder": "Tìm theo mã xác nhận...",
+
+    "code": "Mã",
+    "checkIn": "Nhận phòng",
+    "checkOut": "Trả phòng",
+    "guests": "Khách",
+
+    "manageDetails": "Quản lý chi tiết",
+
+    "noBookings": "Không tìm thấy đặt phòng phù hợp."
+  },
+
+  "manageChatPage": {
+    "messages": "Tin nhắn",
+    "replyPlaceholder": "Nhập phản hồi...",
+    "selectCustomer": "Chọn khách hàng để chat",
+    "deleteConfirm": "Xóa đoạn chat với {{user}}?"
+  },
+
+  "manageRoomPage": {
+    "allRooms": "Tất cả phòng",
+    "filterByType": "Lọc theo loại phòng:",
+    "all": "Tất cả",
+
+    "addRoom": "Thêm phòng"
+  }
+}

@@ -22,6 +22,26 @@ import enFooter from "./i18n/locales/en/footer.json";
 import viFooter from "./i18n/locales/vi/footer.json";
 import jpFooter from "./i18n/locales/jp/footer.json";
 
+// HOME
+import enHome from "./i18n/locales/en/home.json";
+import viHome from "./i18n/locales/vi/home.json";
+import jpHome from "./i18n/locales/jp/home.json";
+
+// ADMIN
+import enAdmin from "./i18n/locales/en/admin.json";
+import viAdmin from "./i18n/locales/vi/admin.json";
+import jpAdmin from "./i18n/locales/jp/admin.json";
+
+// ROOMS
+import enRooms from "./i18n/locales/en/rooms.json";
+import viRooms from "./i18n/locales/vi/rooms.json";
+import jpRooms from "./i18n/locales/jp/rooms.json";
+
+// COMMON
+import enCommon from "./i18n/locales/en/common.json";
+import viCommon from "./i18n/locales/vi/common.json";
+import jpCommon from "./i18n/locales/jp/common.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -32,6 +52,10 @@ i18n
         auth: enAuth,
         profile: enProfile,
         footer: enFooter,
+        home: enHome,
+        admin: enAdmin,
+        rooms: enRooms,
+        common: enCommon,
       },
 
       vi: {
@@ -39,6 +63,10 @@ i18n
         auth: viAuth,
         profile: viProfile,
         footer: viFooter,
+        home: viHome,
+        admin: viAdmin,
+        rooms: viRooms,
+        common: viCommon,
       },
 
       jp: {
@@ -46,12 +74,25 @@ i18n
         auth: jpAuth,
         profile: jpProfile,
         footer: jpFooter,
+        home: jpHome,
+        admin: jpAdmin,
+        rooms: jpRooms,
+        common: jpCommon,
       },
     },
 
     fallbackLng: "en",
 
-    ns: ["navbar", "auth", "profile", "footer"],
+    ns: [
+      "navbar",
+      "auth",
+      "profile",
+      "footer",
+      "home",
+      "admin",
+      "rooms",
+      "common",
+    ],
 
     defaultNS: "navbar",
 
