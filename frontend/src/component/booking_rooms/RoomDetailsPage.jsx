@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import ApiService from '../../service/ApiService'; // Giả sử dịch vụ của bạn nằm trong một tệp có tên là ApiService.js
-import DatePicker from 'react-datepicker';
-import '../../UiverseElements.css';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useParams, useNavigate } from "react-router-dom";
+import ApiService from "../../service/ApiService"; // Giả sử dịch vụ của bạn nằm trong một tệp có tên là ApiService.js
+import DatePicker from "react-datepicker";
+import "../../UiverseElements.css";
 // import 'react-datepicker/dist/react-datepicker.css';
 
 const RoomDetailsPage = () => {
+  const { t } = useTranslation("rooms");
   const navigate = useNavigate(); // Truy cập chức năng điều hướng để di chuyển
   const { roomId } = useParams(); // Lấy ID phòng từ các tham số URL
   const [roomDetails, setRoomDetails] = useState(null);
@@ -18,10 +20,10 @@ const RoomDetailsPage = () => {
   const [totalPrice, setTotalPrice] = useState(0); // Biến trạng thái cho tổng giá đặt phòng
   const [totalGuests, setTotalGuests] = useState(1); // Biến trạng thái cho tổng số lượng khách
   const [showDatePicker, setShowDatePicker] = useState(false); // Biến trạng thái để kiểm soát khả năng hiển thị của date picker
-  const [userId, setUserId] = useState(''); // Đặt ID người dùng
+  const [userId, setUserId] = useState(""); // Đặt ID người dùng
   const [showMessage, setShowMessage] = useState(false); // Biến trạng thái để kiểm soát khả năng hiển thị của thông báo
-  const [confirmationCode, setConfirmationCode] = useState(''); // Biến trạng thái cho mã xác nhận đặt phòng
-  const [errorMessage, setErrorMessage] = useState(''); // Biến trạng thái cho thông báo lỗi
+  const [confirmationCode, setConfirmationCode] = useState(""); // Biến trạng thái cho mã xác nhận đặt phòng
+  const [errorMessage, setErrorMessage] = useState(""); // Biến trạng thái cho thông báo lỗi
 
   useEffect(() => {
     const fetchRoomDetails = async () => {
@@ -38,136 +40,126 @@ const RoomDetailsPage = () => {
   }, [roomId]);
 
   const handleConfirmBooking = async () => {
-
     if (!checkInDate || !checkOutDate) {
-
-      setError("Please select check-in and check-out dates.");
+      setError(t("roomDetailsPage.selectDates"));
 
       return;
     }
 
     try {
+      const formattedCheckInDate = checkInDate.toISOString().split("T")[0];
 
-      const formattedCheckInDate =
-        checkInDate.toISOString().split('T')[0];
-
-      const formattedCheckOutDate =
-        checkOutDate.toISOString().split('T')[0];
+      const formattedCheckOutDate = checkOutDate.toISOString().split("T")[0];
 
       // Check phòng trống trước khi tính tiền
-      const available =
-        await ApiService.checkRoomAvailability(
-          roomId,
-          formattedCheckInDate,
-          formattedCheckOutDate
-        );
+      const available = await ApiService.checkRoomAvailability(
+        roomId,
+        formattedCheckInDate,
+        formattedCheckOutDate,
+      );
 
       if (!available) {
-
-        setError(
-          "Room already booked for selected dates."
-        );
+        setError("Room already booked for selected dates.");
 
         return;
       }
 
       // Tính tổng số ngày
       const days = Math.ceil(
-        (checkOutDate - checkInDate) /
-        (1000 * 60 * 60 * 24)
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24),
       );
 
       // Tính tổng tiền
-      const total =
-        days * roomDetails.roomPrice;
+      const total = days * roomDetails.roomPrice;
 
       setTotalPrice(total);
 
       // Tổng khách
-      setTotalGuests(
-        numAdults + numChildren
-      );
+      setTotalGuests(numAdults + numChildren);
 
       // Reset lỗi
       setError("");
-
     } catch (error) {
-
-      setError(
-        error.response?.data?.message ||
-        error.message
-      );
+      setError(error.response?.data?.message || error.message);
     }
   };
 
   const acceptBooking = async () => {
-  try {
-    const userProfile = await ApiService.getUserProfile();
-    const userId = userProfile.user.id;
+    try {
+      const userProfile = await ApiService.getUserProfile();
+      const userId = userProfile.user.id;
 
-    if (!userId) {
-      alert("You need to log in again to make your booking!");
-      return;
+      if (!userId) {
+        alert(t("roomDetailsPage.loginAgain"));
+        return;
+      }
+
+      const booking = {
+        checkInDate: checkInDate.toISOString().split("T")[0],
+        checkOutDate: checkOutDate.toISOString().split("T")[0],
+        numOfAdults: numAdults,
+        numOfChildren: numChildren,
+      };
+
+      // Bước 1: Tạo booking → backend trả về bookingId
+      const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
+
+      console.log("Booking response:", bookingRes); // debug
+
+      if (bookingRes.statusCode !== 200) {
+        setError(bookingRes.message);
+        return;
+      }
+
+      // Bước 2: Gọi tạo URL thanh toán VNPAY
+      const paymentRes = await ApiService.createVNPayPayment(
+        bookingRes.bookingId,
+      );
+
+      console.log("Payment response:", paymentRes); // debug
+
+      if (paymentRes.status === "OK") {
+        // Bước 3: Redirect sang cổng VNPAY
+        window.location.href = paymentRes.paymentUrl;
+      } else {
+        setError(t("roomDetailsPage.paymentError") + paymentRes.message);
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || error.message);
     }
-
-    const booking = {
-      checkInDate:  checkInDate.toISOString().split('T')[0],
-      checkOutDate: checkOutDate.toISOString().split('T')[0],
-      numOfAdults:   numAdults,
-      numOfChildren: numChildren,
-    };
-
-    // Bước 1: Tạo booking → backend trả về bookingId
-    const bookingRes = await ApiService.bookRoom(
-      roomId, userId, booking
+  };
+  if (isLoading)
+    return (
+      <div className="bbhh-loader-container">
+        <div className="bbhh-spinner"></div>
+      </div>
     );
-
-    console.log("Booking response:", bookingRes); // debug
-
-    if (bookingRes.statusCode !== 200) {
-      setError(bookingRes.message);
-      return;
-    }
-
-    // Bước 2: Gọi tạo URL thanh toán VNPAY
-    const paymentRes = await ApiService.createVNPayPayment(
-      bookingRes.bookingId
-    );
-
-    console.log("Payment response:", paymentRes); // debug
-
-    if (paymentRes.status === "OK") {
-      // Bước 3: Redirect sang cổng VNPAY
-      window.location.href = paymentRes.paymentUrl;
-    } else {
-      setError("Không thể tạo link thanh toán: "
-        + paymentRes.message);
-    }
-
-  } catch (error) {
-    setError(error.response?.data?.message || error.message);
-  }
-};
-  if (isLoading) return <div className="bbhh-loader-container"><div className="bbhh-spinner"></div></div>;
 
   return (
     <div className="bbhh-details-wrapper">
       <div className="bbhh-details-container">
         {error && <p className="bbhh-error-banner">{error}</p>}
-        
+
         {roomDetails && (
           <div className="bbhh-details-grid">
             {/* Cột trái: Thông tin phòng */}
             <div className="bbhh-details-info">
               <div className="bbhh-image-frame">
-                <img src={roomDetails.roomPhotoUrl} alt={roomDetails.roomType} />
+                <img
+                  src={roomDetails.roomPhotoUrl}
+                  alt={roomDetails.roomType}
+                />
                 <div className="bbhh-room-badge">{roomDetails.roomType}</div>
               </div>
               <div className="bbhh-info-text">
-                <h3>Room Amenities</h3>
-                <p>{roomDetails.roomDescription || "Enjoy our luxury space with modern facilities and sea view."}</p>
+                <h3>{t("roomDetailsPage.roomDetails")}</h3>
+                <p>
+                  {roomDetails.roomDescription ||
+                    t("roomDetailsPage.defaultDesc")}
+                </p>
                 <div className="bbhh-price-circle">
-                    <span>${roomDetails.roomPrice}</span> / night
+                  <span>${roomDetails.roomPrice}</span> /{" "}
+                  {t("roomDetailsPage.night")}
                 </div>
               </div>
             </div>
@@ -175,13 +167,13 @@ const RoomDetailsPage = () => {
             {/* Cột phải: Form đặt phòng (Fix lỗi dàn trải) */}
             <div className="bbhh-booking-card">
               <div className="bbhh-card-header">
-                <h3>Book This Room</h3>
+                <h3>{t("roomDetailsPage.bookRoom")}</h3>
                 <div className="bbhh-underline-left"></div>
               </div>
 
               <div className="bbhh-date-selection">
                 <div className="bbhh-input-box">
-                  <label>Check-in</label>
+                  <label>{t("roomDetailsPage.checkIn")}</label>
                   <DatePicker
                     selected={checkInDate}
                     onChange={(date) => setCheckInDate(date)}
@@ -194,7 +186,7 @@ const RoomDetailsPage = () => {
                 </div>
 
                 <div className="bbhh-input-box">
-                  <label>Check-out</label>
+                  <label>{t("roomDetailsPage.checkOut")}</label>
                   <DatePicker
                     selected={checkOutDate}
                     onChange={(date) => setCheckOutDate(date)}
@@ -210,26 +202,22 @@ const RoomDetailsPage = () => {
 
               <div className="bbhh-guest-selection">
                 <div className="bbhh-input-box">
-                  <label>Adults</label>
+                  <label>{t("roomDetailsPage.adults")}</label>
                   <input
                     type="number"
                     min="1"
                     value={numAdults}
-                    onChange={(e) =>
-                      setNumAdults(parseInt(e.target.value))
-                    }
+                    onChange={(e) => setNumAdults(parseInt(e.target.value))}
                   />
                 </div>
 
                 <div className="bbhh-input-box">
-                  <label>Children</label>
+                  <label>{t("roomDetailsPage.children")}</label>
                   <input
                     type="number"
                     min="0"
                     value={numChildren}
-                    onChange={(e) =>
-                      setNumChildren(parseInt(e.target.value))
-                    }
+                    onChange={(e) => setNumChildren(parseInt(e.target.value))}
                   />
                 </div>
               </div>
@@ -238,31 +226,27 @@ const RoomDetailsPage = () => {
                 className="bbhh-btn-calculate"
                 onClick={handleConfirmBooking}
               >
-                Check Total Price
+                {t("roomDetailsPage.checkPrice")}
               </button>
 
               {totalPrice > 0 && (
                 <div className="bbhh-summary-box">
-
                   <div className="summary-row">
-                    <span>Total Guests:</span>
+                    <span>{t("roomDetailsPage.guests")}:</span>
                     <strong>{totalGuests}</strong>
                   </div>
 
                   <div className="summary-row">
-                    <span>Total Amount:</span>
-                    <strong className="text-orange">
-                      ${totalPrice}
-                    </strong>
+                    <span>{t("roomDetailsPage.total")}:</span>
+                    <strong className="text-orange">${totalPrice}</strong>
                   </div>
 
                   <button
                     onClick={acceptBooking}
                     className="bbhh-btn-confirm-final"
                   >
-                    Confirm Reservation
+                    {t("roomDetailsPage.confirm")}
                   </button>
-
                 </div>
               )}
             </div>
