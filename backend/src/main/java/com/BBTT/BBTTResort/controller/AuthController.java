@@ -1,6 +1,8 @@
 package com.BBTT.BBTTResort.controller;
 
+import java.util.Map;
 import com.BBTT.BBTTResort.dto.LoginRequest;
+import com.BBTT.BBTTResort.dto.ResetPasswordRequest;
 import com.BBTT.BBTTResort.dto.Response;
 import com.BBTT.BBTTResort.entity.User;
 import com.BBTT.BBTTResort.service.interfac.IUserService;
@@ -28,5 +30,30 @@ public class AuthController {
     public ResponseEntity<Response> login(@RequestBody LoginRequest loginRequest) {
         Response response = userService.login(loginRequest);
         return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Response> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Response response = userService.forgotPassword(email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Response> resetPassword(
+            @RequestBody Map<String, String> request) {
+
+        String email = request.get("email");
+        String otp = request.get("otp");
+        String newPassword = request.get("newPassword");
+
+        Response response = userService.resetPassword(
+                email,
+                otp,
+                newPassword
+        );
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response);
     }
 }

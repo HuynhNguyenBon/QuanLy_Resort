@@ -34,6 +34,12 @@ public class Booking {
 
     private String bookingConfirmationCode;
 
+    private Double totalPrice;
+
+    private String bookingStatus;
+
+    private LocalDate createdAt;
+  
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
