@@ -1,0 +1,40 @@
+{
+  "bookingResult": {
+    "roomId": "Room ID",
+    "userId": "User ID",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": "Status",
+    "edit": "Edit"
+  },
+
+  "chat": {
+    "header": "Customer Support",
+    "empty": "Start a conversation!",
+    "needLogin": "You need to login to chat",
+    "login": "Login",
+    "placeholder": "Type a message..."
+  },
+
+  "room": {
+    "perNight": "per night",
+    "wifi": "📶 Wifi",
+    "pool": "🏊 Pool",
+    "ac": "❄️ Air Conditioning",
+    "edit": "Edit Room",
+    "book": "View / Book Now"
+  },
+
+  "search": {
+    "checkIn": "Check-in Date",
+    "checkOut": "Check-out Date",
+    "roomType": "Room Type",
+    "selectCheckIn": "Select Check-in Date",
+    "selectCheckOut": "Select Check-out Date",
+    "selectRoomType": "Select Room Type",
+    "button": "Search Rooms",
+    "fillAll": "Please select all fields",
+    "notAvailable": "No rooms available",
+    "error": "Error: "
+  }
+}
