@@ -266,5 +266,23 @@ export default class ApiService {
         });
         return response.data;
     }
+
+    // =================== VNPAY ===================
+static async createVNPayPayment(bookingId) {
+    const response = await axios.post(
+        `${this.BASE_URL}/payment/create`,
+        { bookingId },
+        { headers: this.getHeader() }
+    );
+    return response.data;
+}
+
+static async getVNPayReturn(params) {
+    const query = new URLSearchParams(params).toString();
+    const response = await axios.get(
+        `${this.BASE_URL}/payment/vnpay-return?${query}`
+    );
+    return response.data;
+}
 }
 // export default new ApiService();

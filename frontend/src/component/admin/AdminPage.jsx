@@ -6,11 +6,8 @@ import "../../UiverseElements.css";
 
 const AdminPage = () => {
   const { t } = useTranslation("admin");
-
   const [adminName, setAdminName] = useState("");
-
   const navigate = useNavigate();
-
   const stats = [
     {
       label: t("adminPage.single"),

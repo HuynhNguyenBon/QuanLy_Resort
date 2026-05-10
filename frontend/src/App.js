@@ -19,6 +19,7 @@ import EditBookingPage from './component/admin/EditBookingPage';
 import ProfilePage from './component/profile/ProfilePage';
 import EditProfilePage from './component/profile/EditProfilePage';
 import { ProtectedRoute, AdminRoute } from './service/guard';
+import VNPayReturnPage from './component/payment/VNPayReturnPage';
 import ServicePage from './component/service/ServicePage';
 
 import ChatSupport from './component/common/ChatSupport';
@@ -43,6 +44,7 @@ function App() {
             <Route path="/services" element={<ServicePage />} />
 
             {/* Protected Routes */}
+            <Route path="/vnpay-return" element={<VNPayReturnPage />} />
             <Route path="/room-details-book/:roomId"
               element={<ProtectedRoute element={<RoomDetailsBookingPage />} />}
             />
@@ -52,7 +54,6 @@ function App() {
             <Route path="/edit-profile"
               element={<ProtectedRoute element={<EditProfilePage />} />}
             />
-
             {/* Admin Routes */}
             <Route path="/admin"
               element={<AdminRoute element={<AdminPage />} />}
