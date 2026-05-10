@@ -28,5 +28,25 @@
     "roomDetails": "部屋情報",
     "thankYou": "BBHH Resortをご利用いただきありがとうございます。素晴らしい休暇をお過ごしください！",
     "verified": "部屋確認済み ✓"
+  },
+  "roomDetailsPage": {
+    "amenities": "部屋の設備",
+    "defaultDesc": "最新設備と高級サービスを備えた快適な空間をお楽しみください。",
+    "night": "泊",
+
+    "bookRoom": "この部屋を予約する",
+    "checkIn": "チェックイン日",
+    "checkOut": "チェックアウト日",
+
+    "checkPrice": "合計金額を確認",
+    "confirm": "予約を確定する",
+
+    "guests": "宿泊人数",
+    "total": "合計金額",
+
+    "selectDates": "チェックインとチェックアウト日を選択してください",
+    "roomNotAvailable": "この期間は予約できません",
+    "loginAgain": "再度ログインしてください",
+    "paymentError": "支払いエラー: "
   }
 }

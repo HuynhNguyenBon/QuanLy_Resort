@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 import "../../UiverseElements.css";
-import { useTranslation } from "react-i18next";
 
 function Navbar() {
-  const { t, i18n } = useTranslation("navbar"); // Lấy hàm t() để dịch
+  const { t, i18n } = useTranslation("navbar");
+  const navigate = useNavigate();
+
   const isAuthenticated = ApiService.isAuthenticated();
   const isAdmin = ApiService.isAdmin();
   const isUser = ApiService.isUser();
-  const navigate = useNavigate();
 
-  // Hàm đổi ngôn ngữ
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
+
   const langRef = useRef(null);
   const btnRef = useRef(null);
 
@@ -31,13 +32,12 @@ function Navbar() {
       const rect = btnRef.current.getBoundingClientRect();
       setCoords({
         top: rect.bottom + window.scrollY + 5,
-        left: rect.left - 100,
+        left: rect.left - 80,
       });
     }
     setIsLangOpen((prev) => !prev);
   };
 
-  // Đóng menu khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -49,6 +49,7 @@ function Navbar() {
         setIsLangOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -56,19 +57,17 @@ function Navbar() {
   const handleLogout = (e) => {
     e.preventDefault();
 
-    const isLogout = window.confirm(
-      "Are you sure you want to logout this user?",
-    );
+    const confirmLogout = window.confirm(t("logout.confirm"));
 
-    if (isLogout) {
+    if (confirmLogout) {
       ApiService.logout();
       navigate("/login");
     }
   };
 
-  const handleSelect = (code) => {
+  const handleSelectLang = (code) => {
     i18n.changeLanguage(code);
-    setIsLangOpen(false); // Chọn xong tự đóng lại
+    setIsLangOpen(false);
   };
 
   return (
@@ -76,103 +75,87 @@ function Navbar() {
       <div className="navbar-brand">
         <NavLink to="/home">BBHH Resort</NavLink>
       </div>
+
       <ul className="navbar-ul">
-        {/* Thay chữ cứng bằng hàm t() */}
         <li>
-          <NavLink to="/home" activeclassname="active">
-            {t("menu.home")}
-          </NavLink>
+          <NavLink to="/home">{t("menu.home")}</NavLink>
         </li>
+
         <li>
-          <NavLink to="/rooms" activeclassname="active">
-            {t("menu.rooms")}
-          </NavLink>
+          <NavLink to="/rooms">{t("menu.rooms")}</NavLink>
         </li>
+
         <li>
-          <NavLink to="/find-booking" activeclassname="active">
-            {t("menu.booking")}
-          </NavLink>
+          <NavLink to="/find-booking">{t("menu.booking")}</NavLink>
         </li>
+
         <li>
-          <NavLink to="/services" activeclassname="active">
-            {t("menu.services")}
-          </NavLink>
+          <NavLink to="/services">{t("menu.services")}</NavLink>
         </li>
 
         {isUser && (
           <li>
-            <NavLink to="/profile" activeclassname="active">
-              {t("menu.profile")}
-            </NavLink>
+            <NavLink to="/profile">{t("menu.profile")}</NavLink>
           </li>
         )}
+
         {isAdmin && (
           <li>
-            <NavLink to="/admin" activeclassname="active">
-              {t("menu.admin")}
-            </NavLink>
+            <NavLink to="/admin">{t("menu.admin")}</NavLink>
           </li>
         )}
 
         {!isAuthenticated && (
           <li>
-            <NavLink to="/login" activeclassname="active">
-              {t("menu.login")}
-            </NavLink>
+            <NavLink to="/login">{t("menu.login")}</NavLink>
           </li>
         )}
+
         {!isAuthenticated && (
           <li>
-            <NavLink to="/register" activeclassname="active">
-              {t("menu.register")}
-            </NavLink>
+            <NavLink to="/register">{t("menu.register")}</NavLink>
           </li>
         )}
+
         {isAuthenticated && (
           <li>
-            <NavLink
-              to="/login"
-              activeclassname="active"
-              onClick={(e) => handleLogout(e)}
-            >
+            <NavLink to="/login" onClick={handleLogout}>
               {t("menu.logout")}
             </NavLink>
           </li>
         )}
 
-        {/* NÚT BẤM CHÍNH */}
+        {/* LANGUAGE */}
         <li className="lang-container-fixed">
           <div className="flag-btn-trigger" ref={btnRef} onClick={toggleMenu}>
             <img
               src={`https://flagcdn.com/w40/${currentLang.country}.png`}
-              width="25"
+              width="22"
               alt="flag"
             />
-            <span style={{ fontWeight: "600", color: "#333" }}>
-              {currentLang.code.toUpperCase()}
-            </span>
-            <span style={{ color: "#666" }}>{isLangOpen ? "▲" : "▼"}</span>
+            <span>{currentLang.code.toUpperCase()}</span>
+            <span>{isLangOpen ? "▲" : "▼"}</span>
           </div>
 
-          {/* DANH SÁCH BUNG RA NGOÀI VŨ TRỤ */}
           {isLangOpen && (
             <div
               className="flag-dropdown-fixed"
               ref={langRef}
-              style={{ top: coords.top, left: coords.left }}
+              style={{
+                position: "absolute",
+                top: coords.top,
+                left: coords.left,
+              }}
             >
               {languages.map((lang) => (
                 <div
                   key={lang.code}
                   className="flag-option-item"
-                  onClick={() => {
-                    i18n.changeLanguage(lang.code);
-                    setIsLangOpen(false);
-                  }}
+                  onClick={() => handleSelectLang(lang.code)}
                 >
                   <img
                     src={`https://flagcdn.com/w40/${lang.country}.png`}
-                    width="22"
+                    width="20"
                     alt="flag"
                   />
                   <span>{lang.name}</span>
