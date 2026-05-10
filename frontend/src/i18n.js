@@ -22,18 +22,30 @@ import enCommon from "./i18n/locales/en/common.json";
 import viCommon from "./i18n/locales/vi/common.json";
 import jpCommon from "./i18n/locales/jp/common.json";
 
+// NAVBAR
 import enNavbar from "./i18n/locales/en/navbar.json";
 import viNavbar from "./i18n/locales/vi/navbar.json";
 import jpNavbar from "./i18n/locales/jp/navbar.json";
+
+// AUTH
 import enAuth from "./i18n/locales/en/auth.json";
 import viAuth from "./i18n/locales/vi/auth.json";
 import jpAuth from "./i18n/locales/jp/auth.json";
+
+// PROFILE
 import enProfile from "./i18n/locales/en/profile.json";
 import viProfile from "./i18n/locales/vi/profile.json";
 import jpProfile from "./i18n/locales/jp/profile.json";
+
+// FOOTER
 import enFooter from "./i18n/locales/en/footer.json";
 import viFooter from "./i18n/locales/vi/footer.json";
 import jpFooter from "./i18n/locales/jp/footer.json";
+
+//PAYMENT
+import enPayment from "./i18n/locales/en/payment.json";
+import viPayment from "./i18n/locales/vi/payment.json";
+import jpPayment from "./i18n/locales/jp/payment.json";
 
 i18n
   .use(LanguageDetector) // Tự động nhận diện ngôn ngữ máy tính khách
@@ -49,6 +61,7 @@ i18n
         admin: enAdmin,
         rooms: enRooms,
         common: enCommon,
+        payment: enPayment,
       },
       vi: {
         navbar: viNavbar,
@@ -59,6 +72,7 @@ i18n
         admin: viAdmin,
         rooms: viRooms,
         common: viCommon,
+        payment: viPayment,
       },
       jp: {
         navbar: jpNavbar,
@@ -69,6 +83,7 @@ i18n
         admin: jpAdmin,
         rooms: jpRooms,
         common: jpCommon,
+        payment: jpPayment,
       },
     },
     fallbackLng: "en",
@@ -81,6 +96,7 @@ i18n
       "admin",
       "rooms",
       "common",
+      "payment",
     ],
     defaultNS: "translation",
     interpolation: {

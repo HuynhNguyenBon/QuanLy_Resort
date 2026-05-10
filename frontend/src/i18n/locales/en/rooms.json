@@ -29,10 +29,12 @@
     "thankYou": "Thank you for choosing BBHH Resort. We wish you a wonderful vacation!",
     "verified": "Room Verified ✓"
   },
+
   "roomDetailsPage": {
     "roomDetails": "Room Details",
     "roomDescription": "Description",
     "defaultDesc": "No description available.",
+    "night": "per night",
     "bookRoom": "Book Room",
     "checkIn": "Check-in Date",
     "checkOut": "Check-out Date",
