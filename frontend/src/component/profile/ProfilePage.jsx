@@ -15,6 +15,7 @@ const ProfilePage = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await ApiService.getUserProfile();
+        // Fetch user bookings using the fetched user ID
         const userPlusBookings = await ApiService.getUserBookings(
           response.user.id,
         );
@@ -39,7 +40,7 @@ const ProfilePage = () => {
   return (
     <div className="bbhh-profile-container">
       <div className="bbhh-profile-card">
-        {/* HEADER */}
+        {/* Header */}
         <div className="bbhh-profile-header">
           {user && (
             <h2>
@@ -48,19 +49,27 @@ const ProfilePage = () => {
           )}
 
           <div className="bbhh-action-buttons">
-            <button onClick={handleEditProfile}>{t("editProfile")}</button>
-
-            <button onClick={handleLogout}>{t("logout")}</button>
+            <button
+              className="bbhh-btn bbhh-btn-edit"
+              onClick={handleEditProfile}
+            >
+              {t("editProfile")}
+            </button>
+            <button className="bbhh-btn bbhh-btn-logout" onClick={handleLogout}>
+              {t("logout")}
+            </button>
           </div>
         </div>
 
         {error && <p className="bbhh-error">{error}</p>}
 
+        {/* Nội dung chia 2 cột */}
         <div className="bbhh-profile-body">
-          {/* INFO */}
+          {/* Cột 1: Info */}
           {user && (
             <div className="bbhh-box">
               <h3>{t("profileDetails")}</h3>
+              <div className="bbhh-divider"></div>
               <p>
                 <strong>{t("email")}:</strong> {user.email}
               </p>
@@ -70,37 +79,37 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* BOOKINGS */}
+          {/* Cột 2: History */}
           <div className="bbhh-box">
             <h3>{t("bookingHistory")}</h3>
-
-            {user && user.bookings?.length > 0 ? (
-              user.bookings.map((b) => (
-                <div key={b.id} className="bbhh-booking-item">
-                  <img src={b.room?.roomPhotoUrl} alt="room" />
-
-                  <div>
-                    <p>
-                      {t("code")}: {b.bookingConfirmationCode}
-                    </p>
-                    <p>
-                      {t("checkIn")}: {b.checkInDate}
-                    </p>
-                    <p>
-                      {t("room")}: {b.room?.roomType}
-                    </p>
-                    <p>
-                      {t("guests")}: {b.totalNumOfGuest}
-                    </p>
+            <div className="bbhh-divider"></div>
+            <div className="bbhh-booking-list">
+              {user && user.bookings && user.bookings.length > 0 ? (
+                user.bookings.map((booking) => (
+                  <div key={booking.id} className="bbhh-booking-item">
+                    <img src={booking.room?.roomPhotoUrl} alt="Room" />
+                    <div className="bbhh-booking-info">
+                      <p className="bbhh-code">
+                        {t("code")}: {booking.bookingConfirmationCode}
+                      </p>
+                      <p>
+                        {t("checkIn")}: {booking.checkInDate}
+                      </p>
+                      <p>
+                        {t("room")}: {booking.room?.roomType}
+                      </p>
+                      <p>
+                        {t("guests")}: {booking.totalNumOfGuest}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p>{t("noBooking")}</p>
-            )}
+                ))
+              ) : (
+                <p>{t("noBooking")}</p>
+              )}
+            </div>
           </div>
         </div>
-
         <div className="bbhh-profile-footer">
           <p>{t("footer")}</p>
         </div>
@@ -108,5 +117,4 @@ const ProfilePage = () => {
     </div>
   );
 };
-
 export default ProfilePage;

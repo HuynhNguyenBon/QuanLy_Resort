@@ -80,9 +80,8 @@ const ManageBookingsPage = () => {
       <div className="bbhh-profile-card">
         <div className="bbhh-profile-header">
           <h2>
-            {t("manageBookingsPage.manage")}{" "}
             <span className="text-orange">
-              {t("manageBookingsPage.bookings")}
+              {t("manageBookingsPage.manageBookings")}
             </span>
           </h2>
 
