@@ -30,23 +30,20 @@
     "verified": "Room Verified ✓"
   },
   "roomDetailsPage": {
-    "amenities": "Room Amenities",
-    "defaultDesc": "Enjoy our luxury space with modern facilities and premium service.",
-    "night": "night",
-
-    "bookRoom": "Book This Room",
+    "roomDetails": "Room Details",
+    "roomDescription": "Description",
+    "defaultDesc": "No description available.",
+    "bookRoom": "Book Room",
     "checkIn": "Check-in Date",
     "checkOut": "Check-out Date",
-
-    "checkPrice": "Check Total Price",
-    "confirm": "Confirm Reservation",
-
+    "adults": "Adults",
+    "children": "Children",
+    "checkPrice": "Check Price",
     "guests": "Guests",
-    "total": "Total Amount",
-
-    "selectDates": "Please select check-in and check-out dates",
-    "roomNotAvailable": "Room is not available for selected dates",
-    "loginAgain": "Please login again",
+    "total": "Total Price",
+    "confirm": "Confirm Booking",
+    "selectDates": "Please select check-in and check-out dates.",
+    "loginAgain": "Please log in again.",
     "paymentError": "Payment error: "
   }
 }

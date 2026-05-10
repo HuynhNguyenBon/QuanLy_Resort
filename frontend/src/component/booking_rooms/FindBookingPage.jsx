@@ -1,32 +1,29 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-
-import ApiService from "../../service/ApiService";
+import ApiService from "../../service/ApiService"; // Giả sử dịch vụ của bạn nằm trong một tệp có tên là ApiService.js
 import "../../UiverseElements.css";
 
 const FindBookingPage = () => {
   const { t } = useTranslation("rooms");
 
-  const [confirmationCode, setConfirmationCode] = useState("");
-  const [bookingDetails, setBookingDetails] = useState(null);
-  const [error, setError] = useState(null);
+  const [confirmationCode, setConfirmationCode] = useState(""); // Biến trạng thái cho mã xác nhận
+  const [bookingDetails, setBookingDetails] = useState(null); // Biến trạng thái cho chi tiết đặt phòng
+  const [error, setError] = useState(null); // Theo dõi bất kỳ lỗi nào
 
   const handleSearch = async () => {
     if (!confirmationCode.trim()) {
-      setError(t("findBookingPage.enterCode"));
+      setError("Please Enter a booking confirmation code");
       setTimeout(() => setError(""), 5000);
       return;
     }
-
     try {
+      // Gọi API để lấy chi tiết đặt phòng
       const response =
         await ApiService.getBookingByConfirmationCode(confirmationCode);
-
       setBookingDetails(response.booking);
-      setError(null);
+      setError(null); // Xóa lỗi nếu thành công
     } catch (error) {
       setError(error.response?.data?.message || error.message);
-
       setTimeout(() => setError(""), 5000);
     }
   };
@@ -49,7 +46,6 @@ const FindBookingPage = () => {
             onChange={(e) => setConfirmationCode(e.target.value)}
           />
         </div>
-
         <button
           className="btn-uiverse user"
           style={{ maxWidth: "200px" }}
@@ -59,45 +55,78 @@ const FindBookingPage = () => {
         </button>
       </div>
 
-      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+      {error && (
+        <p className="text-center" style={{ color: "red", fontWeight: "500" }}>
+          {error}
+        </p>
+      )}
 
       {bookingDetails && (
         <div className="booking-details-card">
-          <h3>{t("findBookingPage.bookingInfo")}</h3>
-
-          <div>
-            <p>
-              {t("findBookingPage.confirmationCode")}:{" "}
-              {bookingDetails.bookingConfirmationCode}
-            </p>
-
-            <p>
-              {t("findBookingPage.checkIn")}: {bookingDetails.checkInDate}
-            </p>
-
-            <p>
-              {t("findBookingPage.checkOut")}: {bookingDetails.checkOutDate}
-            </p>
-
-            <p>
-              {t("findBookingPage.adultsChildren")}:{" "}
-              {bookingDetails.numOfAdults} / {bookingDetails.numOfChildren}
-            </p>
+          <h3 className="booking-section-title">
+            {t("findBookingPage.bookingInfo")}
+          </h3>
+          <div className="booking-info-grid">
+            <div className="info-item">
+              <label>{t("findBookingPage.confirmationCode")}</label>
+              <span style={{ color: "#ff9800" }}>
+                {bookingDetails.bookingConfirmationCode}
+              </span>
+            </div>
+            <div className="info-item">
+              <label>{t("findBookingPage.checkIn")}</label>
+              <span>{bookingDetails.checkInDate}</span>
+            </div>
+            <div className="info-item">
+              <label>{t("findBookingPage.checkOut")}</label>
+              <span>{bookingDetails.checkOutDate}</span>
+            </div>
+            <div className="info-item">
+              <label>{t("findBookingPage.adultsChildren")}</label>
+              <span>
+                {bookingDetails.numOfAdults} Adults -{" "}
+                {bookingDetails.numOfChildren} Children
+              </span>
+            </div>
           </div>
 
-          <h3>{t("findBookingPage.guestDetails")}</h3>
+          <h3 className="booking-section-title">
+            {t("findBookingPage.guestDetails")}
+          </h3>
+          <div className="booking-info-grid">
+            <div className="info-item">
+              <label>{t("findBookingPage.fullName")}</label>
+              <span>{bookingDetails.user.name}</span>
+            </div>
+            <div className="info-item">
+              <label>{t("findBookingPage.emailAddress")}</label>
+              <span>{bookingDetails.user.email}</span>
+            </div>
+            <div className="info-item">
+              <label>{t("findBookingPage.phoneNumber")}</label>
+              <span>{bookingDetails.user.phoneNumber}</span>
+            </div>
+          </div>
 
-          <p>{bookingDetails.user.name}</p>
-          <p>{bookingDetails.user.email}</p>
-          <p>{bookingDetails.user.phoneNumber}</p>
-
-          <h3>{t("findBookingPage.roomDetails")}</h3>
-
-          <p>{bookingDetails.room.roomType}</p>
-
-          <p>{t("findBookingPage.thankYou")}</p>
-
-          <span>{t("findBookingPage.verified")}</span>
+          <h3 className="booking-section-title">
+            {t("findBookingPage.roomDetails")}
+          </h3>
+          <div
+            className="room-card-uiverse"
+            style={{ width: "100%", display: "flex", flexDirection: "row" }}
+          >
+            <div
+              className="room-image-box"
+              style={{ width: "40%", height: "250px" }}
+            >
+              <img src={bookingDetails.room.roomPhotoUrl} alt="Room" />
+            </div>
+            <div className="room-content-box" style={{ width: "60%" }}>
+              <h4 className="room-title">{bookingDetails.room.roomType}</h4>
+              <p className="room-desc">{t("findBookingPage.thankYou")}</p>
+              <div className="room-price">{t("findBookingPage.verified")}</div>
+            </div>
+          </div>
         </div>
       )}
     </div>

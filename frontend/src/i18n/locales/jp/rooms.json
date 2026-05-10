@@ -30,23 +30,20 @@
     "verified": "部屋確認済み ✓"
   },
   "roomDetailsPage": {
-    "amenities": "部屋の設備",
-    "defaultDesc": "最新設備と高級サービスを備えた快適な空間をお楽しみください。",
-    "night": "泊",
-
-    "bookRoom": "この部屋を予約する",
+    "roomDetails": "部屋の詳細",
+    "roomDescription": "説明",
+    "defaultDesc": "説明はありません。",
+    "bookRoom": "予約する",
     "checkIn": "チェックイン日",
     "checkOut": "チェックアウト日",
-
-    "checkPrice": "合計金額を確認",
-    "confirm": "予約を確定する",
-
+    "adults": "大人",
+    "children": "子供",
+    "checkPrice": "料金を確認",
     "guests": "宿泊人数",
     "total": "合計金額",
-
-    "selectDates": "チェックインとチェックアウト日を選択してください",
-    "roomNotAvailable": "この期間は予約できません",
-    "loginAgain": "再度ログインしてください",
-    "paymentError": "支払いエラー: "
+    "confirm": "予約を確定",
+    "selectDates": "チェックインとチェックアウト日を選択してください。",
+    "loginAgain": "もう一度ログインしてください。",
+    "paymentError": "決済エラー："
   }
 }

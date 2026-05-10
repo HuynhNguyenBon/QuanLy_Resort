@@ -159,7 +159,6 @@ const RoomDetailsPage = () => {
                 </p>
                 <div className="bbhh-price-circle">
                   <span>${roomDetails.roomPrice}</span> /{" "}
-                  {t("roomDetailsPage.night")}
                 </div>
               </div>
             </div>

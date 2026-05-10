@@ -1,0 +1,12 @@
+{
+  "vnpayReturnPage": {
+    "verifying": "Đang xác nhận thanh toán...",
+    "successTitle": "Thanh toán thành công!",
+    "failedTitle": "Thanh toán thất bại",
+    "bookingCode": "Mã đặt phòng",
+    "transactionId": "Mã giao dịch",
+    "viewBookings": "Xem đặt phòng của tôi",
+    "tryAgain": "Thử lại",
+    "goHome": "Về trang chủ"
+  }
+}
