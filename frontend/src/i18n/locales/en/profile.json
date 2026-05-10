@@ -1,0 +1,24 @@
+{
+  "welcome": "Welcome",
+  "editProfile": "Edit Profile",
+  "logout": "Logout",
+  "profileDetails": "Profile Details",
+  "email": "Email",
+  "phone": "Phone",
+  "bookingHistory": "Booking History",
+  "code": "Code",
+  "checkIn": "Check-in",
+  "room": "Room",
+  "guests": "Guests",
+  "noBooking": "You have no booking history yet.",
+  "footer": "BBHH Resort | Your Luxury Sanctuary",
+
+  "editYour": "Edit Your",
+  "fullName": "Full Name",
+  "emailAddress": "Email Address",
+  "phoneNumber": "Phone Number",
+  "warning": "Warning: Deleting your profile is permanent and cannot be undone.",
+  "deleteAccount": "Delete My Account",
+  "backToProfile": "Back to Profile",
+  "deleteConfirm": "Are you sure you want to delete your account?"
+}

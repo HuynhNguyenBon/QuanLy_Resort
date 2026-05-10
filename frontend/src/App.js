@@ -4,6 +4,8 @@ import Navbar from './component/common/Navbar';
 import FooterComponent from './component/common/Footer';
 import LoginPage from './component/auth/LoginPage';
 import RegisterPage from './component/auth/RegisterPage';
+import ForgotPasswordPage from './component/auth/ForgotPasswordPage';
+import ResetPasswordPage from './component/auth/ResetPasswordPage';
 import HomePage from './component/home/HomePage';
 import AllRoomsPage from './component/booking_rooms/AllRoomsPage';
 import RoomDetailsBookingPage from './component/booking_rooms/RoomDetailsPage';
@@ -17,6 +19,7 @@ import EditBookingPage from './component/admin/EditBookingPage';
 import ProfilePage from './component/profile/ProfilePage';
 import EditProfilePage from './component/profile/EditProfilePage';
 import { ProtectedRoute, AdminRoute } from './service/guard';
+import VNPayReturnPage from './component/payment/VNPayReturnPage';
 import ServicePage from './component/service/ServicePage';
 
 import ChatSupport from './component/common/ChatSupport';
@@ -34,11 +37,14 @@ function App() {
             <Route exact path="/home" element={<HomePage />} />
             <Route exact path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />        
             <Route path="/rooms" element={<AllRoomsPage />} />
             <Route path="/find-booking" element={<FindBookingPage />} />
             <Route path="/services" element={<ServicePage />} />
 
             {/* Protected Routes */}
+            <Route path="/vnpay-return" element={<VNPayReturnPage />} />
             <Route path="/room-details-book/:roomId"
               element={<ProtectedRoute element={<RoomDetailsBookingPage />} />}
             />
@@ -48,7 +54,6 @@ function App() {
             <Route path="/edit-profile"
               element={<ProtectedRoute element={<EditProfilePage />} />}
             />
-
             {/* Admin Routes */}
             <Route path="/admin"
               element={<AdminRoute element={<AdminPage />} />}

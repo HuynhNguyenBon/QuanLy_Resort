@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import com.BBTT.BBTTResort.repo.BookingRepository;
+
 @RestController
 @RequestMapping("/bookings")
 
@@ -16,6 +19,9 @@ public class BookingController {
     @Autowired
     private IBookingService bookingService;
 
+    @Autowired
+    private BookingRepository bookingRepository;
+  
     @PostMapping("/book-room/{roomId}/{userId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<Response> saveBookings(@PathVariable Long roomId,
@@ -27,7 +33,6 @@ public class BookingController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
 
     }
-
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> getAllBookings() {
@@ -55,5 +60,33 @@ public class BookingController {
         // Giả sử đã thêm hàm getBookingServicesByBookingId vào IBookingService
         Response response = bookingService.getBookingServicesByBookingId(bookingId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    public ResponseEntity<Response> getBookingsByUserId(
+            @PathVariable Long userId
+    ) {
+
+        Response response = bookingService.getBookingsByUserId(userId);
+
+        return ResponseEntity.status(response.getStatusCode())
+                .body(response);
+    }
+
+    @GetMapping("/check-availability")
+    public ResponseEntity<Boolean> checkAvailability(
+            @RequestParam Long roomId,
+            @RequestParam String checkInDate,
+            @RequestParam String checkOutDate
+    ) {
+
+        boolean isBooked = bookingRepository.existsOverlappingBooking(
+                roomId,
+                LocalDate.parse(checkInDate),
+                LocalDate.parse(checkOutDate)
+        );
+
+        return ResponseEntity.ok(!isBooked);
     }
 }

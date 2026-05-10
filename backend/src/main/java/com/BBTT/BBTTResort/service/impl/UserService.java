@@ -14,6 +14,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.BBTT.BBTTResort.entity.PasswordResetToken;
+import com.BBTT.BBTTResort.repo.PasswordResetTokenRepository;
+import com.BBTT.BBTTResort.service.EmailService;
+import java.time.LocalDateTime;
+import java.util.Random;
 
 import java.util.List;
 
@@ -27,6 +32,12 @@ public class UserService implements IUserService {
     private JWTUtils jwtUtils;
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordResetTokenRepository tokenRepository;
+
+    @Autowired
+    private EmailService emailService;
 
 
     @Override
@@ -194,6 +205,99 @@ public class UserService implements IUserService {
             response.setStatusCode(500);
             response.setMessage("Error getting all users " + e.getMessage());
         }
+        return response;
+    }
+
+    @Override
+    public Response forgotPassword(String email) {
+
+        Response response = new Response();
+
+        try {
+
+            User user = userRepository.findByEmail(email)
+                    .orElse(null);
+
+            if (user == null) {
+                response.setStatusCode(404);
+                response.setMessage("Email does not exist");
+                return response;
+            }
+
+            String otp = String.valueOf(100000 + new Random().nextInt(900000));
+
+            PasswordResetToken token = new PasswordResetToken();
+            token.setEmail(email);
+            token.setOtp(otp);
+            token.setExpiryTime(LocalDateTime.now().plusMinutes(5));
+
+            tokenRepository.deleteByEmail(email);
+
+            tokenRepository.save(token);
+
+            emailService.sendOtpEmail(email, otp);
+
+            response.setStatusCode(200);
+            response.setMessage("OTP sent to email");
+
+        } catch (Exception e) {
+
+            response.setStatusCode(500);
+            response.setMessage("Error: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response resetPassword(String email, String otp, String newPassword) {
+
+        Response response = new Response();
+
+        try {
+
+            PasswordResetToken token = tokenRepository
+                    .findByEmailAndOtp(email, otp)
+                    .orElse(null);
+
+            if (token == null) {
+                response.setStatusCode(400);
+                response.setMessage("Invalid OTP");
+                return response;
+            }
+
+            if (token.getExpiryTime().isBefore(LocalDateTime.now())) {
+                response.setStatusCode(400);
+                response.setMessage("OTP expired");
+                return response;
+            }
+
+            User user = userRepository.findByEmail(email)
+                    .orElse(null);
+
+            if (user == null) {
+                response.setStatusCode(404);
+                response.setMessage("User not found");
+                return response;
+            }
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+
+            userRepository.save(user);
+
+            tokenRepository.deleteByEmail(email);
+
+            response.setStatusCode(200);
+            response.setMessage("Password reset successful");
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            response.setStatusCode(500);
+            response.setMessage(e.getMessage());
+        }
+
         return response;
     }
 }

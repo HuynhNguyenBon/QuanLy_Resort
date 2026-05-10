@@ -27,6 +27,35 @@ export default class ApiService {
         return response.data
     }
 
+    static async forgotPassword(email) {
+        return axios.post(
+            `${this.BASE_URL}/auth/forgot-password`,
+            { email },
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+    }
+
+ static async resetPassword(email, otp, newPassword) {
+
+    return axios.post(
+        `${this.BASE_URL}/auth/reset-password`,
+        {
+            email,
+            otp,
+            newPassword
+        },
+        {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    );
+}
+
     /***USERS */
 
 
@@ -134,6 +163,13 @@ export default class ApiService {
         return result.data;
     }
 
+    static async checkRoomAvailability(roomId, checkInDate, checkOutDate) {
+        const response = await axios.get(
+            `${this.BASE_URL}/bookings/check-availability?roomId=${roomId}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`
+        );
+        return response.data;
+    }
+
 
     /**BOOKING */
     /* Thao tác này sẽ lưu một đặt chỗ mới vào cơ sở dữ liệu */
@@ -168,6 +204,8 @@ export default class ApiService {
         })
         return result.data
     }
+
+    
 
 
     /**AUTHENTICATION CHECKER */
@@ -228,5 +266,23 @@ export default class ApiService {
         });
         return response.data;
     }
+
+    // =================== VNPAY ===================
+static async createVNPayPayment(bookingId) {
+    const response = await axios.post(
+        `${this.BASE_URL}/payment/create`,
+        { bookingId },
+        { headers: this.getHeader() }
+    );
+    return response.data;
+}
+
+static async getVNPayReturn(params) {
+    const query = new URLSearchParams(params).toString();
+    const response = await axios.get(
+        `${this.BASE_URL}/payment/vnpay-return?${query}`
+    );
+    return response.data;
+}
 }
 // export default new ApiService();

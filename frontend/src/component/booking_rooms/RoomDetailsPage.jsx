@@ -37,45 +37,117 @@ const RoomDetailsPage = () => {
     fetchRoomDetails();
   }, [roomId]);
 
-  const handleConfirmBooking = () => {
+  const handleConfirmBooking = async () => {
+
     if (!checkInDate || !checkOutDate) {
+
       setError("Please select check-in and check-out dates.");
+
       return;
     }
-    const days = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-    const total = days * roomDetails.roomPrice;
-    setTotalPrice(total);
-    setTotalGuests(numAdults + numChildren);
+
+    try {
+
+      const formattedCheckInDate =
+        checkInDate.toISOString().split('T')[0];
+
+      const formattedCheckOutDate =
+        checkOutDate.toISOString().split('T')[0];
+
+      // Check phòng trống trước khi tính tiền
+      const available =
+        await ApiService.checkRoomAvailability(
+          roomId,
+          formattedCheckInDate,
+          formattedCheckOutDate
+        );
+
+      if (!available) {
+
+        setError(
+          "Room already booked for selected dates."
+        );
+
+        return;
+      }
+
+      // Tính tổng số ngày
+      const days = Math.ceil(
+        (checkOutDate - checkInDate) /
+        (1000 * 60 * 60 * 24)
+      );
+
+      // Tính tổng tiền
+      const total =
+        days * roomDetails.roomPrice;
+
+      setTotalPrice(total);
+
+      // Tổng khách
+      setTotalGuests(
+        numAdults + numChildren
+      );
+
+      // Reset lỗi
+      setError("");
+
+    } catch (error) {
+
+      setError(
+        error.response?.data?.message ||
+        error.message
+      );
+    }
   };
 
   const acceptBooking = async () => {
-    try {
-      const userProfile = await ApiService.getUserProfile();
-      const userId = userProfile.user.id;
+  try {
+    const userProfile = await ApiService.getUserProfile();
+    const userId = userProfile.user.id;
 
-      if (!userId) {
-            alert("You need to log in again to make your booking!");
-            return;
-      }
-
-      const formattedCheckInDate = checkInDate.toISOString().split('T')[0];
-      const formattedCheckOutDate = checkOutDate.toISOString().split('T')[0];
-      const booking = {
-        checkInDate: formattedCheckInDate,
-        checkOutDate: formattedCheckOutDate,
-        numOfAdults: numAdults,
-        numOfChildren: numChildren,
-      };
-      const response = await ApiService.bookRoom(roomId, userId, booking);
-      if (response.statusCode === 200) {
-        alert("Booking Successful!");
-        navigate('/profile');
-      }
-    } catch (error) {
-      setError(error.response?.data?.message || error.message);
+    if (!userId) {
+      alert("You need to log in again to make your booking!");
+      return;
     }
-  };
 
+    const booking = {
+      checkInDate:  checkInDate.toISOString().split('T')[0],
+      checkOutDate: checkOutDate.toISOString().split('T')[0],
+      numOfAdults:   numAdults,
+      numOfChildren: numChildren,
+    };
+
+    // Bước 1: Tạo booking → backend trả về bookingId
+    const bookingRes = await ApiService.bookRoom(
+      roomId, userId, booking
+    );
+
+    console.log("Booking response:", bookingRes); // debug
+
+    if (bookingRes.statusCode !== 200) {
+      setError(bookingRes.message);
+      return;
+    }
+
+    // Bước 2: Gọi tạo URL thanh toán VNPAY
+    const paymentRes = await ApiService.createVNPayPayment(
+      bookingRes.bookingId
+    );
+
+    console.log("Payment response:", paymentRes); // debug
+
+    if (paymentRes.status === "OK") {
+      // Bước 3: Redirect sang cổng VNPAY
+      window.location.href = paymentRes.paymentUrl;
+    } else {
+      setError("Không thể tạo link thanh toán: "
+        + paymentRes.message);
+    }
+
+  } catch (error) {
+    setError(error.response?.data?.message || error.message);
+  }
+};
   if (isLoading) return <div className="bbhh-loader-container"><div className="bbhh-spinner"></div></div>;
 
   return (
@@ -120,6 +192,7 @@ const RoomDetailsPage = () => {
                     className="bbhh-date-input"
                   />
                 </div>
+
                 <div className="bbhh-input-box">
                   <label>Check-out</label>
                   <DatePicker
@@ -138,21 +211,58 @@ const RoomDetailsPage = () => {
               <div className="bbhh-guest-selection">
                 <div className="bbhh-input-box">
                   <label>Adults</label>
-                  <input type="number" min="1" value={numAdults} onChange={(e) => setNumAdults(parseInt(e.target.value))} />
+                  <input
+                    type="number"
+                    min="1"
+                    value={numAdults}
+                    onChange={(e) =>
+                      setNumAdults(parseInt(e.target.value))
+                    }
+                  />
                 </div>
+
                 <div className="bbhh-input-box">
                   <label>Children</label>
-                  <input type="number" min="0" value={numChildren} onChange={(e) => setNumChildren(parseInt(e.target.value))} />
+                  <input
+                    type="number"
+                    min="0"
+                    value={numChildren}
+                    onChange={(e) =>
+                      setNumChildren(parseInt(e.target.value))
+                    }
+                  />
                 </div>
               </div>
 
-              <button className="bbhh-btn-calculate" onClick={handleConfirmBooking}>Check Total Price</button>
+              <button
+                className="bbhh-btn-calculate"
+                onClick={handleConfirmBooking}
+              >
+                Check Total Price
+              </button>
 
               {totalPrice > 0 && (
                 <div className="bbhh-summary-box">
-                  <div className="summary-row"><span>Total Guests:</span> <strong>{totalGuests}</strong></div>
-                  <div className="summary-row"><span>Total Amount:</span> <strong className="text-orange">${totalPrice}</strong></div>
-                  <button onClick={acceptBooking} className="bbhh-btn-confirm-final">Confirm Reservation</button>
+
+                  <div className="summary-row">
+                    <span>Total Guests:</span>
+                    <strong>{totalGuests}</strong>
+                  </div>
+
+                  <div className="summary-row">
+                    <span>Total Amount:</span>
+                    <strong className="text-orange">
+                      ${totalPrice}
+                    </strong>
+                  </div>
+
+                  <button
+                    onClick={acceptBooking}
+                    className="bbhh-btn-confirm-final"
+                  >
+                    Confirm Reservation
+                  </button>
+
                 </div>
               )}
             </div>
