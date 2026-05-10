@@ -1,9 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-import en from "./i18n/locales/en.json";
-import vi from "./i18n/locales/vi.json";
-import jp from "./i18n/locales/jp.json";
 
 // HOME
 import enHome from "./i18n/locales/en/home.json";
@@ -25,6 +22,19 @@ import enCommon from "./i18n/locales/en/common.json";
 import viCommon from "./i18n/locales/vi/common.json";
 import jpCommon from "./i18n/locales/jp/common.json";
 
+import enNavbar from "./i18n/locales/en/navbar.json";
+import viNavbar from "./i18n/locales/vi/navbar.json";
+import jpNavbar from "./i18n/locales/jp/navbar.json";
+import enAuth from "./i18n/locales/en/auth.json";
+import viAuth from "./i18n/locales/vi/auth.json";
+import jpAuth from "./i18n/locales/jp/auth.json";
+import enProfile from "./i18n/locales/en/profile.json";
+import viProfile from "./i18n/locales/vi/profile.json";
+import jpProfile from "./i18n/locales/jp/profile.json";
+import enFooter from "./i18n/locales/en/footer.json";
+import viFooter from "./i18n/locales/vi/footer.json";
+import jpFooter from "./i18n/locales/jp/footer.json";
+
 i18n
   .use(LanguageDetector) // Tự động nhận diện ngôn ngữ máy tính khách
   .use(initReactI18next)
@@ -40,7 +50,6 @@ i18n
         rooms: enRooms,
         common: enCommon,
       },
-
       vi: {
         navbar: viNavbar,
         auth: viAuth,
@@ -51,7 +60,6 @@ i18n
         rooms: viRooms,
         common: viCommon,
       },
-
       jp: {
         navbar: jpNavbar,
         auth: jpAuth,
@@ -63,9 +71,7 @@ i18n
         common: jpCommon,
       },
     },
-
     fallbackLng: "en",
-
     ns: [
       "navbar",
       "auth",
@@ -76,13 +82,7 @@ i18n
       "rooms",
       "common",
     ],
-
-    defaultNS: "navbar",
-      en: en,
-      vi: vi,
-      jp: jp,
-    },
-    fallbackLng: "en", // Nếu lỗi thì hiện tiếng Anh
+    defaultNS: "translation",
     interpolation: {
       escapeValue: false,
     },

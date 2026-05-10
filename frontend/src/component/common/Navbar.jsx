@@ -5,7 +5,7 @@ import "../../UiverseElements.css";
 import { useTranslation } from "react-i18next";
 
 function Navbar() {
-  const { t, i18n } = useTranslation(); // Lấy hàm t() để dịch
+  const { t, i18n } = useTranslation("navbar"); // Lấy hàm t() để dịch
   const isAuthenticated = ApiService.isAuthenticated();
   const isAdmin = ApiService.isAdmin();
   const isUser = ApiService.isUser();
@@ -53,18 +53,18 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
- const handleLogout = (e) => {
-  e.preventDefault();
+  const handleLogout = (e) => {
+    e.preventDefault();
 
-  const isLogout = window.confirm(
-    "Are you sure you want to logout this user?",
-  );
+    const isLogout = window.confirm(
+      "Are you sure you want to logout this user?",
+    );
 
-  if (isLogout) {
-    ApiService.logout();
-    navigate("/login");
-  }
-};
+    if (isLogout) {
+      ApiService.logout();
+      navigate("/login");
+    }
+  };
 
   const handleSelect = (code) => {
     i18n.changeLanguage(code);
@@ -80,36 +80,36 @@ function Navbar() {
         {/* Thay chữ cứng bằng hàm t() */}
         <li>
           <NavLink to="/home" activeclassname="active">
-            {t("Home")}
+            {t("menu.home")}
           </NavLink>
         </li>
         <li>
           <NavLink to="/rooms" activeclassname="active">
-            {t("Rooms")}
+            {t("menu.rooms")}
           </NavLink>
         </li>
         <li>
           <NavLink to="/find-booking" activeclassname="active">
-            {t("Find My Booking")}
+            {t("menu.booking")}
           </NavLink>
         </li>
         <li>
           <NavLink to="/services" activeclassname="active">
-            {t("Services")}
+            {t("menu.services")}
           </NavLink>
         </li>
 
         {isUser && (
           <li>
             <NavLink to="/profile" activeclassname="active">
-              {t("Profile")}
+              {t("menu.profile")}
             </NavLink>
           </li>
         )}
         {isAdmin && (
           <li>
             <NavLink to="/admin" activeclassname="active">
-              {t("Admin")}
+              {t("menu.admin")}
             </NavLink>
           </li>
         )}
@@ -117,26 +117,25 @@ function Navbar() {
         {!isAuthenticated && (
           <li>
             <NavLink to="/login" activeclassname="active">
-              {t("Login")}
+              {t("menu.login")}
             </NavLink>
           </li>
         )}
         {!isAuthenticated && (
           <li>
             <NavLink to="/register" activeclassname="active">
-              {t("Register")}
+              {t("menu.register")}
             </NavLink>
           </li>
         )}
         {isAuthenticated && (
           <li>
             <NavLink
-            to="/login"
-            activeclassname="active"
-            onClick={(e) => handleLogout(e)}
-          >
-            
-              {t("Logout")}
+              to="/login"
+              activeclassname="active"
+              onClick={(e) => handleLogout(e)}
+            >
+              {t("menu.logout")}
             </NavLink>
           </li>
         )}
