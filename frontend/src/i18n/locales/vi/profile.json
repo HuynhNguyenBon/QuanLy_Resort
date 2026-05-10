@@ -1,0 +1,24 @@
+{
+  "welcome": "Chào mừng",
+  "editProfile": "Chỉnh sửa hồ sơ",
+  "logout": "Đăng xuất",
+  "profileDetails": "Thông tin cá nhân",
+  "email": "Email",
+  "phone": "Số điện thoại",
+  "bookingHistory": "Lịch sử đặt phòng",
+  "code": "Mã",
+  "checkIn": "Ngày nhận phòng",
+  "room": "Phòng",
+  "guests": "Khách",
+  "noBooking": "Bạn chưa có lịch sử đặt phòng.",
+  "footer": "BBHH Resort | Khu nghỉ dưỡng sang trọng",
+
+  "editYour": "Chỉnh sửa",
+  "fullName": "Họ và tên",
+  "emailAddress": "Địa chỉ email",
+  "phoneNumber": "Số điện thoại",
+  "warning": "Cảnh báo: Xóa tài khoản là vĩnh viễn và không thể hoàn tác.",
+  "deleteAccount": "Xóa tài khoản",
+  "backToProfile": "Quay lại hồ sơ",
+  "deleteConfirm": "Bạn có chắc muốn xóa tài khoản?"
+}
