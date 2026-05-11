@@ -126,7 +126,7 @@ const EditRoomPage = () => {
 
   return (
     <div className="edit-room-container">
-      <h2>{t("editRoomPage.title")}</h2>
+      <h2>{t("editRoomPage.editRoom")}</h2>
 
       {error && <p className="error-message">{error}</p>}
 
@@ -149,8 +149,19 @@ const EditRoomPage = () => {
               />
             )
           )}
+          <div className="custom-file-wrapper">
+            <label className="custom-file-button">
+              {t("editRoomPage.chooseFile")}
 
-          <input type="file" name="roomPhoto" onChange={handleFileChange} />
+              <input
+                type="file"
+                name="roomPhoto"
+                onChange={handleFileChange}
+                hidden
+              />
+            </label>
+            {file && <span className="custom-file-name">{file.name}</span>}
+          </div>
         </div>
 
         <div className="form-group">

@@ -70,6 +70,8 @@
     "roomType": "部屋タイプ",
     "roomPrice": "部屋料金",
     "roomDescription": "部屋説明",
+    "chooseFile": "画像を選択",
+    "noFile": "ファイルが選択されていません",
 
     "updateRoom": "部屋を更新",
     "deleteRoom": "部屋を削除",
