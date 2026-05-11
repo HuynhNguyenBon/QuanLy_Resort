@@ -40,8 +40,10 @@ public class Booking {
 
     private String paymentStatus; // PENDING | PAID | FAILED
 
-    private String vnpayTransactionId;
+    @Column(name = "status")
+    private String status;
 
+    private String vnpayTransactionId;
 
     private LocalDate createdAt;
   
