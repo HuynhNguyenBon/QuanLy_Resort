@@ -21,6 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         SELECT COUNT(b) > 0
         FROM Booking b
         WHERE b.room.id = :roomId
+        AND b.status = 'PAID'
         AND (
             :checkIn < b.checkOutDate
             AND :checkOut > b.checkInDate
