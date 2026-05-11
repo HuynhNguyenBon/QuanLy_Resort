@@ -1,0 +1,50 @@
+{
+  "addRoomPage": {
+    "allRooms": "すべての部屋",
+    "filterByType": "部屋タイプで絞り込み:",
+    "all": "すべて"
+  },
+
+  "findBookingPage": {
+    "findYour": "予約を",
+    "reservation": "検索",
+    "placeholder": "確認コードを入力してください（例: ABC123）",
+    "searchBooking": "予約を検索",
+    "enterCode": "予約確認コードを入力してください",
+
+    "bookingInfo": "予約情報",
+    "confirmationCode": "確認コード",
+    "checkIn": "チェックイン日",
+    "checkOut": "チェックアウト日",
+    "adultsChildren": "大人/子供",
+    "adults": "大人",
+    "children": "子供",
+
+    "guestDetails": "宿泊者情報",
+    "fullName": "氏名",
+    "emailAddress": "メールアドレス",
+    "phoneNumber": "電話番号",
+
+    "roomDetails": "部屋情報",
+    "thankYou": "BBHH Resortをご利用いただきありがとうございます。素晴らしい休暇をお過ごしください！",
+    "verified": "部屋確認済み ✓"
+  },
+  "roomDetailsPage": {
+    "roomDetails": "部屋の詳細",
+    "roomDescription": "説明",
+    "defaultDesc": "説明はありません。",
+    "night": "1泊",
+    "bookRoom": "予約する",
+    "checkIn": "チェックイン日",
+    "checkOut": "チェックアウト日",
+    "adults": "大人",
+    "children": "子供",
+    "checkPrice": "料金を確認",
+    "guests": "宿泊人数",
+    "total": "合計金額",
+    "confirm": "予約を確定",
+    "selectDates": "チェックインとチェックアウト日を選択してください。",
+    "loginAgain": "もう一度ログインしてください。",
+    "paymentError": "決済エラー："
+  }
+}

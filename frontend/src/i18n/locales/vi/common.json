@@ -1,0 +1,38 @@
+{
+  "bookingResult": {
+    "roomId": "Mã phòng",
+    "userId": "Mã người dùng",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "status": "Trạng thái",
+    "edit": "Chỉnh sửa"
+  },
+  "chat": {
+    "header": "Hỗ trợ khách hàng",
+    "empty": "Hãy bắt đầu trò chuyện!",
+    "needLogin": "Bạn cần đăng nhập để chat",
+    "login": "Đăng nhập",
+    "placeholder": "Nhập tin nhắn..."
+  },
+  "room": {
+    "perNight": "mỗi đêm",
+    "wifi": "📶 Wifi",
+    "pool": "🏊 Hồ bơi",
+    "ac": "❄️ Máy lạnh",
+    "edit": "Sửa phòng",
+    "book": "Xem / Đặt ngay"
+  },
+
+  "search": {
+    "checkIn": "Ngày nhận phòng",
+    "checkOut": "Ngày trả phòng",
+    "roomType": "Loại phòng",
+    "selectCheckIn": "Chọn ngày nhận phòng",
+    "selectCheckOut": "Chọn ngày trả phòng",
+    "selectRoomType": "Chọn loại phòng",
+    "button": "Tìm phòng",
+    "fillAll": "Vui lòng chọn đầy đủ thông tin",
+    "notAvailable": "Không có phòng trống",
+    "error": "Lỗi: "
+  }
+}

@@ -77,7 +77,6 @@ const RoomDetailsPage = () => {
       // Tổng khách
       setTotalGuests(numAdults + numChildren);
 
-      // Reset lỗi
       setError("");
     } catch (error) {
       setError(error.response?.data?.message || error.message);
@@ -100,8 +99,6 @@ const RoomDetailsPage = () => {
         numOfAdults: numAdults,
         numOfChildren: numChildren,
       };
-
-      // Bước 1: Tạo booking → backend trả về bookingId
       const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
 
       console.log("Booking response:", bookingRes); // debug
@@ -110,8 +107,6 @@ const RoomDetailsPage = () => {
         setError(bookingRes.message);
         return;
       }
-
-      // Bước 2: Gọi tạo URL thanh toán VNPAY
       const paymentRes = await ApiService.createVNPayPayment(
         bookingRes.bookingId,
       );
@@ -119,9 +114,7 @@ const RoomDetailsPage = () => {
       console.log("Payment response:", paymentRes); // debug
 
       if (paymentRes.status === "OK") {
-        // Bước 3: Lưu bookingId vào sessionStorage để xóa nếu thanh toán hủy
         sessionStorage.setItem("pendingBookingId", bookingRes.bookingId);
-        // Redirect sang cổng VNPAY
         window.location.href = paymentRes.paymentUrl;
       } else {
         // Payment creation failed - cancel the booking
@@ -170,8 +163,6 @@ const RoomDetailsPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Cột phải: Form đặt phòng (Fix lỗi dàn trải) */}
             <div className="bbhh-booking-card">
               <div className="bbhh-card-header">
                 <h3>{t("roomDetailsPage.bookRoom")}</h3>

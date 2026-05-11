@@ -1,0 +1,111 @@
+{
+  "adminPage": {
+    "welcome": "ようこそ",
+    "manageRooms": "客室管理",
+    "manageBookings": "予約管理",
+
+    "systemStatus": "システム状態",
+    "server": "サーバー",
+    "online": "オンライン",
+    "database": "データベース",
+    "connected": "接続済み",
+    "totalStaff": "スタッフ総数",
+
+    "quickTip": "ヒント: 高い顧客満足度を維持するため、毎日予約管理を確認してください。",
+
+    "roomPopularity": "客室人気度",
+
+    "single": "シングル",
+    "double": "ダブル",
+    "luxury": "ラグジュアリー",
+    "suite": "スイート",
+
+    "footer": "BBHH Resort | 管理者コントロールパネル"
+  },
+
+  "addRoomPage": {
+    "addNewRoom": "新しい客室を追加",
+
+    "roomType": "部屋タイプ",
+    "selectRoomType": "部屋タイプを選択",
+    "otherRoomType": "その他（入力してください）",
+    "enterRoomType": "新しい部屋タイプを入力",
+
+    "roomPrice": "部屋料金",
+    "roomDescription": "部屋説明",
+
+    "addRoom": "部屋を追加",
+
+    "allDetailsRequired": "すべての部屋情報を入力してください。",
+    "confirmAddRoom": "この部屋を追加しますか？",
+    "roomAdded": "部屋が正常に追加されました。"
+  },
+
+  "editBookingPage": {
+    "manageBooking": "予約管理",
+    "back": "戻る",
+
+    "roomType": "部屋タイプ",
+    "price": "料金",
+
+    "bookingDetails": "予約詳細",
+    "checkIn": "チェックイン日",
+    "checkOut": "チェックアウト日",
+    "adults": "大人",
+    "children": "子供",
+
+    "bookerInfo": "予約者情報",
+    "fullName": "氏名",
+    "email": "メールアドレス",
+    "phone": "電話番号",
+
+    "achieveBooking": "予約を保存",
+    "confirmAchieve": "この予約を保存しますか？",
+    "achievedSuccess": "予約が正常に保存されました"
+  },
+
+  "editRoomPage": {
+    "editRoom": "部屋を編集",
+
+    "roomType": "部屋タイプ",
+    "roomPrice": "部屋料金",
+    "roomDescription": "部屋説明",
+
+    "updateRoom": "部屋を更新",
+    "deleteRoom": "部屋を削除",
+
+    "updateSuccess": "部屋が正常に更新されました。",
+    "deleteSuccess": "部屋が正常に削除されました。",
+
+    "confirmDelete": "この部屋を削除しますか？"
+  },
+
+  "manageBookingsPage": {
+    "manageBookings": "予約管理",
+    "searchPlaceholder": "確認コードで検索...",
+
+    "code": "コード",
+    "checkIn": "チェックイン",
+    "checkOut": "チェックアウト",
+    "guests": "宿泊人数",
+
+    "manageDetails": "詳細管理",
+
+    "noBookings": "一致する予約が見つかりません。"
+  },
+
+  "manageChatPage": {
+    "messages": "メッセージ",
+    "replyPlaceholder": "返信を入力...",
+    "selectCustomer": "チャットする顧客を選択",
+    "deleteConfirm": "{{user}}とのチャットを削除しますか？"
+  },
+
+  "manageRoomPage": {
+    "allRooms": "すべての部屋",
+    "filterByType": "部屋タイプで絞り込み:",
+    "all": "すべて",
+
+    "addRoom": "部屋を追加"
+  }
+}
