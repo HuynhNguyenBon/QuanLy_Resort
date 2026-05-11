@@ -44,7 +44,11 @@
     "total": "合計金額",
     "confirm": "予約を確定",
     "selectDates": "チェックインとチェックアウト日を選択してください。",
+    "roomBooked": "選択された日付には既に部屋が予約されています。",
     "loginAgain": "もう一度ログインしてください。",
-    "paymentError": "決済エラー："
+    "paymentError": "決済エラー：",
+    "forbidden": "アクセス権限がありません。",
+    "general": "エラーが発生しました。",
+    "roomNotAvailable": "選択された日付には部屋が利用できません。"
   }
 }

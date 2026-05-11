@@ -31,7 +31,17 @@ const RoomDetailsPage = () => {
         const response = await ApiService.getRoomById(roomId);
         setRoomDetails(response.room);
       } catch (error) {
-        setError(error.response?.data?.message || error.message);
+        const message = error.response?.data?.message;
+
+        if (message === "Access denied") {
+          setError(t("roomDetailsPage.forbidden"));
+        } else if (message === "Room is not available for the selected dates") {
+          setError(t("roomDetailsPage.roomNotAvailable"));
+        } else if (message === "Room already booked for selected dates.") {
+          setError(t("roomDetailsPage.roomBooked"));
+        } else {
+          setError(t("roomDetailsPage.general"));
+        }
       } finally {
         setIsLoading(false);
       }
@@ -59,7 +69,7 @@ const RoomDetailsPage = () => {
       );
 
       if (!available) {
-        setError("Room already booked for selected dates.");
+        setError(t("roomDetailsPage.roomBooked"));
 
         return;
       }
@@ -79,7 +89,17 @@ const RoomDetailsPage = () => {
 
       setError("");
     } catch (error) {
-      setError(error.response?.data?.message || error.message);
+      const message = error.response?.data?.message;
+
+      if (message === "Access denied") {
+        setError(t("roomDetailsPage.forbidden"));
+      } else if (message === "Room is not available for the selected dates") {
+        setError(t("roomDetailsPage.roomNotAvailable"));
+      } else if (message === "Room already booked for selected dates.") {
+        setError(t("roomDetailsPage.roomBooked"));
+      } else {
+        setError(t("roomDetailsPage.general"));
+      }
     }
   };
 
@@ -126,7 +146,17 @@ const RoomDetailsPage = () => {
         setError(t("roomDetailsPage.paymentError") + paymentRes.message);
       }
     } catch (error) {
-      setError(error.response?.data?.message || error.message);
+      const message = error.response?.data?.message;
+
+      if (message === "Access denied") {
+        setError(t("roomDetailsPage.forbidden"));
+      } else if (message === "Room is not available for the selected dates") {
+        setError(t("roomDetailsPage.roomNotAvailable"));
+      } else if (message === "Room already booked for selected dates.") {
+        setError(t("roomDetailsPage.roomBooked"));
+      } else {
+        setError(t("roomDetailsPage.general"));
+      }
     }
   };
   if (isLoading)
