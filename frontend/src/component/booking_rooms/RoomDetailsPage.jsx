@@ -77,7 +77,6 @@ const RoomDetailsPage = () => {
       // Tổng khách
       setTotalGuests(numAdults + numChildren);
 
-      // Reset lỗi
       setError("");
     } catch (error) {
       setError(error.response?.data?.message || error.message);
@@ -100,8 +99,6 @@ const RoomDetailsPage = () => {
         numOfAdults: numAdults,
         numOfChildren: numChildren,
       };
-
-      // Bước 1: Tạo booking → backend trả về bookingId
       const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
 
       console.log("Booking response:", bookingRes); // debug
@@ -110,8 +107,6 @@ const RoomDetailsPage = () => {
         setError(bookingRes.message);
         return;
       }
-
-      // Bước 2: Gọi tạo URL thanh toán VNPAY
       const paymentRes = await ApiService.createVNPayPayment(
         bookingRes.bookingId,
       );
@@ -119,9 +114,15 @@ const RoomDetailsPage = () => {
       console.log("Payment response:", paymentRes); // debug
 
       if (paymentRes.status === "OK") {
-        // Bước 3: Redirect sang cổng VNPAY
+        sessionStorage.setItem("pendingBookingId", bookingRes.bookingId);
         window.location.href = paymentRes.paymentUrl;
       } else {
+        // Payment creation failed - cancel the booking
+        try {
+          await ApiService.cancelBooking(bookingRes.bookingId);
+        } catch (cancelError) {
+          console.error("Error canceling booking:", cancelError);
+        }
         setError(t("roomDetailsPage.paymentError") + paymentRes.message);
       }
     } catch (error) {
@@ -159,12 +160,9 @@ const RoomDetailsPage = () => {
                 </p>
                 <div className="bbhh-price-circle">
                   <span>${roomDetails.roomPrice}</span> /{" "}
-                  {t("roomDetailsPage.night")}
                 </div>
               </div>
             </div>
-
-            {/* Cột phải: Form đặt phòng (Fix lỗi dàn trải) */}
             <div className="bbhh-booking-card">
               <div className="bbhh-card-header">
                 <h3>{t("roomDetailsPage.bookRoom")}</h3>

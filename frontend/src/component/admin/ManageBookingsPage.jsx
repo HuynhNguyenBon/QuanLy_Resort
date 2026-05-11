@@ -24,14 +24,29 @@ const ManageBookingsPage = () => {
     const fetchBookings = async () => {
       try {
         const response = await ApiService.getAllBookings();
+        console.log("getAllBookings Response:", response);
+        
+        const allBookings =
+          response.bookingList ??
+          response.bookings ??
+          response.data ??
+          response;
 
-        const allBookings = response.bookingList;
+        console.log("All Bookings (After extraction):", allBookings);
 
-        setBookings(allBookings);
+        const bookingsArray = Array.isArray(allBookings)
+          ? allBookings
+          : allBookings?.bookingList ?? allBookings?.bookings ?? [];
 
-        setFilteredBookings(allBookings);
+        console.log("Bookings Array:", bookingsArray);
+        console.log("Bookings Array Length:", bookingsArray.length);
+
+        // Temporarily show ALL bookings without status filter for debugging
+        console.log("All Bookings (No Filter):", bookingsArray);
+        setBookings(bookingsArray);
+        setFilteredBookings(bookingsArray);
       } catch (error) {
-        console.error("Error fetching bookings:", error.message);
+        console.error("Error fetching bookings:", error.response?.data?.message || error.message);
       }
     };
 
@@ -46,13 +61,14 @@ const ManageBookingsPage = () => {
     if (term === "") {
       setFilteredBookings(bookings);
     } else {
-      const filtered = bookings.filter(
-        (booking) =>
+      const filtered = bookings.filter((booking) => {
+        return (
           booking.bookingConfirmationCode &&
           booking.bookingConfirmationCode
             .toLowerCase()
-            .includes(term.toLowerCase()),
-      );
+            .includes(term.toLowerCase())
+        );
+      });
 
       setFilteredBookings(filtered);
     }
@@ -99,7 +115,7 @@ const ManageBookingsPage = () => {
         <div className="bbhh-booking-grid">
           {currentBookings.length > 0 ? (
             currentBookings.map((booking) => (
-              <div key={booking.id} className="bbhh-box bbhh-booking-card">
+              <div key={booking.id ?? booking._id} className="bbhh-box bbhh-booking-card">
                 <div className="bbhh-card-header">
                   <span className="bbhh-tag">
                     {t("manageBookingsPage.code")}:{" "}
