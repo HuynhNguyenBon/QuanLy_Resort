@@ -5,11 +5,13 @@ import ApiService from "../../service/ApiService";
 import { useTranslation } from "react-i18next";
 
 function LoginPage() {
-  const { t, i18n } = useTranslation("auth");
+  const { t } = useTranslation("auth");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,17 +22,32 @@ function LoginPage() {
 
     if (!email || !password) {
       setError(t("login.fillAllFields"));
+
       setTimeout(() => setError(""), 5000);
+
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response = await ApiService.loginUser({ email, password });
-      navigate(from, { replace: true });
+      const response = await ApiService.loginUser({
+        email,
+        password,
+      });
+
+      if (response.statusCode === 200) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("role", response.role);
+
+        navigate(from, { replace: true });
+      }
     } catch (error) {
-      setError(t("login.fillAllFields"));
+      if (error.response?.data?.message?.includes("Bad credentials")) {
+        setError(t("login.fillAllFields"));
+      } else {
+        setError(error.response?.data?.message || t("login.general"));
+      }
       setTimeout(() => setError(""), 5000);
     } finally {
       setIsLoading(false);
@@ -45,7 +62,7 @@ function LoginPage() {
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>{t("login.email")}:</label>
+          <label>Email:</label>
 
           <input
             type="email"
@@ -57,7 +74,7 @@ function LoginPage() {
         </div>
 
         <div className="form-group">
-          <label>{t("login.password")}:</label>
+          <label>{t("login.password")}</label>
 
           <input
             type="password"
@@ -102,7 +119,9 @@ function LoginPage() {
             textAlign: "left",
           }}
         >
-          {t("login.noAccount")} <a href="/register">{t("register.title")}</a>
+          {t("login.noAccount")}
+
+          <a href="/register">{t("register.title")}</a>
         </p>
       </div>
     </div>
