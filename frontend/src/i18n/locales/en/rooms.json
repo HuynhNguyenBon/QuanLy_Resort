@@ -45,7 +45,11 @@
     "total": "Total Price",
     "confirm": "Confirm Booking",
     "selectDates": "Please select check-in and check-out dates.",
+    "roomBooked": "Room already booked for selected dates.",
     "loginAgain": "Please log in again.",
-    "paymentError": "Payment error: "
+    "paymentError": "Payment error: ",
+    "forbidden": "Access denied",
+    "general": "An error occurred",
+    "roomNotAvailable": "Room is not available for the selected dates"
   }
 }

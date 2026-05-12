@@ -23,7 +23,17 @@ const FindBookingPage = () => {
       setBookingDetails(response.booking);
       setError(null); // Xóa lỗi nếu thành công
     } catch (error) {
-      setError(error.response?.data?.message || error.message);
+      const message = error.response?.data?.message;
+
+      if (message === "Access denied") {
+        setError(t("roomDetailsPage.forbidden"));
+      } else if (message === "Room is not available for the selected dates") {
+        setError(t("roomDetailsPage.roomNotAvailable"));
+      } else if (message === "Room already booked for selected dates.") {
+        setError(t("roomDetailsPage.roomBooked"));
+      } else {
+        setError(t("roomDetailsPage.general"));
+      }
       setTimeout(() => setError(""), 5000);
     }
   };

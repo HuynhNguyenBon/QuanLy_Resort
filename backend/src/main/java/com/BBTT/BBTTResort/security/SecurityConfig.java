@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/payment/vnpay-ipn").permitAll()
                         .requestMatchers("/payment/vnpay-return").permitAll()
                         .requestMatchers("/payment/create").authenticated()
+                        .requestMatchers("/translations/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager ->

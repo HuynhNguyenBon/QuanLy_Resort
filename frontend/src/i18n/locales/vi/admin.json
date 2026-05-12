@@ -70,6 +70,8 @@
     "roomType": "Loại phòng",
     "roomPrice": "Giá phòng",
     "roomDescription": "Mô tả phòng",
+    "chooseFile": "Chọn ảnh",
+    "noFile": "Chưa chọn tệp",
 
     "updateRoom": "Cập nhật phòng",
     "deleteRoom": "Xóa phòng",

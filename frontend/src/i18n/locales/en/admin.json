@@ -70,6 +70,8 @@
     "roomType": "Room Type",
     "roomPrice": "Room Price",
     "roomDescription": "Room Description",
+    "chooseFile": "Choose Image",
+    "noFile": "No file chosen",
 
     "updateRoom": "Update Room",
     "deleteRoom": "Delete Room",

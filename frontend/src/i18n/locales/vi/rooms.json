@@ -7,7 +7,7 @@
 
   "findBookingPage": {
     "findYour": "Tìm",
-    "reservation": "Đặt phòng",
+    "reservation": "Đặt Phòng",
     "placeholder": "Nhập mã xác nhận (ví dụ: ABC123)",
     "searchBooking": "Tìm đặt phòng",
     "enterCode": "Vui lòng nhập mã xác nhận đặt phòng",
@@ -44,7 +44,11 @@
     "total": "Tổng tiền",
     "confirm": "Xác nhận đặt phòng",
     "selectDates": "Vui lòng chọn ngày nhận và trả phòng.",
+    "roomBooked": "Phòng đã được đặt cho các ngày đã chọn.",
     "loginAgain": "Vui lòng đăng nhập lại.",
-    "paymentError": "Lỗi thanh toán: "
+    "paymentError": "Lỗi thanh toán: ",
+    "forbidden": "Bạn không có quyền truy cập",
+    "general": "Đã xảy ra lỗi",
+    "roomNotAvailable": "Phòng không có sẵn cho các ngày đã chọn"
   }
 }
