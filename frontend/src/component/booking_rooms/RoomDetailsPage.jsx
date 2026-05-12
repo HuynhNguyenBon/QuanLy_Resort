@@ -7,7 +7,7 @@ import "../../UiverseElements.css";
 // import 'react-datepicker/dist/react-datepicker.css';
 
 const RoomDetailsPage = () => {
-  const { t } = useTranslation("rooms");
+  const { t, i18n } = useTranslation("rooms");
   const navigate = useNavigate(); // Truy cập chức năng điều hướng để di chuyển
   const { roomId } = useParams(); // Lấy ID phòng từ các tham số URL
   const [roomDetails, setRoomDetails] = useState(null);
@@ -27,27 +27,34 @@ const RoomDetailsPage = () => {
 
   useEffect(() => {
     const fetchRoomDetails = async () => {
-      try {
-        const response = await ApiService.getRoomById(roomId);
-        setRoomDetails(response.room);
-      } catch (error) {
-        const message = error.response?.data?.message;
+      console.log("🔥 useEffect RUN");
 
-        if (message === "Access denied") {
-          setError(t("roomDetailsPage.forbidden"));
-        } else if (message === "Room is not available for the selected dates") {
-          setError(t("roomDetailsPage.roomNotAvailable"));
-        } else if (message === "Room already booked for selected dates.") {
-          setError(t("roomDetailsPage.roomBooked"));
-        } else {
-          setError(t("roomDetailsPage.general"));
-        }
+      try {
+        const lang = i18n.language.split("-")[0];
+        console.log("LANG:", lang);
+
+        const roomRes = await ApiService.getRoomById(roomId);
+        console.log("ROOM:", roomRes);
+
+        const transRes = await ApiService.getRoomTranslation(roomId, lang);
+        console.log("TRANS:", transRes);
+
+        const room = roomRes.room || roomRes;
+
+        setRoomDetails({
+          ...room,
+          roomDescription: transRes?.roomDescription || room.roomDescription,
+          roomType: transRes?.roomType || room.roomType,
+        });
+      } catch (error) {
+        console.log("❌ ERROR:", error);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchRoomDetails();
-  }, [roomId]);
+  }, [roomId, i18n.language]);
 
   const handleConfirmBooking = async () => {
     if (!checkInDate || !checkOutDate) {
@@ -189,7 +196,9 @@ const RoomDetailsPage = () => {
                     t("roomDetailsPage.defaultDesc")}
                 </p>
                 <div className="bbhh-price-circle">
-                  <span>${roomDetails.roomPrice}</span> /{" "}
+                  <span>
+                    ${roomDetails.roomPrice} / {t("roomDetailsPage.night")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -203,6 +212,8 @@ const RoomDetailsPage = () => {
                 <div className="bbhh-input-box">
                   <label>{t("roomDetailsPage.checkIn")}</label>
                   <DatePicker
+                    id="checkin"
+                    name="checkin"
                     selected={checkInDate}
                     onChange={(date) => setCheckInDate(date)}
                     selectsStart
@@ -216,6 +227,8 @@ const RoomDetailsPage = () => {
                 <div className="bbhh-input-box">
                   <label>{t("roomDetailsPage.checkOut")}</label>
                   <DatePicker
+                    id="checkout"
+                    name="checkout"
                     selected={checkOutDate}
                     onChange={(date) => setCheckOutDate(date)}
                     selectsEnd
@@ -232,6 +245,8 @@ const RoomDetailsPage = () => {
                 <div className="bbhh-input-box">
                   <label>{t("roomDetailsPage.adults")}</label>
                   <input
+                    id="adults"
+                    name="adults"
                     type="number"
                     min="1"
                     value={numAdults}
@@ -242,6 +257,8 @@ const RoomDetailsPage = () => {
                 <div className="bbhh-input-box">
                   <label>{t("roomDetailsPage.children")}</label>
                   <input
+                    id="children"
+                    name="children"
                     type="number"
                     min="0"
                     value={numChildren}

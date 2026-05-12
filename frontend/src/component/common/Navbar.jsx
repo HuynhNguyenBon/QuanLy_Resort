@@ -21,7 +21,7 @@ function Navbar() {
   const languages = [
     { code: "vi", name: "Tiếng Việt", country: "vn" },
     { code: "en", name: "English", country: "us" },
-    { code: "jp", name: "日本語", country: "jp" },
+    { code: "ja", name: "日本語", country: "jp" },
   ];
 
   const currentLang =
