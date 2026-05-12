@@ -39,6 +39,9 @@ function LoginPage() {
       if (response.statusCode === 200) {
         localStorage.setItem("token", response.token);
         localStorage.setItem("role", response.role);
+        localStorage.setItem("userEmail", email);
+
+        window.dispatchEvent(new Event("authChange"));
 
         navigate(from, { replace: true });
       }

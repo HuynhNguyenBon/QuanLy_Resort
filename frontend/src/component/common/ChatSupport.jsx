@@ -101,13 +101,19 @@ const ChatSupport = () => {
   }, [chatHistory, isOpen]);
 
   const handleTriggerClick = () => {
-    const role = localStorage.getItem("role")?.toLowerCase();
+    const freshUser = getFreshUser();
+    const role = freshUser?.role || localStorage.getItem("role")?.toLowerCase();
 
     if (role === "admin") {
       navigate("/admin/chat");
-    } else {
-      setIsOpen((prev) => !prev);
+      return;
     }
+
+    if (freshUser) {
+      setUser(freshUser);
+    }
+
+    setIsOpen((prev) => !prev);
   };
 
   const handleSendMessage = (e) => {
