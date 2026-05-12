@@ -213,6 +213,7 @@ export default class ApiService {
         localStorage.removeItem('token')
         localStorage.removeItem('role')
         localStorage.removeItem('userEmail')
+        window.dispatchEvent(new Event("authChange"));
     }
 
     static isAuthenticated() {
