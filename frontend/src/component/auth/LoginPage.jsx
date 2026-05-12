@@ -1,126 +1,134 @@
-import '../../UiverseElements.css';
+import "../../UiverseElements.css";
 import React, { useState } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ApiService from "../../service/ApiService";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 function LoginPage() {
-    const { t, i18n } = useTranslation();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
-    const location = useLocation();
+  const { t } = useTranslation("auth");
 
-    const from = location.state?.from?.pathname || '/home';
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-        if (!email || !password) {
-            setError('Please fill in all fields.');
-            setTimeout(() => setError(''), 5000);
-            return;
-        }
+  const from = location.state?.from?.pathname || "/home";
 
-        setIsLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        try {
-            const response = await ApiService.loginUser({email, password});
+    if (!email || !password) {
+      setError(t("login.fillAllFields"));
 
-            if (response.statusCode === 200) {
-                localStorage.setItem("token", response.token);
-                localStorage.setItem("role", response.role);
-                localStorage.setItem("userEmail", response.email || email);
+      setTimeout(() => setError(""), 5000);
 
-                navigate(from, { replace: true });
-            }
+      return;
+    }
 
-        } catch (error) {
-            setError(error.response?.data?.message || error.message);
-            setTimeout(() => setError(''), 5000);
+    setIsLoading(true);
 
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    try {
+      const response = await ApiService.loginUser({
+        email,
+        password,
+      });
 
-    return (
-        <div className="auth-container">
+      if (response.statusCode === 200) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("role", response.role);
+        localStorage.setItem("userEmail", email);
 
-            <h2>{t('Login')}</h2>
+        window.dispatchEvent(new Event("authChange"));
 
-            {error && <p className="error-message">{error}</p>}
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      if (error.response?.data?.message?.includes("Bad credentials")) {
+        setError(t("login.fillAllFields"));
+      } else {
+        setError(error.response?.data?.message || t("login.general"));
+      }
+      setTimeout(() => setError(""), 5000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-            <form onSubmit={handleSubmit}>
+  return (
+    <div className="auth-container">
+      <h2>{t("login.title")}</h2>
 
-                <div className="form-group">
-                    <label>Email: </label>
+      {error && <p className="error-message">{error}</p>}
 
-                    <input
-                        type="email"
-                        className="input-uiverse"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Email:</label>
 
-                <div className="form-group">
-                    <label>{t('Password: ')} </label>
-
-                    <input
-                        type="password"
-                        className="input-uiverse"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="btn-uiverse"
-                    disabled={isLoading}
-                >
-                    {isLoading ? t('Loading...') : t('Login')}
-
-                    {isLoading && <div className="loader-uiverse"></div>}
-                </button>
-
-            </form>
-
-            <div style={{ marginTop: '15px' }}>
-
-                <div style={{ textAlign: 'right', marginBottom: '10px', paddingRight: '20px' }}>
-                    <a
-                        href="/forgot-password"
-                        style={{
-                            color: '#007bff',
-                            textDecoration: 'none',
-                            fontSize: '13px'
-                        }}
-                    >
-                        Quên mật khẩu?
-                    </a>
-                </div>
-
-                <p
-                    className="register-link"
-                    style={{
-                        margin: 0,
-                        textAlign: 'left'
-                    }}
-                >
-                    {t("Don't have an account? ")}
-                    <a href="/register">{t('Register')}</a>
-                </p>
-
-            </div>
-
+          <input
+            type="email"
+            className="input-uiverse"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
-    );
+
+        <div className="form-group">
+          <label>{t("login.password")}</label>
+
+          <input
+            type="password"
+            className="input-uiverse"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit" className="btn-uiverse" disabled={isLoading}>
+          {isLoading ? t("login.loading") : t("login.title")}
+
+          {isLoading && <div className="loader-uiverse"></div>}
+        </button>
+      </form>
+
+      <div style={{ marginTop: "15px" }}>
+        <div
+          style={{
+            textAlign: "right",
+            marginBottom: "10px",
+            paddingRight: "20px",
+          }}
+        >
+          <a
+            href="/forgot-password"
+            style={{
+              color: "#007bff",
+              textDecoration: "none",
+              fontSize: "13px",
+            }}
+          >
+            {t("login.forgotPassword")}
+          </a>
+        </div>
+
+        <p
+          className="register-link"
+          style={{
+            margin: 0,
+            textAlign: "left",
+          }}
+        >
+          {t("login.noAccount")}
+
+          <a href="/register">{t("register.title")}</a>
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default LoginPage;
