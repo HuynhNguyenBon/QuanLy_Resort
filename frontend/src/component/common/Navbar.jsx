@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 import "../../UiverseElements.css";
@@ -7,165 +7,190 @@ import "../../UiverseElements.css";
 function Navbar() {
   const { t, i18n } = useTranslation("navbar");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const isAuthenticated = ApiService.isAuthenticated();
   const isAdmin = ApiService.isAdmin();
-  const isUser = ApiService.isUser();
+  const isUser  = ApiService.isUser();
 
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const [isUserOpen, setIsUserOpen] = useState(false);
+  const [scrolled,   setScrolled]   = useState(false);
+  const [langPos,    setLangPos]    = useState({ top: 0, right: 0 });
+  const [userPos,    setUserPos]    = useState({ top: 0, right: 0 });
 
-  const langRef = useRef(null);
-  const btnRef = useRef(null);
+  const langBtnRef = useRef(null);
+  const userBtnRef = useRef(null);
+
+  const isHeroPage = ["/home", "/"].includes(location.pathname);
 
   const languages = [
     { code: "vi", name: "Tiếng Việt", country: "vn" },
-    { code: "en", name: "English", country: "us" },
-    { code: "ja", name: "日本語", country: "jp" },
+    { code: "en", name: "English",    country: "us" },
+    { code: "jp", name: "日本語",      country: "jp" },
   ];
-
-  const currentLang =
-    languages.find((l) => l.code === i18n.language) || languages[0];
-
-  const toggleMenu = () => {
-    if (!isLangOpen && btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      setCoords({
-        top: rect.bottom + window.scrollY + 5,
-        left: rect.left - 80,
-      });
-    }
-    setIsLangOpen((prev) => !prev);
-  };
+  const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        langRef.current &&
-        !langRef.current.contains(event.target) &&
-        btnRef.current &&
-        !btnRef.current.contains(event.target)
-      ) {
-        setIsLangOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (langBtnRef.current && !langBtnRef.current.contains(e.target)) setIsLangOpen(false);
+      if (userBtnRef.current && !userBtnRef.current.contains(e.target)) setIsUserOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const openLang = () => {
+    if (langBtnRef.current) {
+      const r = langBtnRef.current.getBoundingClientRect();
+      setLangPos({ top: r.bottom + 8, right: window.innerWidth - r.right });
+    }
+    setIsLangOpen(p => !p);
+    setIsUserOpen(false);
+  };
+
+  const openUser = () => {
+    if (userBtnRef.current) {
+      const r = userBtnRef.current.getBoundingClientRect();
+      setUserPos({ top: r.bottom + 8, right: window.innerWidth - r.right });
+    }
+    setIsUserOpen(p => !p);
+    setIsLangOpen(false);
+  };
 
   const handleLogout = (e) => {
     e.preventDefault();
-
-    const confirmLogout = window.confirm(t("logout.confirm"));
-
-    if (confirmLogout) {
+    if (window.confirm(t("logout.confirm"))) {
       ApiService.logout();
       navigate("/login");
     }
   };
 
-  const handleSelectLang = (code) => {
-    i18n.changeLanguage(code);
-    setIsLangOpen(false);
-  };
+  const navClass = `bbhh-nav ${isHeroPage && !scrolled ? "nav-transparent" : "nav-solid"}`;
 
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <NavLink to="/home">BBHH Resort</NavLink>
-      </div>
+    <>
+      {!isHeroPage && <div className="bbhh-nav-spacer" />}
 
-      <ul className="navbar-ul">
-        <li>
-          <NavLink to="/home">{t("menu.home")}</NavLink>
-        </li>
+      <nav className={navClass}>
+        {/* Logo */}
+        <NavLink to="/home" className="bbhh-nav-logo">
+          <span className="logo-star">★</span> BBHH Resort
+        </NavLink>
 
-        <li>
-          <NavLink to="/rooms">{t("menu.rooms")}</NavLink>
-        </li>
-
-        <li>
-          <NavLink to="/find-booking">{t("menu.booking")}</NavLink>
-        </li>
-
-        <li>
-          <NavLink to="/services">{t("menu.services")}</NavLink>
-        </li>
-
-        {isUser && (
-          <li>
-            <NavLink to="/profile">{t("menu.profile")}</NavLink>
-          </li>
-        )}
-
-        {isAdmin && (
-          <li>
-            <NavLink to="/admin">{t("menu.admin")}</NavLink>
-          </li>
-        )}
-
-        {!isAuthenticated && (
-          <li>
-            <NavLink to="/login">{t("menu.login")}</NavLink>
-          </li>
-        )}
-
-        {!isAuthenticated && (
-          <li>
-            <NavLink to="/register">{t("menu.register")}</NavLink>
-          </li>
-        )}
-
-        {isAuthenticated && (
-          <li>
-            <NavLink to="/login" onClick={handleLogout}>
-              {t("menu.logout")}
-            </NavLink>
-          </li>
-        )}
-
-        {/* LANGUAGE */}
-        <li className="lang-container-fixed">
-          <div className="flag-btn-trigger" ref={btnRef} onClick={toggleMenu}>
-            <img
-              src={`https://flagcdn.com/w40/${currentLang.country}.png`}
-              width="22"
-              alt="flag"
-            />
-            <span>{currentLang.code.toUpperCase()}</span>
-            <span>{isLangOpen ? "▲" : "▼"}</span>
-          </div>
-
-          {isLangOpen && (
-            <div
-              className="flag-dropdown-fixed"
-              ref={langRef}
-              style={{
-                position: "absolute",
-                top: coords.top,
-                left: coords.left,
-              }}
+        {/* Links */}
+        <div className="bbhh-nav-links">
+          {[
+            { to: "/home",         label: t("menu.home") },
+            { to: "/rooms",        label: t("menu.rooms") },
+            { to: "/find-booking", label: t("menu.booking") },
+            { to: "/services",     label: t("menu.services") },
+          ].map(item => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => `bbhh-nav-link${isActive ? " active" : ""}`}
             >
-              {languages.map((lang) => (
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+
+        {/* Right */}
+        <div className="bbhh-nav-right">
+          {isAdmin && (
+            <button className="bbhh-nav-btn-admin" onClick={() => navigate("/admin")}>
+              🛡️ {t("menu.admin")}
+            </button>
+          )}
+
+          {!isAuthenticated ? (
+            <>
+              <button className="bbhh-nav-btn-login" onClick={() => navigate("/login")}>
+                {t("menu.login")}
+              </button>
+              <button className="bbhh-nav-btn-register" onClick={() => navigate("/register")}>
+                {t("menu.register")}
+              </button>
+            </>
+          ) : (
+            <div ref={userBtnRef} style={{ position: "relative" }}>
+              <button
+                className={`bbhh-nav-avatar ${isAdmin ? "avatar-admin" : "avatar-user"}`}
+                onClick={openUser}
+                title="Tài khoản"
+              >
+                {isAdmin ? "👑" : "👤"}
+              </button>
+              {isUserOpen && (
                 <div
-                  key={lang.code}
-                  className="flag-option-item"
-                  onClick={() => handleSelectLang(lang.code)}
+                  className="bbhh-nav-dropdown"
+                  style={{ top: userPos.top, right: userPos.right }}
                 >
-                  <img
-                    src={`https://flagcdn.com/w40/${lang.country}.png`}
-                    width="20"
-                    alt="flag"
-                  />
-                  <span>{lang.name}</span>
+                  <div className="bbhh-nav-dropdown-head">
+                    <div className="dd-role">Đã đăng nhập</div>
+                    <div className="dd-name">{isAdmin ? "Administrator" : "Thành viên"}</div>
+                  </div>
+                  {isUser && (
+                    <div className="bbhh-nav-dd-item" onClick={() => { navigate("/profile"); setIsUserOpen(false); }}>
+                      👤 {t("menu.profile")}
+                    </div>
+                  )}
+                  {isAdmin && (
+                    <div className="bbhh-nav-dd-item" onClick={() => { navigate("/admin"); setIsUserOpen(false); }}>
+                      🛡️ Trang quản trị
+                    </div>
+                  )}
+                  <div className="bbhh-nav-dd-item danger" onClick={handleLogout}>
+                    🚪 {t("menu.logout")}
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
           )}
-        </li>
-      </ul>
-    </nav>
+
+          {/* Language */}
+          <div ref={langBtnRef} style={{ position: "relative" }}>
+            <button className="bbhh-nav-lang-btn" onClick={openLang}>
+              <img
+                src={`https://flagcdn.com/w40/${currentLang.country}.png`}
+                width="18" height="12"
+                alt={currentLang.code}
+              />
+              {currentLang.code.toUpperCase()} {isLangOpen ? "▲" : "▼"}
+            </button>
+            {isLangOpen && (
+              <div
+                className="bbhh-nav-dropdown"
+                style={{ top: langPos.top, right: langPos.right, minWidth: "160px" }}
+              >
+                {languages.map(lang => (
+                  <div
+                    key={lang.code}
+                    className={`bbhh-nav-dd-lang${lang.code === i18n.language ? " selected" : ""}`}
+                    onClick={() => { i18n.changeLanguage(lang.code); setIsLangOpen(false); }}
+                  >
+                    <img
+                      src={`https://flagcdn.com/w40/${lang.country}.png`}
+                      width="20" height="13"
+                      alt={lang.code}
+                    />
+                    {lang.name}
+                    {lang.code === i18n.language && <span className="check">✓</span>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+    </>
   );
 }
 
