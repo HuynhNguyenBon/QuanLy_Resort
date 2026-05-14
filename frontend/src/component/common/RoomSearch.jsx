@@ -1,111 +1,170 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import "react-datepicker/dist/react-datepicker.css";
-
 import ApiService from "../../service/ApiService";
+import "../../UiverseElements.css";
 
 const RoomSearch = ({ handleSearchResult }) => {
   const { t } = useTranslation("common");
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [roomType, setRoomType] = useState("");
-  const [roomTypes, setRoomTypes] = useState([]);
-  const [error, setError] = useState("");
+  const [startDate,  setStartDate]  = useState(null);
+  const [endDate,    setEndDate]    = useState(null);
+  const [roomType,   setRoomType]   = useState("");
+  const [roomTypes,  setRoomTypes]  = useState([]);
+  const [error,      setError]      = useState("");
+  const [loading,    setLoading]    = useState(false);
+  const [dropOpen,   setDropOpen]   = useState(false);
+  const dropRef = useRef(null);
 
   useEffect(() => {
-    const fetchRoomTypes = async () => {
-      try {
-        const types = await ApiService.getRoomTypes();
-        setRoomTypes(types);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    fetchRoomTypes();
+    ApiService.getRoomTypes()
+      .then(types => setRoomTypes(types))
+      .catch(err => console.error(err.message));
   }, []);
 
-  const showError = (message, timeout = 5000) => {
-    setError(message);
-    setTimeout(() => setError(""), timeout);
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const showError = (msg, ms = 5000) => {
+    setError(msg);
+    setTimeout(() => setError(""), ms);
   };
 
-  const handleInternalSearch = async () => {
-    if (!startDate || !endDate || !roomType) {
-      showError(t("search.fillAll"));
+  const handleSearch = async () => {
+    if (!startDate || !endDate) {
+      showError("Vui lòng chọn ngày nhận và ngày trả phòng.");
+      return;
+    }
+    if (startDate >= endDate) {
+      showError("Ngày trả phòng phải sau ngày nhận phòng.");
       return;
     }
 
+    setLoading(true);
+    setError("");
+
     try {
-      const formattedStart = startDate.toISOString().split("T")[0];
-      const formattedEnd = endDate.toISOString().split("T")[0];
+      const start = startDate.toISOString().split("T")[0];
+      const end   = endDate.toISOString().split("T")[0];
 
-      const res = await ApiService.getAvailableRoomsByDateAndType(
-        formattedStart,
-        formattedEnd,
-        roomType,
-      );
+      let availableRooms = [];
 
-      if (res.statusCode === 200) {
-        if (res.roomList.length === 0) {
-          showError(t("search.notAvailable"));
-          return;
-        }
-
-        handleSearchResult(res.roomList);
-        setError("");
+      if (roomType) {
+        // Có chọn loại — gọi 1 API
+        const res = await ApiService.getAvailableRoomsByDateAndType(start, end, roomType);
+        availableRooms = res.roomList || [];
+      } else {
+        // Không chọn loại — gọi song song tất cả loại rồi gộp lại
+        const results = await Promise.all(
+          roomTypes.map(type =>
+            ApiService.getAvailableRoomsByDateAndType(start, end, type)
+              .then(r => r.roomList || [])
+              .catch(() => [])
+          )
+        );
+        availableRooms = results.flat();
       }
-    } catch (error) {
-      showError(t("search.error") + error.message);
+
+      if (availableRooms.length === 0) {
+        showError("Không có phòng trống trong khoảng thời gian này. Hãy thử ngày khác.");
+        return;
+      }
+
+      handleSearchResult(availableRooms);
+    } catch (err) {
+      showError("Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const selectedLabel = roomType || t("search.selectRoomType");
 
   return (
     <section>
       <div className="search-container">
+
+        {/* Check-in */}
         <div className="search-field">
           <label>{t("search.checkIn")}</label>
-
           <DatePicker
             selected={startDate}
             onChange={setStartDate}
             dateFormat="dd/MM/yyyy"
             placeholderText={t("search.selectCheckIn")}
+            minDate={new Date()}
+            autoComplete="off"
           />
         </div>
 
+        {/* Check-out */}
         <div className="search-field">
           <label>{t("search.checkOut")}</label>
-
           <DatePicker
             selected={endDate}
             onChange={setEndDate}
             dateFormat="dd/MM/yyyy"
             placeholderText={t("search.selectCheckOut")}
+            minDate={startDate || new Date()}
+            autoComplete="off"
           />
         </div>
 
-        <div className="search-field">
-          <label>{t("search.roomType")}</label>
-
-          <select
-            value={roomType}
-            onChange={(e) => setRoomType(e.target.value)}
+        {/* Loại phòng — tuỳ chọn */}
+        <div className="search-field search-field-drop" ref={dropRef}>
+          <label>{t("search.roomType")} <span style={{ fontWeight: 400, opacity: 0.6 }}>(tuỳ chọn)</span></label>
+          <button
+            type="button"
+            className={`search-drop-trigger${roomType ? " selected" : ""}`}
+            onClick={() => setDropOpen(p => !p)}
           >
-            <option value="">{t("search.selectRoomType")}</option>
+            <span>{selectedLabel}</span>
+            <svg
+              className={`search-drop-chevron${dropOpen ? " open" : ""}`}
+              width="14" height="14" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2.5"
+              strokeLinecap="round" strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
 
-            {roomTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+          {dropOpen && (
+            <div className="search-drop-menu">
+              <div
+                className={`search-drop-item${!roomType ? " active" : ""}`}
+                onClick={() => { setRoomType(""); setDropOpen(false); }}
+              >
+                Tất cả loại phòng
+              </div>
+              {roomTypes.map(type => (
+                <div
+                  key={type}
+                  className={`search-drop-item${roomType === type ? " active" : ""}`}
+                  onClick={() => { setRoomType(type); setDropOpen(false); }}
+                >
+                  {roomType === type && <span className="search-drop-check">✓</span>}
+                  {type}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        <button className="home-search-button" onClick={handleInternalSearch}>
-          {t("search.button")}
+        <button
+          className="home-search-button"
+          onClick={handleSearch}
+          disabled={loading}
+          style={{ opacity: loading ? 0.7 : 1 }}
+        >
+          {loading ? "Đang tìm..." : t("search.button")}
         </button>
       </div>
 
