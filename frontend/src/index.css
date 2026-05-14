@@ -1,9 +1,16 @@
-* {
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after {
   margin: 0;
-  font-family: Arial, sans-serif;
-  color: #666;
-  /* box-sizing: border-box; */
+  box-sizing: border-box;
+}
+
+html, body {
   overflow-x: hidden;
+  font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  color: #1E293B;
+  background: #F5F0EB;
+  -webkit-font-smoothing: antialiased;
 }
 
 .colors {
@@ -392,47 +399,21 @@ button[type="submit"]:hover {
 
 /*ALL ROOMS PAGE STYLING START*/
 
-.all-rooms {
-  margin: 50px 0px 90px 0px;
-}
 
-.all-rooms h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #007f86;
-}
 
-.all-room-filter-div {
-  margin-left: 5rem;
-}
 
-.all-room-filter-div label {
-  color: #007f86;
-}
 
-.filter-select-div {
-  width: 100%;
-  margin: 0px 0px 0px 4rem;
-}
 
-.add-room-button {
-  float: right;
-  margin-right: 70px;
-  font-weight: 600;
-}
 
-.all-room-filter-div label {
-  font-weight: 800;
-  font-size: 20px;
-}
 
-.all-room-filter-div select {
-  width: auto;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-}
+
+
+
+
+
+
+
+
 
 /*ALL ROOMS PAGE STYLING ENDS*/
 
@@ -1114,9 +1095,7 @@ h2 {
     font-weight: 500;
   }
 
-  .all-room-filter-div {
-    margin: 0px;
-  }
+  
 
   .search-container {
     display: block;
@@ -1192,30 +1171,4 @@ h2 {
 
 .animated-texts h1 {
   white-space: nowrap;
-}
-
-.custom-file-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.custom-file-button {
-  background: #0d6efd;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.3s;
-}
-
-.custom-file-button:hover {
-  background: #0b5ed7;
-}
-
-.custom-file-name {
-  font-size: 14px;
-  color: #666;
 }
