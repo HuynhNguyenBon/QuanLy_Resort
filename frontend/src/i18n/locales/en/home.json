@@ -1,8 +1,38 @@
 {
-  "welcome": "Welcome to",
+  "heroBadge": "★ RESORT & SPA — VIETNAM",
+  "heroTitle1": "Your ",
+  "heroTitle2": "Luxury",
+  "heroTitle3": "Resort",
   "subtitle": "Step into a haven of comfort and care",
-  "allRooms": "All Rooms",
-  "servicesTitle": "Services at",
+  "heroSubtitle": "🛏️ Book Your Stay Now",
+  "heroServices": "Explore Our Services",
+
+  "stats_rooms": "Rooms",
+  "stats_satisfaction": "Satisfaction",
+  "stats_years": "Years of experience",
+  "stats_support": "24/7 Support",
+
+  "searchResultTitle": "Found {{count}}",
+  "searchResultTitle1": "available rooms",
+  "clearResult": "Clear results",
+
+  "roomsTag": "ROOMS",
+  "roomsTitle": "Choose the perfect room for you",
+  "roomsSubtitle": "From standard rooms to luxury suites — fully equipped for every need.",
+  "viewAll": "View all",
+  "perNight": "night",
+  "viewRoom": "View Room",
+  "roomTypes": {
+    "Standard": "Standard Room",
+    "Superior": "Superior Room",
+    "Deluxe": "Deluxe Room",
+    "Suite": "Suite Room",
+    "Family": "Family Room"
+  },
+
+  "servicesTag": "SERVICES",
+  "servicesSubtitle": "Modern facilities and thoughtful services — designed for a truly complete stay.",
+  "viewDetail": "View details",
 
   "airConditioning": "Air Conditioning",
   "airConditioningDesc": "Stay cool and comfortable throughout your stay with our individually controlled in-room air conditioning.",
@@ -14,5 +44,27 @@
   "parkingDesc": "We offer on-site parking for your convenience. Please inquire about valet parking options if available.",
 
   "wifi": "WiFi",
-  "wifiDesc": "Stay connected throughout your stay with complimentary high-speed Wi-Fi access available in all guest rooms and public areas."
+  "wifiDesc": "Stay connected throughout your stay with complimentary high-speed Wi-Fi access available in all guest rooms and public areas.",
+  "spa": "Spa & Massage",
+  "spaDesc": "Deep-tissue massage and natural essential oil therapies. Restore your energy after long days of travel.",
+
+  "testimonials": {
+    "tag": "CUSTOMER REVIEWS",
+    "titlePrefix": "Over",
+    "titleSuffix": "happy stays",
+
+    "testimonial1": "Excellent service, spacious and clean rooms. We will definitely come back.",
+    "testimonial2": "Amazing infinity pool and beautiful ocean view. Great food variety.",
+    "testimonial3": "Peaceful environment, very relaxing stay. Professional spa service.",
+
+    "testimonialName1": "Minh Anh Nguyen",
+    "testimonialName2": "Van Khoa Tran",
+    "testimonialName3": "Thu Huong Le"
+  },
+
+  "cities": {
+    "Hanoi": "Hanoi",
+    "HCMC": "Ho Chi Minh City",
+    "Danang": "Da Nang"
+  }
 }

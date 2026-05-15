@@ -29,6 +29,7 @@
     "checkIn": "チェックイン日",
     "checkOut": "チェックアウト日",
     "roomType": "部屋タイプ",
+    "tc": "(オプション)",
     "selectCheckIn": "チェックイン日を選択",
     "selectCheckOut": "チェックアウト日を選択",
     "selectRoomType": "部屋タイプを選択",

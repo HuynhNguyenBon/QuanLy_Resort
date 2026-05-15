@@ -1,8 +1,37 @@
 {
-  "welcome": "Chào mừng đến với",
+  "heroBadge": "★ RESORT & SPA — VIỆT NAM",
+  "heroTitle2": "đẳng cấp",
+  "heroTitle3": "của bạn",
   "subtitle": "Bước vào thiên đường của sự thoải mái và chăm sóc",
-  "allRooms": "Tất cả phòng",
-  "servicesTitle": "Dịch vụ tại",
+  "heroSubtitle": "🛏️ Đặt phòng ngay",
+  "heroServices": "Xem dịch vụ",
+
+  "stats_rooms": "Phòng nghỉ",
+  "stats_satisfaction": "Hài lòng",
+  "stats_years": "Năm kinh nghiệm",
+  "stats_support": "Hỗ trợ 24/7",
+
+  "searchResultTitle": "Tìm thấy {{count}} ",
+  "searchResultTitle1": "phòng còn trống",
+  "clearResult": "Xoá kết quả",
+
+  "roomsTag": "PHÒNG NGHỈ",
+  "roomsTitle": "Chọn phòng phù hợp với bạn",
+  "roomsSubtitle": "Từ phòng tiêu chuẩn đến suite cao cấp — đầy đủ tiện nghi cho mọi nhu cầu.",
+  "viewAll": "Xem tất cả",
+  "perNight": "đêm",
+  "viewRoom": "Xem phòng",
+  "roomTypes": {
+    "Standard": "Phòng tiêu chuẩn",
+    "Superior": "Phòng superior",
+    "Deluxe": "Phòng deluxe",
+    "Suite": "Phòng suite",
+    "Family": "Phòng gia đình"
+  },
+
+  "servicesTag": "DỊCH VỤ",
+  "servicesSubtitle": "Tiện nghi hiện đại, dịch vụ chu đáo — được thiết kế để kỳ nghỉ thật sự trọn vẹn.",
+  "viewDetail": "Xem chi tiết",
 
   "airConditioning": "Máy lạnh",
   "airConditioningDesc": "Luôn mát mẻ và thoải mái trong suốt kỳ nghỉ với hệ thống điều hòa riêng trong phòng.",
@@ -14,5 +43,27 @@
   "parkingDesc": "Chúng tôi cung cấp bãi đỗ xe tại chỗ để thuận tiện cho bạn.",
 
   "wifi": "WiFi",
-  "wifiDesc": "Luôn kết nối với Wi-Fi tốc độ cao miễn phí tại tất cả phòng nghỉ và khu vực công cộng."
+  "wifiDesc": "Luôn kết nối với Wi-Fi tốc độ cao miễn phí tại tất cả phòng nghỉ và khu vực công cộng.",
+  "spa": "Spa & Massage",
+  "spaDesc": "Liệu trình massage chuyên sâu, trị liệu bằng tinh dầu thiên nhiên. Phục hồi năng lượng sau những ngày dài.",
+
+  "testimonials": {
+    "tag": "ĐÁNH GIÁ KHÁCH HÀNG",
+    "titlePrefix": "Hơn",
+    "titleSuffix": "lượt nghỉ hài lòng",
+
+    "testimonial1": "Dịch vụ tuyệt vời, phòng rộng rãi và sạch sẽ. chúng tôi sẽ quay lại.",
+    "testimonial2": "Hồ bơi vô cực đẹp, view biển tuyệt hảo. Nhà hàng ngon và đa dạng món ăn.",
+    "testimonial3": "Không gian yên tĩnh, nghỉ ngơi rất thoải mái. Spa rất chuyên nghiệp, thư giãn cực kỳ.",
+
+    "testimonialName1": "Nguyễn Minh Anh",
+    "testimonialName2": "Trần Văn Khoa",
+    "testimonialName3": "Lê Thu Hương"
+  },
+
+  "cities": {
+    "Hanoi": "Hà Nội",
+    "HCMC": "TP.HCM",
+    "Danang": "Đà Nẵng"
+  }
 }
