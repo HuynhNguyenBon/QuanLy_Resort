@@ -34,15 +34,14 @@
   "servicesSubtitle": "Modern facilities and thoughtful services — designed for a truly complete stay.",
   "viewDetail": "View details",
 
-  "airConditioning": "Air Conditioning",
-  "airConditioningDesc": "Stay cool and comfortable throughout your stay with our individually controlled in-room air conditioning.",
+  "pool": "Infinity Pool",
+  "poolDesc": "Open-horizon infinity pool with panoramic views, open 6:00–22:00. The perfect place to unwind.",
 
-  "miniBar": "Mini Bar",
-  "miniBarDesc": "Enjoy a convenient selection of beverages and snacks stocked in your room's mini bar with no additional cost.",
+  "miniBar": "Restaurant & Dining",
+  "miniBarDesc": "Rich Asian–European menu with fresh daily ingredients. Easy reservations, served from breakfast to late night.",
 
-  "parking": "Parking",
-  "parkingDesc": "We offer on-site parking for your convenience. Please inquire about valet parking options if available.",
-
+  "parking": "Free Parking",
+  "parkingDesc": "Spacious covered parking with 24/7 security. Valet parking service available on request.",
   "wifi": "WiFi",
   "wifiDesc": "Stay connected throughout your stay with complimentary high-speed Wi-Fi access available in all guest rooms and public areas.",
   "spa": "Spa & Massage",

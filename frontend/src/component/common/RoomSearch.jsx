@@ -24,7 +24,6 @@ const RoomSearch = ({ handleSearchResult }) => {
   };
 
   const dateFormat = getDateFormat();
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [roomType, setRoomType] = useState("");
@@ -63,6 +62,9 @@ const RoomSearch = ({ handleSearchResult }) => {
       showError("Ngày trả phòng phải sau ngày nhận phòng.");
       return;
     }
+
+    setLoading(true);
+    setError("");
 
     setLoading(true);
     setError("");
