@@ -65,5 +65,13 @@
     "Hanoi": "Hanoi",
     "HCMC": "Ho Chi Minh City",
     "Danang": "Da Nang"
+  },
+
+  "cta": {
+    "title": "Ready for your stay?",
+    "subtitle": "Book now — instant confirmation, free cancellation within 24 hours.",
+    "bookNow": "🛏️ Book Now",
+    "findBooking": "🔍 Find Booking",
+    "note": "✓ Free cancellation within 24h · ✓ Instant confirmation · ✓ 24/7 support"
   }
 }
