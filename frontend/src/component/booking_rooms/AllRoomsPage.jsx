@@ -9,6 +9,21 @@ import "../../UiverseElements.css";
 
 const AllRoomsPage = () => {
   const { t, i18n } = useTranslation("rooms");
+  const getDateFormat = () => {
+    switch (i18n.language) {
+      case "vi":
+        return "dd/MM/yyyy";
+
+      case "en":
+        return "MM/dd/yyyy";
+
+      case "ja":
+        return "yyyy/MM/dd";
+
+      default:
+        return "dd/MM/yyyy";
+    }
+  };
   const navigate = useNavigate();
 
   const [allRooms, setAllRooms] = useState([]);
@@ -308,7 +323,7 @@ const AllRoomsPage = () => {
                 <DatePicker
                   selected={checkIn}
                   onChange={setCheckIn}
-                  dateFormat="dd/MM/yyyy"
+                  dateFormat={getDateFormat()}
                   placeholderText={t("allRoomsPage.pickDate", "Chọn ngày")}
                   minDate={new Date()}
                   autoComplete="off"
@@ -320,7 +335,7 @@ const AllRoomsPage = () => {
                 <DatePicker
                   selected={checkOut}
                   onChange={setCheckOut}
-                  dateFormat="dd/MM/yyyy"
+                  dateFormat={getDateFormat()}
                   placeholderText={t("allRoomsPage.pickDate", "Chọn ngày")}
                   minDate={checkIn || new Date()}
                   autoComplete="off"
