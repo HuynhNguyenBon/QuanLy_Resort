@@ -1,373 +1,320 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { useParams, useNavigate } from "react-router-dom";
 import ApiService from "../../service/ApiService";
-import Pagination from "../common/Pagination";
+import DatePicker from "react-datepicker";
 import "../../UiverseElements.css";
 
-const AllRoomsPage = () => {
-  const { t } = useTranslation("rooms");
+const RoomDetailsPage = () => {
+  const { t, i18n } = useTranslation("rooms");
   const navigate = useNavigate();
+  const { roomId } = useParams();
+  const [roomDetails, setRoomDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [checkOutDate, setCheckOutDate] = useState(null);
+  const [numAdults, setNumAdults] = useState(1);
+  const [numChildren, setNumChildren] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalGuests, setTotalGuests] = useState(1);
 
-  const [allRooms,       setAllRooms]       = useState([]);
-  const [filteredRooms,  setFilteredRooms]  = useState([]);
-  const [roomTypes,      setRoomTypes]      = useState([]);
-  const [selectedType,   setSelectedType]   = useState("");
-  const [currentPage,    setCurrentPage]    = useState(1);
-  const [loading,        setLoading]        = useState(true);
-  const [searching,      setSearching]      = useState(false);
-  const [searchError,    setSearchError]    = useState("");
-  const [isSearchMode,   setIsSearchMode]   = useState(false);
-
-  // Search state
-  const [showSearch,  setShowSearch]  = useState(false);
-  const [checkIn,     setCheckIn]     = useState(null);
-  const [checkOut,    setCheckOut]    = useState(null);
-  const [searchType,  setSearchType]  = useState("");
-  const [dropOpen,    setDropOpen]    = useState(false);
-  const [typeDropOpen,setTypeDropOpen]= useState(false);
-
-  const roomsPerPage = 8;
-  const dropRef     = useRef(null);
-  const typeDropRef = useRef(null);
-
-  // Load tất cả phòng lúc đầu
+  // ─── Fetch room + translation ───────────────────────────────────────────────
   useEffect(() => {
-    const init = async () => {
+    const fetchRoomDetails = async () => {
+      setIsLoading(true);
       try {
-        const [roomsRes, typesRes] = await Promise.all([
-          ApiService.getAllRooms(),
-          ApiService.getRoomTypes(),
-        ]);
-        setAllRooms(roomsRes.roomList);
-        setFilteredRooms(roomsRes.roomList);
-        setRoomTypes(typesRes);
+        // 1. Lấy thông tin phòng gốc (luôn có)
+        const roomRes = await ApiService.getRoomById(roomId);
+        const room = roomRes?.room || roomRes;
+
+        if (!room) {
+          setError("Không tìm thấy thông tin phòng.");
+          return;
+        }
+
+        // 2. Lấy bản dịch — nếu lỗi vẫn giữ dữ liệu gốc
+        const lang = i18n.language.split("-")[0];
+        let translatedRoom = { ...room };
+
+        try {
+          const transRes = await ApiService.getRoomTranslation(roomId, lang);
+          if (transRes) {
+            // Chỉ ghi đè nếu bản dịch thực sự có giá trị
+            if (transRes.roomType) translatedRoom.roomType = transRes.roomType;
+            if (transRes.roomDescription)
+              translatedRoom.roomDescription = transRes.roomDescription;
+            if (transRes.location) translatedRoom.location = transRes.location;
+          }
+        } catch (_) {
+          // Không có bản dịch → giữ nguyên dữ liệu gốc, không crash
+        }
+
+        setRoomDetails(translatedRoom);
       } catch (err) {
-        console.error(err.message);
+        console.error("Lỗi tải phòng:", err);
+        setError("Không thể tải thông tin phòng. Vui lòng thử lại.");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
-    init();
-  }, []);
 
-  // Click ngoài đóng dropdown
-  useEffect(() => {
-    const handler = (e) => {
-      if (dropRef.current     && !dropRef.current.contains(e.target))     setDropOpen(false);
-      if (typeDropRef.current && !typeDropRef.current.contains(e.target)) setTypeDropOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+    fetchRoomDetails();
+  }, [roomId, i18n.language]);
 
-  // Filter theo loại phòng (chỉ hoạt động khi không đang search theo ngày)
-  const filterByType = (type) => {
-    setSelectedType(type);
-    setDropOpen(false);
-    setCurrentPage(1);
-    if (isSearchMode) {
-      // Đang ở search mode — filter trong kết quả search
-      setFilteredRooms(
-        type === ""
-          ? allRooms.filter(r => r._isAvailable)
-          : allRooms.filter(r => r._isAvailable && r.roomType === type)
-      );
-    } else {
-      setFilteredRooms(type === "" ? allRooms : allRooms.filter(r => r.roomType === type));
-    }
-  };
-
-  // Tìm phòng theo ngày — chỉ hiện phòng CHƯA ĐƯỢC ĐẶT trong khoảng đó
-  const handleSearch = async () => {
-    if (!checkIn || !checkOut) {
-      setSearchError("Vui lòng chọn ngày nhận và trả phòng.");
-      setTimeout(() => setSearchError(""), 4000);
+  // ─── Tính giá ────────────────────────────────────────────────────────────────
+  const handleConfirmBooking = async () => {
+    if (!checkInDate || !checkOutDate) {
+      setError(t("roomDetailsPage.selectDates"));
       return;
     }
-    if (checkIn >= checkOut) {
-      setSearchError("Ngày trả phòng phải sau ngày nhận phòng.");
-      setTimeout(() => setSearchError(""), 4000);
-      return;
-    }
-
-    setSearching(true);
-    setSearchError("");
 
     try {
-      const start = checkIn.toISOString().split("T")[0];
-      const end   = checkOut.toISOString().split("T")[0];
-
-      // Nếu không chọn loại phòng — gọi tất cả loại song song
-      let availableRooms = [];
-
-      if (searchType) {
-        const res = await ApiService.getAvailableRoomsByDateAndType(start, end, searchType);
-        availableRooms = res.roomList || [];
-      } else {
-        // Gọi từng loại phòng song song rồi gộp lại
-        const results = await Promise.all(
-          roomTypes.map(type =>
-            ApiService.getAvailableRoomsByDateAndType(start, end, type)
-              .then(r => r.roomList || [])
-              .catch(() => [])
-          )
-        );
-        availableRooms = results.flat();
-      }
-
-      // Đánh dấu phòng nào available
-      const availableIds = new Set(availableRooms.map(r => r.id));
-      const tagged = allRooms.map(r => ({ ...r, _isAvailable: availableIds.has(r.id) }));
-      setAllRooms(tagged);
-
-      // Chỉ hiển thị phòng còn trống
-      const shown = availableRooms.filter(r =>
-        !selectedType || r.roomType === selectedType
+      const formattedCheckInDate = checkInDate.toISOString().split("T")[0];
+      const formattedCheckOutDate = checkOutDate.toISOString().split("T")[0];
+      const available = await ApiService.checkRoomAvailability(
+        roomId,
+        formattedCheckInDate,
+        formattedCheckOutDate,
       );
-      setFilteredRooms(shown);
-      setIsSearchMode(true);
-      setCurrentPage(1);
-      setShowSearch(false);
 
-      if (shown.length === 0) {
-        setSearchError("Không có phòng trống trong khoảng thời gian này. Hãy thử ngày khác.");
+      if (!available) {
+        setError(t("roomDetailsPage.roomBooked"));
+        return;
       }
+
+      const days = Math.ceil(
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24),
+      );
+      const total = days * roomDetails.roomPrice;
+
+      setTotalPrice(total);
+      setTotalGuests(numAdults + numChildren);
+      setError("");
     } catch (err) {
-      setSearchError("Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.");
-      console.error(err);
-    } finally {
-      setSearching(false);
+      const message = err.response?.data?.message;
+      if (message === "Access denied") setError(t("roomDetailsPage.forbidden"));
+      else if (message === "Room is not available for the selected dates")
+        setError(t("roomDetailsPage.roomNotAvailable"));
+      else if (message === "Room already booked for selected dates.")
+        setError(t("roomDetailsPage.roomBooked"));
+      else setError(t("roomDetailsPage.general"));
     }
   };
 
-  // Reset về hiển thị tất cả phòng
-  const resetSearch = () => {
-    setIsSearchMode(false);
-    setCheckIn(null);
-    setCheckOut(null);
-    setSearchType("");
-    setSelectedType("");
-    setFilteredRooms(allRooms.map(r => ({ ...r, _isAvailable: undefined })));
-    setCurrentPage(1);
-    setSearchError("");
-    setShowSearch(false);
+  // ─── Đặt phòng ───────────────────────────────────────────────────────────────
+  const acceptBooking = async () => {
+    try {
+      const userProfile = await ApiService.getUserProfile();
+      const userId = userProfile.user.id;
+
+      if (!userId) {
+        alert(t("roomDetailsPage.loginAgain"));
+        return;
+      }
+
+      const booking = {
+        checkInDate: checkInDate.toISOString().split("T")[0],
+        checkOutDate: checkOutDate.toISOString().split("T")[0],
+        numOfAdults: numAdults,
+        numOfChildren: numChildren,
+      };
+
+      const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
+      if (bookingRes.statusCode !== 200) {
+        setError(bookingRes.message);
+        return;
+      }
+
+      const paymentRes = await ApiService.createVNPayPayment(
+        bookingRes.bookingId,
+      );
+      if (paymentRes.status === "OK") {
+        sessionStorage.setItem("pendingBookingId", bookingRes.bookingId);
+        window.location.href = paymentRes.paymentUrl;
+      } else {
+        try {
+          await ApiService.cancelBooking(bookingRes.bookingId);
+        } catch (_) {}
+        setError(t("roomDetailsPage.paymentError") + paymentRes.message);
+      }
+    } catch (err) {
+      const message = err.response?.data?.message;
+      if (message === "Access denied") setError(t("roomDetailsPage.forbidden"));
+      else if (message === "Room is not available for the selected dates")
+        setError(t("roomDetailsPage.roomNotAvailable"));
+      else if (message === "Room already booked for selected dates.")
+        setError(t("roomDetailsPage.roomBooked"));
+      else setError(t("roomDetailsPage.general"));
+    }
   };
 
-  const indexOfLast  = currentPage * roomsPerPage;
-  const indexOfFirst = indexOfLast - roomsPerPage;
-  const currentRooms = filteredRooms.slice(indexOfFirst, indexOfLast);
+  // ─── Format giá ──────────────────────────────────────────────────────────────
+  const formatPrice = (price) => {
+    if (!price) return "0";
+    const lang = i18n.language; // vi, ja, en...
+    return Number(price).toLocaleString(lang === "vi" ? "vi-VN" : "en-US");
+  };
 
-  const formatDate = (d) => d ? d.toLocaleDateString("vi-VN") : null;
+  // ─── Render ──────────────────────────────────────────────────────────────────
+  if (isLoading)
+    return (
+      <div className="bbhh-loader-container">
+        <div className="bbhh-spinner"></div>
+      </div>
+    );
 
   return (
-    <div className="ar-page">
+    <div className="bbhh-details-wrapper">
+      <div className="bbhh-details-container">
+        {error && <p className="bbhh-error-banner">{error}</p>}
 
-      {/* ── HERO ── */}
-      <div className="ar-hero">
-        <div className="ar-hero-inner">
-          <p className="ar-hero-tag">PHÒNG NGHỈ</p>
-          <h1 className="ar-hero-h1">Chọn phòng hoàn hảo cho bạn</h1>
-          <p className="ar-hero-sub">
-            {isSearchMode
-              ? `${filteredRooms.length} phòng trống ${checkIn && checkOut ? `· ${formatDate(checkIn)} → ${formatDate(checkOut)}` : ""}`
-              : `${filteredRooms.length} phòng · từ Standard đến Suite cao cấp`}
-          </p>
-        </div>
-      </div>
-
-      {/* ── FILTER + SEARCH BAR ── */}
-      <div className="ar-filter-bar">
-        <div className="ar-filter-inner">
-
-          {/* Type pill filter */}
-          <div className="ar-type-pills">
-            <button className={`ar-pill${selectedType === "" ? " active" : ""}`} onClick={() => filterByType("")}>Tất cả</button>
-            {roomTypes.slice(0, 6).map(type => (
-              <button key={type} className={`ar-pill${selectedType === type ? " active" : ""}`} onClick={() => filterByType(type)}>
-                {type}
-              </button>
-            ))}
-          </div>
-
-          {/* Search by date button */}
-          <button
-            className={`ar-search-toggle${showSearch ? " active" : ""}`}
-            onClick={() => setShowSearch(p => !p)}
-          >
-            🔍 {isSearchMode ? `${formatDate(checkIn)} → ${formatDate(checkOut)}` : "Tìm theo ngày"}
-          </button>
-
-          {/* Reset nếu đang search mode */}
-          {isSearchMode && (
-            <button className="ar-reset-btn" onClick={resetSearch}>
-              ✕ Xem tất cả phòng
-            </button>
-          )}
-
-          <span className="ar-count">
-            <strong>{filteredRooms.length}</strong> {isSearchMode ? "phòng trống" : "phòng"}
-          </span>
-        </div>
-
-        {/* ── INLINE SEARCH PANEL ── */}
-        {showSearch && (
-          <div className="ar-search-panel">
-            <div className="ar-search-inner">
-
-              {/* Check-in */}
-              <div className="ar-search-field">
-                <label>NGÀY NHẬN PHÒNG</label>
-                <DatePicker
-                  selected={checkIn}
-                  onChange={setCheckIn}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Chọn ngày"
-                  minDate={new Date()}
-                  autoComplete="off"
+        {roomDetails ? (
+          <div className="bbhh-details-grid">
+            {/* ── Cột trái: Thông tin phòng ── */}
+            <div className="bbhh-details-info">
+              <div className="bbhh-image-frame">
+                <img
+                  src={roomDetails.roomPhotoUrl}
+                  alt={roomDetails.roomType}
                 />
+                {/* Badge loại phòng — dùng bản dịch nếu có */}
+                <div className="bbhh-room-badge">{roomDetails.roomType}</div>
               </div>
 
-              {/* Check-out */}
-              <div className="ar-search-field">
-                <label>NGÀY TRẢ PHÒNG</label>
-                <DatePicker
-                  selected={checkOut}
-                  onChange={setCheckOut}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Chọn ngày"
-                  minDate={checkIn || new Date()}
-                  autoComplete="off"
-                />
-              </div>
+              <div className="bbhh-info-text">
+                <h3>{t("roomDetailsPage.roomDetails")}</h3>
 
-              {/* Loại phòng (optional) */}
-              <div className="ar-search-field" ref={typeDropRef} style={{ position: "relative" }}>
-                <label>LOẠI PHÒNG (TÙY CHỌN)</label>
-                <button
-                  type="button"
-                  className="ar-search-drop-btn"
-                  onClick={() => setTypeDropOpen(p => !p)}
-                >
-                  <span>{searchType || "Tất cả loại"}</span>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="2.5"
-                    strokeLinecap="round" strokeLinejoin="round"
-                    style={{ transform: typeDropOpen ? "rotate(180deg)" : "none", transition: "0.2s" }}>
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-                {typeDropOpen && (
-                  <div className="ar-filter-dropdown">
-                    <div className={`ar-filter-option${searchType === "" ? " active" : ""}`} onClick={() => { setSearchType(""); setTypeDropOpen(false); }}>
-                      Tất cả loại phòng
-                    </div>
-                    {roomTypes.map(type => (
-                      <div key={type} className={`ar-filter-option${searchType === type ? " active" : ""}`} onClick={() => { setSearchType(type); setTypeDropOpen(false); }}>
-                        {searchType === type && <span className="ar-check">✓</span>}
-                        {type}
-                      </div>
-                    ))}
-                  </div>
+                {/* Tên phòng hiển thị rõ ràng */}
+                <h2 className="bbhh-room-name">{roomDetails.roomType}</h2>
+
+                {/* Địa điểm nếu có */}
+                {roomDetails.location && (
+                  <p className="bbhh-room-location">
+                    📍 {roomDetails.location}
+                  </p>
                 )}
-              </div>
 
-              {/* Nút tìm */}
-              <button
-                className="ar-search-btn"
-                onClick={handleSearch}
-                disabled={searching}
-              >
-                {searching ? "Đang tìm..." : "🔍 Tìm phòng trống"}
-              </button>
+                {/* Mô tả phòng */}
+                <p className="bbhh-room-description">
+                  {roomDetails.roomDescription ||
+                    t("roomDetailsPage.defaultDesc")}
+                </p>
+
+                <div className="bbhh-price-circle">
+                  <span>
+                    ${formatPrice(roomDetails.roomPrice)} /{" "}
+                    {t("roomDetailsPage.night")}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {searchError && (
-              <div className="ar-search-error">{searchError}</div>
-            )}
-          </div>
-        )}
-      </div>
+            {/* ── Cột phải: Form đặt phòng ── */}
+            <div className="bbhh-booking-card">
+              <div className="bbhh-card-header">
+                <h3>{t("roomDetailsPage.bookRoom")}</h3>
+                <div className="bbhh-underline-left"></div>
+              </div>
 
-      {/* ── ROOM GRID ── */}
-      <div className="ar-body">
-        {loading ? (
-          <div className="ar-loading">
-            <div className="bbhh-spinner" />
-            <p>Đang tải danh sách phòng...</p>
-          </div>
-        ) : searching ? (
-          <div className="ar-loading">
-            <div className="bbhh-spinner" />
-            <p>Đang tìm phòng trống...</p>
-          </div>
-        ) : currentRooms.length === 0 ? (
-          <div className="ar-empty">
-            <div className="ar-empty-icon">🛏️</div>
-            <h3>{isSearchMode ? "Không có phòng trống" : "Không tìm thấy phòng"}</h3>
-            <p>{isSearchMode ? "Hãy thử chọn ngày khác hoặc loại phòng khác." : "Hãy thử chọn loại phòng khác."}</p>
-            <button className="btn-gold" onClick={resetSearch}>Xem tất cả phòng</button>
+              <div className="bbhh-date-selection">
+                <div className="bbhh-input-box">
+                  <label>{t("roomDetailsPage.checkIn")}</label>
+                  <DatePicker
+                    id="checkin"
+                    selected={checkInDate}
+                    onChange={(date) => setCheckInDate(date)}
+                    selectsStart
+                    startDate={checkInDate}
+                    endDate={checkOutDate}
+                    placeholderText="Chọn ngày"
+                    className="bbhh-date-input"
+                    minDate={new Date()}
+                  />
+                </div>
+                <div className="bbhh-input-box">
+                  <label>{t("roomDetailsPage.checkOut")}</label>
+                  <DatePicker
+                    id="checkout"
+                    selected={checkOutDate}
+                    onChange={(date) => setCheckOutDate(date)}
+                    selectsEnd
+                    startDate={checkInDate}
+                    endDate={checkOutDate}
+                    minDate={checkInDate || new Date()}
+                    placeholderText="Chọn ngày"
+                    className="bbhh-date-input"
+                  />
+                </div>
+              </div>
+
+              <div className="bbhh-guest-selection">
+                <div className="bbhh-input-box">
+                  <label>{t("roomDetailsPage.adults")}</label>
+                  <input
+                    id="adults"
+                    type="number"
+                    min="1"
+                    value={numAdults}
+                    onChange={(e) =>
+                      setNumAdults(parseInt(e.target.value) || 1)
+                    }
+                  />
+                </div>
+
+                <div className="bbhh-input-box">
+                  <label>{t("roomDetailsPage.children")}</label>
+                  <input
+                    id="children"
+                    type="number"
+                    min="0"
+                    value={numChildren}
+                    onChange={(e) =>
+                      setNumChildren(parseInt(e.target.value) || 0)
+                    }
+                  />
+                </div>
+              </div>
+
+              <button
+                className="bbhh-btn-calculate"
+                onClick={handleConfirmBooking}
+              >
+                {t("roomDetailsPage.checkPrice")}
+              </button>
+
+              {totalPrice > 0 && (
+                <div className="bbhh-summary-box">
+                  <div className="summary-row">
+                    <span>{t("roomDetailsPage.guests")}:</span>
+                    <strong>{totalGuests}</strong>
+                  </div>
+                  <div className="summary-row">
+                    <span>{t("roomDetailsPage.total")}:</span>
+                    <strong className="text-orange">
+                      ${formatPrice(totalPrice)}
+                    </strong>
+                  </div>
+                  <button
+                    onClick={acceptBooking}
+                    className="bbhh-btn-confirm-final"
+                  >
+                    {t("roomDetailsPage.confirm")}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
-          <>
-            {/* Badge thông báo đang filter */}
-            {isSearchMode && (
-              <div className="ar-mode-badge">
-                Hiện có {filteredRooms.length} phòng còn trống từ {formatDate(checkIn)} đến {formatDate(checkOut)}
-                <button onClick={resetSearch}>Xem tất cả →</button>
-              </div>
-            )}
-
-            <div className="ar-grid">
-              {currentRooms.map(room => (
-                <div key={room.id} className="ar-card" onClick={() => navigate(`/room-details-book/${room.id}`)}>
-                  <div className="ar-card-img">
-                    <img src={room.roomPhotoUrl} alt={room.roomType} />
-                    <span className="ar-card-type">{room.roomType}</span>
-                    {isSearchMode && (
-                      <span className="ar-available-badge">✓ Còn phòng</span>
-                    )}
-                  </div>
-                  <div className="ar-card-body">
-                    <h3 className="ar-card-title">{room.roomType}</h3>
-                    <p className="ar-card-desc">{room.roomDescription}</p>
-                    <div className="ar-card-amenities">
-                      <span>📶 WiFi</span>
-                      <span>❄️ Điều hòa</span>
-                      <span>🏊 Hồ bơi</span>
-                    </div>
-                    <div className="ar-card-footer">
-                      <div className="ar-card-price">
-                        <span className="ar-price-num">{room.roomPrice?.toLocaleString("vi-VN")}$</span>
-                        <span className="ar-price-per">/ đêm</span>
-                      </div>
-                      <button
-                        className="ar-card-btn"
-                        onClick={e => { e.stopPropagation(); navigate(`/room-details-book/${room.id}`); }}
-                      >
-                        Đặt ngay
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+          !error && (
+            <div className="ar-empty">
+              <p>Không tìm thấy thông tin phòng.</p>
             </div>
-
-            {filteredRooms.length > roomsPerPage && (
-              <Pagination
-                roomsPerPage={roomsPerPage}
-                totalRooms={filteredRooms.length}
-                currentPage={currentPage}
-                paginate={setCurrentPage}
-              />
-            )}
-          </>
+          )
         )}
       </div>
     </div>
   );
 };
 
-export default AllRoomsPage;
+export default RoomDetailsPage;

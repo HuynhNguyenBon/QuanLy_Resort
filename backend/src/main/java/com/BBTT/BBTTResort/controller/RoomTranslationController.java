@@ -14,20 +14,12 @@ import java.util.Optional;
 public class RoomTranslationController {
 
     @Autowired
-    private RoomTranslationRepository repo;
-
+    private RoomTranslationService roomTranslationService;
+    
     @GetMapping("/{roomId}/{lang}")
-    public ResponseEntity<?> getTranslation(
-            @PathVariable Long roomId,
-            @PathVariable String lang) {
-
-        Optional<RoomTranslation> transOpt =
-                repo.findByRoomIdAndLanguageCode(roomId, lang);
-
-        if (transOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(transOpt.get());
+    public ResponseEntity<?> getTranslation(@PathVariable Long roomId, @PathVariable String lang) {
+        RoomTranslation trans = roomTranslationService.getTranslation(roomId, lang);
+        if (trans == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(trans);
     }
 }
