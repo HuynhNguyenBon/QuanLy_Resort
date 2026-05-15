@@ -65,5 +65,13 @@
     "Hanoi": "Hà Nội",
     "HCMC": "TP.HCM",
     "Danang": "Đà Nẵng"
+  },
+
+  "cta": {
+    "title": "Sẵn sàng cho kỳ nghỉ của bạn?",
+    "subtitle": "Đặt phòng ngay — xác nhận tức thì, hủy miễn phí trước 24h.",
+    "bookNow": "🛏️ Đặt phòng ngay",
+    "findBooking": "🔍 Tra cứu đặt phòng",
+    "note": "✓ Hủy miễn phí trước 24h · ✓ Xác nhận tức thì · ✓ Hỗ trợ 24/7"
   }
 }

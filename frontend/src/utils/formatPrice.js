@@ -1,23 +1,29 @@
-export const formatPrice = (price, lang) => {
-  switch (lang) {
-    case "vi":
-      return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-        maximumFractionDigits: 0,
-      }).format(price * 25000);
-    case "ja":
-      return new Intl.NumberFormat("ja-JP", {
-        style: "currency",
-        currency: "JPY",
-        maximumFractionDigits: 0,
-      }).format(price * 150);
+const currencyConfig = {
+  vi: {
+    locale: "vi-VN",
+    currency: "VND",
+    rate: 25000,
+  },
+  en: {
+    locale: "en-US",
+    currency: "USD",
+    rate: 1,
+  },
+  ja: {
+    locale: "ja-JP",
+    currency: "JPY",
+    rate: 150,
+  },
+};
 
-    default:
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(price);
-  }
+export const formatPrice = (price, lang = "en") => {
+  const config = currencyConfig[lang] || currencyConfig.en;
+
+  const converted = price * config.rate;
+
+  return new Intl.NumberFormat(config.locale, {
+    style: "currency",
+    currency: config.currency,
+    maximumFractionDigits: 0,
+  }).format(converted);
 };
