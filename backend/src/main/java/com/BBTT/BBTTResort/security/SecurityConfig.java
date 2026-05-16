@@ -4,6 +4,7 @@ import com.BBTT.BBTTResort.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/payment/vnpay-return").permitAll()
                         .requestMatchers("/payment/create").authenticated()
                         .requestMatchers("/translations/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/users/update/{id}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager ->
