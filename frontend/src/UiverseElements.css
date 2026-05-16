@@ -1,3 +1,4 @@
+/* RESET & BASE */
 *, *::before, *::after { box-sizing: border-box; }
 
 /* Xoá highlight xanh mặc định của browser trên button/input */
@@ -16,6 +17,7 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .ar-search-toggle:focus-visible,
 .search-drop-trigger:focus-visible { outline: none; box-shadow: none; }
 
+/* TOKENS */
 :root {
   --teal:        #007F86;
   --teal-dark:   #005f65;
@@ -46,7 +48,9 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 }
 
 
-/* NAVBAR */
+/* ================================================================
+   NAVBAR
+================================================================ */
 .bbhh-nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -251,7 +255,9 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .bbhh-nav-dd-lang .check  { margin-left: auto; color: var(--amber); }
 
 
-/* FOOTER */
+/* ================================================================
+   FOOTER
+================================================================ */
 .bbhh-footer {
   background: #1E293B;
   color: rgba(255,255,255,0.55);
@@ -262,7 +268,9 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .bbhh-footer strong { color: rgba(255,255,255,0.8); }
 
 
-/* HOMEPAGE */
+/* ================================================================
+   HOMEPAGE
+================================================================ */
 
 /* Hero */
 .hp-hero {
@@ -529,7 +537,9 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .hp-results-h2 span { color: var(--amber); }
 
 
-/* SHARED BUTTONS */
+/* ================================================================
+   SHARED BUTTONS
+================================================================ */
 .btn-gold {
   background: var(--amber);
   color: #fff !important;
@@ -600,7 +610,9 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .btn-clear:hover { color: var(--red); border-color: var(--red); }
 
 
-/* ROOM SEARCH (RoomSearch.jsx) */
+/* ================================================================
+   ROOM SEARCH (RoomSearch.jsx)
+================================================================ */
 .hp-search-wrap {
   background: var(--bg-page);
   padding: 32px 6% 28px;
@@ -824,7 +836,9 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .btn-uiverse:hover { filter: brightness(0.92); transform: translateY(-1px); }
 
 
-/* SERVICE SECTION (homepage & ServicePage) */
+/* ================================================================
+   SERVICE SECTION (homepage & ServicePage)
+================================================================ */
 .service-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -890,7 +904,9 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .service-card-uiverse:hover img { transform: scale(1.1); }
 
 
-/* SEARCH / BOOKING (RoomSearch & FindBooking) */
+/* ================================================================
+   SEARCH / BOOKING (RoomSearch & FindBooking)
+================================================================ */
 .find-booking-page {
   padding: 90px 6% 60px;
   max-width: 720px;
@@ -3637,3 +3653,196 @@ button[type="submit"]:hover { background: var(--teal-dark); }
   display: flex; gap: 10px;
 }
 .fb-action-row .fb-action-btn { flex: 1; }
+
+/* Contact form in FindBooking */
+.fb-contact-form {
+  margin-top: 14px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  animation: fadeUp 0.25s ease;
+}
+.fb-contact-success {
+  padding: 12px 16px;
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  border-radius: var(--radius-sm);
+  color: #166534;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Step 1 clickable */
+.fb-step-clickable {
+  cursor: pointer;
+  border-color: #5BB8D4 !important;
+  transition: all 0.2s;
+}
+.fb-step-clickable:hover {
+  background: #EFF8FF;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(91,184,212,0.15);
+}
+.fb-step-action-hint {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5BB8D4;
+}
+
+/* Email lookup */
+.fb-email-lookup {
+  background: #fff;
+  border: 1.5px solid #BAE0F7;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-top: 16px;
+  animation: fadeUp 0.2s ease;
+}
+.fb-lookup-title {
+  font-size: 15px; font-weight: 700;
+  color: var(--text-main); margin-bottom: 4px;
+}
+.fb-lookup-sub {
+  font-size: 13px; color: var(--text-muted);
+  margin-bottom: 14px; line-height: 1.5;
+}
+.fb-lookup-form {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.fb-lookup-input {
+  flex: 1; min-width: 220px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px; font-family: inherit;
+  outline: none; transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.fb-lookup-input:focus { border-color: #5BB8D4; }
+.fb-lookup-btn {
+  background: var(--teal) !important; color: #fff !important;
+  border: none; padding: 11px 22px;
+  border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  white-space: nowrap;
+}
+.fb-lookup-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.fb-lookup-error {
+  font-size: 13px; color: var(--red);
+  margin-top: 10px; font-weight: 500;
+}
+.fb-lookup-found {
+  font-size: 13px; font-weight: 700;
+  color: var(--teal); margin: 12px 0 8px;
+}
+.fb-lookup-results { display: flex; flex-direction: column; gap: 8px; }
+.fb-lookup-item {
+  background: #FDFAF7; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  cursor: pointer; transition: all 0.15s;
+}
+.fb-lookup-item:hover {
+  border-color: var(--teal); background: #EFF8FF;
+}
+.fb-lookup-item-code {
+  font-size: 14px; font-weight: 800; color: var(--teal);
+  margin-bottom: 4px; letter-spacing: 0.5px;
+}
+.fb-lookup-item-info {
+  font-size: 12px; color: var(--text-muted);
+}
+
+/* ── Support box in FindBooking ────────────────────────────────── */
+.fb-support-box {
+  background: #FDFAF7;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-top: 24px;
+}
+.fb-support-header {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.fb-support-icon { font-size: 28px; flex-shrink: 0; }
+.fb-support-title-wrap { flex: 1; min-width: 0; }
+.fb-support-title-wrap h3 {
+  font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 3px;
+}
+.fb-support-title-wrap p {
+  font-size: 13px; color: var(--text-muted); margin: 0;
+}
+.fb-hotline-btn {
+  background: var(--teal) !important; color: #fff !important;
+  border: none; padding: 9px 18px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 700; text-decoration: none;
+  white-space: nowrap; flex-shrink: 0; transition: background 0.2s;
+  display: inline-block;
+}
+.fb-hotline-btn:hover { background: var(--teal-dark) !important; }
+
+.fb-support-divider {
+  text-align: center; margin: 18px 0;
+  position: relative;
+}
+.fb-support-divider::before {
+  content: ''; position: absolute;
+  top: 50%; left: 0; right: 0; height: 1px;
+  background: var(--border);
+}
+.fb-support-divider span {
+  position: relative; background: #FDFAF7;
+  padding: 0 12px; font-size: 12px;
+  color: var(--text-muted); font-weight: 500;
+}
+
+.fb-support-form { display: flex; flex-direction: column; gap: 12px; }
+.fb-support-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fb-support-field { display: flex; flex-direction: column; gap: 5px; }
+.fb-support-field label {
+  font-size: 12px; font-weight: 700; color: var(--text-sub);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.fb-support-field input,
+.fb-support-field textarea {
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px; font-family: inherit;
+  outline: none; background: #fff;
+  transition: border-color 0.2s;
+  box-sizing: border-box; width: 100%;
+}
+.fb-support-field input:focus,
+.fb-support-field textarea:focus { border-color: #5BB8D4; }
+.fb-support-field textarea { resize: vertical; min-height: 80px; }
+
+.fb-support-submit {
+  align-self: flex-end;
+  background: var(--navy) !important; color: #fff !important;
+  border: none; padding: 11px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: background 0.2s;
+}
+.fb-support-submit:hover:not(:disabled) { background: #1a4a8a !important; }
+.fb-support-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.fb-support-success {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #F0FDF4; border: 1px solid #86EFAC;
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  animation: fadeUp 0.2s ease;
+}
+.fb-support-success span { font-size: 20px; flex-shrink: 0; }
+.fb-support-success strong { font-size: 14px; color: #166534; display: block; margin-bottom: 3px; }
+.fb-support-success p { font-size: 13px; color: #15803D; margin: 0; }
+
+@media (max-width: 600px) {
+  .fb-support-row { grid-template-columns: 1fr; }
+  .fb-support-submit { align-self: stretch; }
+}
