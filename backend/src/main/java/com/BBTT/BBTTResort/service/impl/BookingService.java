@@ -16,6 +16,7 @@ import com.BBTT.BBTTResort.repo.UserRepository;
 import com.BBTT.BBTTResort.service.interfac.IBookingService;
 import com.BBTT.BBTTResort.service.interfac.IRoomService;
 import com.BBTT.BBTTResort.utils.Utils;
+import com.BBTT.BBTTResort.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,9 @@ public class BookingService implements IBookingService {
     private RoomRepository roomRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Response saveBooking(Long roomId, Long userId, Booking bookingRequest) {
@@ -93,6 +97,24 @@ public class BookingService implements IBookingService {
             bookingRequest.setBookingConfirmationCode(bookingCode);
 
             bookingRepository.save(bookingRequest);
+
+            // Gửi email xác nhận sau khi đặt phòng thành công
+            try {
+                emailService.sendBookingConfirmationEmail(
+                        user.getEmail(),
+                        user.getName(),
+                        bookingCode,
+                        room.getRoomType(),
+                        bookingRequest.getCheckInDate().toString(),
+                        bookingRequest.getCheckOutDate().toString(),
+                        bookingRequest.getTotalNumOfGuest(),
+                        bookingRequest.getNumOfAdults(),
+                        bookingRequest.getNumOfChildren(),
+                        totalPrice
+                );
+            } catch (Exception emailEx) {
+                System.err.println("Lỗi gửi email: " + emailEx.getMessage());
+            }
 
             response.setStatusCode(200);
             response.setMessage("Booking created successfully");
@@ -246,6 +268,33 @@ public class BookingService implements IBookingService {
         }
         return response;
     }
+    @Override
+    public Response updateBooking(Long bookingId, Booking updateRequest) {
+        Response response = new Response();
+        try {
+            Booking booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new OurException("Booking not found"));
+            if (updateRequest.getCheckInDate() != null)
+                booking.setCheckInDate(updateRequest.getCheckInDate());
+            if (updateRequest.getCheckOutDate() != null)
+                booking.setCheckOutDate(updateRequest.getCheckOutDate());
+            if (updateRequest.getNumOfAdults() > 0)
+                booking.setNumOfAdults(updateRequest.getNumOfAdults());
+            booking.setNumOfChildren(updateRequest.getNumOfChildren());
+            booking.calculateTotalnumberOfGuest();
+            bookingRepository.save(booking);
+            response.setStatusCode(200);
+            response.setMessage("Booking updated successfully");
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error updating booking: " + e.getMessage());
+        }
+        return response;
+    }
+
     private boolean roomIsAvailable(Booking bookingRequest, List<Booking> existingBookings) {
 
         return existingBookings.stream()
