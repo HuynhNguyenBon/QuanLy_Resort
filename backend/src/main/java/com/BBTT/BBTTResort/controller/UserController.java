@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -50,6 +51,32 @@ public class UserController {
     @GetMapping("/get-user-bookings/{userId}")
     public ResponseEntity<Response> getUserBookingHistory(@PathVariable("userId") String userId) {
         Response response = userService.getUserBookingHistory(userId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<Response> updateUser(
+            @PathVariable("userId") String userId,
+            @RequestBody Map<String, String> updates) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Response response = userService.updateMyProfile(
+                userId,
+                auth.getName(),
+                updates.get("name"),
+                updates.get("phoneNumber")
+        );
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<Response> updateMyProfile(@RequestBody Map<String, String> updates) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Response response = userService.updateMyProfile(
+                null,
+                auth.getName(),
+                updates.get("name"),
+                updates.get("phoneNumber")
+        );
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }
