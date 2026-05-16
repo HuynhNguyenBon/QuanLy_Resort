@@ -296,11 +296,18 @@ const FindBookingPage = () => {
                   <div
                     key={i}
                     className={`fb-step-card${i === 0 ? " fb-step-clickable" : ""}`}
+                    onClick={i === 0 ? () => setShowEmailLookup(p => !p) : undefined}
+                    title={i === 0 ? "Click để tìm mã theo email" : undefined}
                   >
                     <div className="fb-step-num">{i + 1}</div>
                     <div className="fb-step-icon">{s.icon}</div>
                     <h3 className="fb-step-title">{s.title}</h3>
                     <p className="fb-step-desc">{s.desc}</p>
+                    {i === 0 && (
+                      <span className="fb-step-action-hint">
+                        {showEmailLookup ? "▲ Thu gọn" : "▼ Tìm mã theo email"}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -351,58 +358,61 @@ const FindBookingPage = () => {
             </div>
 
             {/* Cần hỗ trợ */}
-            <div className="fb-help-box">
-              <div className="fb-help-icon">💬</div>
-              <div>
-                <h3 className="fb-help-title">Không tìm thấy mã xác nhận?</h3>
-                <p className="fb-help-desc">Kiểm tra hộp thư spam, hoặc liên hệ với chúng tôi để được hỗ trợ ngay.</p>
-              </div>
-              <div className="fb-help-actions">
-                <a href="tel:0909448608" className="fb-help-btn primary">📞 0909.448.608</a>
-                <button className="fb-help-btn secondary" onClick={() => setShowContact(p => !p)}>
-                  ✉️ Gửi yêu cầu hỗ trợ
-                </button>
+            <div className="fb-support-box">
+              <div className="fb-support-header">
+                <div className="fb-support-icon">💬</div>
+                <div className="fb-support-title-wrap">
+                  <h3>Không tìm thấy mã xác nhận?</h3>
+                  <p>Kiểm tra hộp thư spam hoặc liên hệ với chúng tôi</p>
+                </div>
+                <a href="tel:0909448608" className="fb-hotline-btn">
+                  📞 0909.448.608
+                </a>
               </div>
 
-              {showContact && (
-                <div className="fb-contact-form">
-                  {contactSuccess ? (
-                    <div className="fb-contact-success">
-                      ✅ Đã mở email. Vui lòng gửi để hoàn tất yêu cầu hỗ trợ!
-                    </div>
-                  ) : (
-                    <form onSubmit={handleContact}>
-                      <div className="auth-field">
-                        <label>Họ và tên</label>
-                        <input type="text" placeholder="Nguyễn Văn A"
-                          value={contactForm.name}
-                          onChange={e => setContactForm(p => ({ ...p, name: e.target.value }))}
-                          required />
-                      </div>
-                      <div className="auth-field">
-                        <label>Email của bạn</label>
-                        <input type="email" placeholder="email@gmail.com"
-                          value={contactForm.email}
-                          onChange={e => setContactForm(p => ({ ...p, email: e.target.value }))}
-                          required />
-                      </div>
-                      <div className="auth-field">
-                        <label>Mô tả vấn đề</label>
-                        <textarea
-                          placeholder="VD: Tôi đã đặt phòng ngày 16/05 nhưng không nhận được email xác nhận..."
-                          value={contactForm.message}
-                          onChange={e => setContactForm(p => ({ ...p, message: e.target.value }))}
-                          rows={3} required
-                          style={{ width:"100%", padding:"11px 14px", border:"1.5px solid var(--border)", borderRadius:"var(--radius-sm)", fontSize:"14px", fontFamily:"inherit", resize:"vertical", outline:"none", boxSizing:"border-box" }}
-                        />
-                      </div>
-                      <button type="submit" className="auth-submit-btn" disabled={contactSending}
-                        style={{ marginTop: 4 }}>
-                        {contactSending ? "Đang mở email..." : "📧 Gửi yêu cầu hỗ trợ"}
-                      </button>
-                    </form>
-                  )}
+              <div className="fb-support-divider">
+                <span>hoặc gửi yêu cầu hỗ trợ</span>
+              </div>
+
+              {contactSuccess ? (
+                <div className="fb-support-success">
+                  <span>✅</span>
+                  <div>
+                    <strong>Đã mở ứng dụng email!</strong>
+                    <p>Vui lòng nhấn Gửi trong email để hoàn tất yêu cầu hỗ trợ.</p>
+                  </div>
                 </div>
+              ) : (
+                <form onSubmit={handleContact} className="fb-support-form">
+                  <div className="fb-support-row">
+                    <div className="fb-support-field">
+                      <label>Họ và tên</label>
+                      <input type="text" placeholder="Nguyễn Văn A"
+                        value={contactForm.name}
+                        onChange={e => setContactForm(p => ({ ...p, name: e.target.value }))}
+                        required />
+                    </div>
+                    <div className="fb-support-field">
+                      <label>Email của bạn</label>
+                      <input type="email" placeholder="email@gmail.com"
+                        value={contactForm.email}
+                        onChange={e => setContactForm(p => ({ ...p, email: e.target.value }))}
+                        required />
+                    </div>
+                  </div>
+                  <div className="fb-support-field">
+                    <label>Mô tả vấn đề</label>
+                    <textarea
+                      placeholder="VD: Tôi đã đặt phòng ngày 16/05 nhưng không nhận được email xác nhận..."
+                      value={contactForm.message}
+                      onChange={e => setContactForm(p => ({ ...p, message: e.target.value }))}
+                      rows={3} required
+                    />
+                  </div>
+                  <button type="submit" className="fb-support-submit" disabled={contactSending}>
+                    {contactSending ? "Đang mở email..." : "📧 Gửi yêu cầu hỗ trợ"}
+                  </button>
+                </form>
               )}
             </div>
 
