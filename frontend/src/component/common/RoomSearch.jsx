@@ -6,26 +6,43 @@ import ApiService from "../../service/ApiService";
 import "../../UiverseElements.css";
 
 const RoomSearch = ({ handleSearchResult }) => {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
+  const getDateFormat = () => {
+    switch (i18n.language) {
+      case "vi":
+        return "dd/MM/yyyy";
 
-  const [startDate,  setStartDate]  = useState(null);
-  const [endDate,    setEndDate]    = useState(null);
-  const [roomType,   setRoomType]   = useState("");
-  const [roomTypes,  setRoomTypes]  = useState([]);
-  const [error,      setError]      = useState("");
-  const [loading,    setLoading]    = useState(false);
-  const [dropOpen,   setDropOpen]   = useState(false);
+      case "en":
+        return "MM/dd/yyyy";
+
+      case "ja":
+        return "yyyy/MM/dd";
+
+      default:
+        return "dd/MM/yyyy";
+    }
+  };
+
+  const dateFormat = getDateFormat();
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [roomType, setRoomType] = useState("");
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [dropOpen, setDropOpen] = useState(false);
   const dropRef = useRef(null);
 
   useEffect(() => {
     ApiService.getRoomTypes()
-      .then(types => setRoomTypes(types))
-      .catch(err => console.error(err.message));
+      .then((types) => setRoomTypes(types))
+      .catch((err) => console.error(err.message));
   }, []);
 
   useEffect(() => {
     const handler = (e) => {
-      if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false);
+      if (dropRef.current && !dropRef.current.contains(e.target))
+        setDropOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -49,30 +66,39 @@ const RoomSearch = ({ handleSearchResult }) => {
     setLoading(true);
     setError("");
 
+    setLoading(true);
+    setError("");
+
     try {
       const start = startDate.toISOString().split("T")[0];
-      const end   = endDate.toISOString().split("T")[0];
+      const end = endDate.toISOString().split("T")[0];
 
       let availableRooms = [];
 
       if (roomType) {
         // Có chọn loại — gọi 1 API
-        const res = await ApiService.getAvailableRoomsByDateAndType(start, end, roomType);
+        const res = await ApiService.getAvailableRoomsByDateAndType(
+          start,
+          end,
+          roomType,
+        );
         availableRooms = res.roomList || [];
       } else {
         // Không chọn loại — gọi song song tất cả loại rồi gộp lại
         const results = await Promise.all(
-          roomTypes.map(type =>
+          roomTypes.map((type) =>
             ApiService.getAvailableRoomsByDateAndType(start, end, type)
-              .then(r => r.roomList || [])
-              .catch(() => [])
-          )
+              .then((r) => r.roomList || [])
+              .catch(() => []),
+          ),
         );
         availableRooms = results.flat();
       }
 
       if (availableRooms.length === 0) {
-        showError("Không có phòng trống trong khoảng thời gian này. Hãy thử ngày khác.");
+        showError(
+          "Không có phòng trống trong khoảng thời gian này. Hãy thử ngày khác.",
+        );
         return;
       }
 
@@ -90,14 +116,13 @@ const RoomSearch = ({ handleSearchResult }) => {
   return (
     <section>
       <div className="search-container">
-
         {/* Check-in */}
         <div className="search-field">
           <label>{t("search.checkIn")}</label>
           <DatePicker
             selected={startDate}
             onChange={setStartDate}
-            dateFormat="dd/MM/yyyy"
+            dateFormat={dateFormat}
             placeholderText={t("search.selectCheckIn")}
             minDate={new Date()}
             autoComplete="off"
@@ -110,7 +135,7 @@ const RoomSearch = ({ handleSearchResult }) => {
           <DatePicker
             selected={endDate}
             onChange={setEndDate}
-            dateFormat="dd/MM/yyyy"
+            dateFormat={dateFormat}
             placeholderText={t("search.selectCheckOut")}
             minDate={startDate || new Date()}
             autoComplete="off"
@@ -119,18 +144,29 @@ const RoomSearch = ({ handleSearchResult }) => {
 
         {/* Loại phòng — tuỳ chọn */}
         <div className="search-field search-field-drop" ref={dropRef}>
-          <label>{t("search.roomType")} <span style={{ fontWeight: 400, opacity: 0.6 }}>(tuỳ chọn)</span></label>
+          <label>
+            {t("search.roomType")}{" "}
+            <span style={{ fontWeight: 400, opacity: 0.6 }}></span>
+            <span style={{ fontWeight: 400, opacity: 0.6 }}>
+              {t("search.tc")}
+            </span>
+          </label>
           <button
             type="button"
             className={`search-drop-trigger${roomType ? " selected" : ""}`}
-            onClick={() => setDropOpen(p => !p)}
+            onClick={() => setDropOpen((p) => !p)}
           >
             <span>{selectedLabel}</span>
             <svg
               className={`search-drop-chevron${dropOpen ? " open" : ""}`}
-              width="14" height="14" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" strokeWidth="2.5"
-              strokeLinecap="round" strokeLinejoin="round"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
               <polyline points="6 9 12 15 18 9" />
             </svg>
@@ -140,17 +176,25 @@ const RoomSearch = ({ handleSearchResult }) => {
             <div className="search-drop-menu">
               <div
                 className={`search-drop-item${!roomType ? " active" : ""}`}
-                onClick={() => { setRoomType(""); setDropOpen(false); }}
+                onClick={() => {
+                  setRoomType("");
+                  setDropOpen(false);
+                }}
               >
                 Tất cả loại phòng
               </div>
-              {roomTypes.map(type => (
+              {roomTypes.map((type) => (
                 <div
                   key={type}
                   className={`search-drop-item${roomType === type ? " active" : ""}`}
-                  onClick={() => { setRoomType(type); setDropOpen(false); }}
+                  onClick={() => {
+                    setRoomType(type);
+                    setDropOpen(false);
+                  }}
                 >
-                  {roomType === type && <span className="search-drop-check">✓</span>}
+                  {roomType === type && (
+                    <span className="search-drop-check">✓</span>
+                  )}
                   {type}
                 </div>
               ))}
