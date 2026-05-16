@@ -7,8 +7,8 @@
 
   "findBookingPage": {
     "findYour": "Tìm",
-    "reservation": "Đặt Phòng",
-    "placeholder": "Nhập mã xác nhận (ví dụ: ABC123)",
+    "reservation": "Đặt phòng của bạn",
+    "placeholder": "Nhập mã xác nhận (VD: ABC123)",
     "searchBooking": "Tìm đặt phòng",
     "enterCode": "Vui lòng nhập mã xác nhận đặt phòng",
 
@@ -25,30 +25,66 @@
     "emailAddress": "Địa chỉ email",
     "phoneNumber": "Số điện thoại",
 
-    "roomDetails": "Thông tin phòng",
-    "thankYou": "Cảm ơn bạn đã chọn BBHH Resort. Chúc bạn có một kỳ nghỉ tuyệt vời!",
-    "verified": "Phòng đã xác nhận ✓"
+    "roomDetails": "Chi tiết phòng",
+    "thankYou": "Cảm ơn bạn đã chọn BBHH Resort. Chúc bạn có kỳ nghỉ tuyệt vời!",
+    "verified": "Đã xác nhận phòng ✓"
   },
+
   "roomDetailsPage": {
     "roomDetails": "Chi tiết phòng",
     "roomDescription": "Mô tả",
     "defaultDesc": "Không có mô tả.",
-    "night": "mỗi đêm",
+    "night": "đêm",
     "bookRoom": "Đặt phòng",
     "checkIn": "Ngày nhận phòng",
     "checkOut": "Ngày trả phòng",
     "adults": "Người lớn",
     "children": "Trẻ em",
     "checkPrice": "Kiểm tra giá",
-    "guests": "Số khách",
+    "guests": "Khách",
     "total": "Tổng tiền",
     "confirm": "Xác nhận đặt phòng",
     "selectDates": "Vui lòng chọn ngày nhận và trả phòng.",
-    "roomBooked": "Phòng đã được đặt cho các ngày đã chọn.",
+    "roomBooked": "Phòng đã được đặt trong khoảng thời gian này.",
     "loginAgain": "Vui lòng đăng nhập lại.",
     "paymentError": "Lỗi thanh toán: ",
-    "forbidden": "Bạn không có quyền truy cập",
+    "forbidden": "Không có quyền truy cập",
     "general": "Đã xảy ra lỗi",
-    "roomNotAvailable": "Phòng không có sẵn cho các ngày đã chọn"
+    "roomNotAvailable": "Phòng không khả dụng trong khoảng thời gian đã chọn"
+  },
+
+  "allRoomsPage": {
+    "heroTag": "PHÒNG NGHỈ",
+    "heroTitle": "Chọn phòng hoàn hảo cho bạn",
+    "availableRooms": "phòng trống",
+    "roomsFrom": "phòng · từ Standard đến Suite cao cấp",
+    "all": "Tất cả",
+    "searchByDate": "Tìm theo ngày",
+    "viewAll": "Xem tất cả phòng",
+    "rooms": "phòng",
+    "checkIn": "NGÀY NHẬN PHÒNG",
+    "checkOut": "NGÀY TRẢ PHÒNG",
+    "pickDate": "Chọn ngày",
+    "roomType": "LOẠI PHÒNG (TÙY CHỌN)",
+    "allTypes": "Tất cả loại phòng",
+    "findRooms": "Tìm phòng trống",
+    "searching": "Đang tìm...",
+    "errorSelectDates": "Vui lòng chọn ngày nhận và trả phòng.",
+    "errorCheckoutAfterCheckin": "Ngày trả phòng phải sau ngày nhận phòng.",
+    "noRoomsFound": "Không có phòng trống trong khoảng thời gian này. Hãy thử ngày khác.",
+    "searchError": "Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.",
+    "loadingRooms": "Đang tải danh sách phòng...",
+    "searchingRooms": "Đang tìm phòng trống...",
+    "noAvailable": "Không có phòng trống",
+    "notFound": "Không tìm thấy phòng",
+    "tryOtherDates": "Hãy thử chọn ngày khác hoặc loại phòng khác.",
+    "tryOtherType": "Hãy thử chọn loại phòng khác.",
+    "availableBadge": "Hiện có {{count}} phòng còn trống từ {{checkIn}} đến {{checkOut}}",
+    "viewAllArrow": "Xem tất cả →",
+    "available": "Còn phòng",
+    "amenityAC": "Điều hòa",
+    "amenityPool": "Hồ bơi",
+    "night": "đêm",
+    "bookNow": "Đặt ngay"
   }
 }
