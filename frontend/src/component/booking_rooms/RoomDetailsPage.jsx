@@ -1,53 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
-import ApiService from "../../service/ApiService"; // Giả sử dịch vụ của bạn nằm trong một tệp có tên là ApiService.js
+import ApiService from "../../service/ApiService";
 import DatePicker from "react-datepicker";
 import "../../UiverseElements.css";
-// import 'react-datepicker/dist/react-datepicker.css';
 
 const RoomDetailsPage = () => {
   const { t, i18n } = useTranslation("rooms");
-  const navigate = useNavigate(); // Truy cập chức năng điều hướng để di chuyển
-  const { roomId } = useParams(); // Lấy ID phòng từ các tham số URL
+  const navigate = useNavigate();
+  const { roomId } = useParams();
   const [roomDetails, setRoomDetails] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Theo dõi trạng thái tải
-  const [error, setError] = useState(null); // Theo dõi bất kỳ lỗi nào
-  const [checkInDate, setCheckInDate] = useState(null); // Biến trạng thái cho ngày nhận phòng
-  const [checkOutDate, setCheckOutDate] = useState(null); // Biến trạng thái cho ngày trả phòng
-  const [numAdults, setNumAdults] = useState(1); // Biến trạng thái cho số lượng người lớn
-  const [numChildren, setNumChildren] = useState(0); // Biến trạng thái cho số lượng trẻ em
-  const [totalPrice, setTotalPrice] = useState(0); // Biến trạng thái cho tổng giá đặt phòng
-  const [totalGuests, setTotalGuests] = useState(1); // Biến trạng thái cho tổng số lượng khách
-  const [showDatePicker, setShowDatePicker] = useState(false); // Biến trạng thái để kiểm soát khả năng hiển thị của date picker
-  const [userId, setUserId] = useState(""); // Đặt ID người dùng
-  const [showMessage, setShowMessage] = useState(false); // Biến trạng thái để kiểm soát khả năng hiển thị của thông báo
-  const [confirmationCode, setConfirmationCode] = useState(""); // Biến trạng thái cho mã xác nhận đặt phòng
-  const [errorMessage, setErrorMessage] = useState(""); // Biến trạng thái cho thông báo lỗi
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [checkOutDate, setCheckOutDate] = useState(null);
+  const [numAdults, setNumAdults] = useState(1);
+  const [numChildren, setNumChildren] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalGuests, setTotalGuests] = useState(1);
 
+  // ─── Fetch room + translation ───────────────────────────────────────────────
   useEffect(() => {
     const fetchRoomDetails = async () => {
-      console.log("🔥 useEffect RUN");
-
+      setIsLoading(true);
       try {
-        const lang = i18n.language.split("-")[0];
-        console.log("LANG:", lang);
-
+        // 1. Lấy thông tin phòng gốc (luôn có)
         const roomRes = await ApiService.getRoomById(roomId);
-        console.log("ROOM:", roomRes);
+        const room = roomRes?.room || roomRes;
 
-        const transRes = await ApiService.getRoomTranslation(roomId, lang);
-        console.log("TRANS:", transRes);
+        if (!room) {
+          setError("Không tìm thấy thông tin phòng.");
+          return;
+        }
 
-        const room = roomRes.room || roomRes;
+        // 2. Lấy bản dịch — nếu lỗi vẫn giữ dữ liệu gốc
+        const lang = i18n.language.split("-")[0];
+        let translatedRoom = { ...room };
 
-        setRoomDetails({
-          ...room,
-          roomDescription: transRes?.roomDescription || room.roomDescription,
-          roomType: transRes?.roomType || room.roomType,
-        });
-      } catch (error) {
-        console.log("❌ ERROR:", error);
+        try {
+          const transRes = await ApiService.getRoomTranslation(roomId, lang);
+          if (transRes) {
+            // Chỉ ghi đè nếu bản dịch thực sự có giá trị
+            if (transRes.roomType) translatedRoom.roomType = transRes.roomType;
+            if (transRes.roomDescription)
+              translatedRoom.roomDescription = transRes.roomDescription;
+            if (transRes.location) translatedRoom.location = transRes.location;
+          }
+        } catch (_) {
+          // Không có bản dịch → giữ nguyên dữ liệu gốc, không crash
+        }
+
+        setRoomDetails(translatedRoom);
+      } catch (err) {
+        console.error("Lỗi tải phòng:", err);
+        setError("Không thể tải thông tin phòng. Vui lòng thử lại.");
       } finally {
         setIsLoading(false);
       }
@@ -56,19 +62,17 @@ const RoomDetailsPage = () => {
     fetchRoomDetails();
   }, [roomId, i18n.language]);
 
+  // ─── Tính giá ────────────────────────────────────────────────────────────────
   const handleConfirmBooking = async () => {
     if (!checkInDate || !checkOutDate) {
       setError(t("roomDetailsPage.selectDates"));
-
       return;
     }
 
     try {
       const formattedCheckInDate = checkInDate.toISOString().split("T")[0];
-
       const formattedCheckOutDate = checkOutDate.toISOString().split("T")[0];
 
-      // Check phòng trống trước khi tính tiền
       const available = await ApiService.checkRoomAvailability(
         roomId,
         formattedCheckInDate,
@@ -77,39 +81,29 @@ const RoomDetailsPage = () => {
 
       if (!available) {
         setError(t("roomDetailsPage.roomBooked"));
-
         return;
       }
 
-      // Tính tổng số ngày
       const days = Math.ceil(
         (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24),
       );
-
-      // Tính tổng tiền
       const total = days * roomDetails.roomPrice;
 
       setTotalPrice(total);
-
-      // Tổng khách
       setTotalGuests(numAdults + numChildren);
-
       setError("");
-    } catch (error) {
-      const message = error.response?.data?.message;
-
-      if (message === "Access denied") {
-        setError(t("roomDetailsPage.forbidden"));
-      } else if (message === "Room is not available for the selected dates") {
+    } catch (err) {
+      const message = err.response?.data?.message;
+      if (message === "Access denied") setError(t("roomDetailsPage.forbidden"));
+      else if (message === "Room is not available for the selected dates")
         setError(t("roomDetailsPage.roomNotAvailable"));
-      } else if (message === "Room already booked for selected dates.") {
+      else if (message === "Room already booked for selected dates.")
         setError(t("roomDetailsPage.roomBooked"));
-      } else {
-        setError(t("roomDetailsPage.general"));
-      }
+      else setError(t("roomDetailsPage.general"));
     }
   };
 
+  // ─── Đặt phòng ───────────────────────────────────────────────────────────────
   const acceptBooking = async () => {
     try {
       const userProfile = await ApiService.getUserProfile();
@@ -126,46 +120,44 @@ const RoomDetailsPage = () => {
         numOfAdults: numAdults,
         numOfChildren: numChildren,
       };
+
       const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
-
-      console.log("Booking response:", bookingRes); // debug
-
       if (bookingRes.statusCode !== 200) {
         setError(bookingRes.message);
         return;
       }
+
       const paymentRes = await ApiService.createVNPayPayment(
         bookingRes.bookingId,
       );
-
-      console.log("Payment response:", paymentRes); // debug
-
       if (paymentRes.status === "OK") {
         sessionStorage.setItem("pendingBookingId", bookingRes.bookingId);
         window.location.href = paymentRes.paymentUrl;
       } else {
-        // Payment creation failed - cancel the booking
         try {
           await ApiService.cancelBooking(bookingRes.bookingId);
-        } catch (cancelError) {
-          console.error("Error canceling booking:", cancelError);
-        }
+        } catch (_) {}
         setError(t("roomDetailsPage.paymentError") + paymentRes.message);
       }
-    } catch (error) {
-      const message = error.response?.data?.message;
-
-      if (message === "Access denied") {
-        setError(t("roomDetailsPage.forbidden"));
-      } else if (message === "Room is not available for the selected dates") {
+    } catch (err) {
+      const message = err.response?.data?.message;
+      if (message === "Access denied") setError(t("roomDetailsPage.forbidden"));
+      else if (message === "Room is not available for the selected dates")
         setError(t("roomDetailsPage.roomNotAvailable"));
-      } else if (message === "Room already booked for selected dates.") {
+      else if (message === "Room already booked for selected dates.")
         setError(t("roomDetailsPage.roomBooked"));
-      } else {
-        setError(t("roomDetailsPage.general"));
-      }
+      else setError(t("roomDetailsPage.general"));
     }
   };
+
+  // ─── Format giá ──────────────────────────────────────────────────────────────
+  const formatPrice = (price) => {
+    if (!price) return "0";
+    const lang = i18n.language; // vi, ja, en...
+    return Number(price).toLocaleString(lang === "vi" ? "vi-VN" : "en-US");
+  };
+
+  // ─── Render ──────────────────────────────────────────────────────────────────
   if (isLoading)
     return (
       <div className="bbhh-loader-container">
@@ -178,30 +170,48 @@ const RoomDetailsPage = () => {
       <div className="bbhh-details-container">
         {error && <p className="bbhh-error-banner">{error}</p>}
 
-        {roomDetails && (
+        {roomDetails ? (
           <div className="bbhh-details-grid">
-            {/* Cột trái: Thông tin phòng */}
+            {/* ── Cột trái: Thông tin phòng ── */}
             <div className="bbhh-details-info">
               <div className="bbhh-image-frame">
                 <img
                   src={roomDetails.roomPhotoUrl}
                   alt={roomDetails.roomType}
                 />
+                {/* Badge loại phòng — dùng bản dịch nếu có */}
                 <div className="bbhh-room-badge">{roomDetails.roomType}</div>
               </div>
+
               <div className="bbhh-info-text">
                 <h3>{t("roomDetailsPage.roomDetails")}</h3>
-                <p>
+
+                {/* Tên phòng hiển thị rõ ràng */}
+                <h2 className="bbhh-room-name">{roomDetails.roomType}</h2>
+
+                {/* Địa điểm nếu có */}
+                {roomDetails.location && (
+                  <p className="bbhh-room-location">
+                    📍 {roomDetails.location}
+                  </p>
+                )}
+
+                {/* Mô tả phòng */}
+                <p className="bbhh-room-description">
                   {roomDetails.roomDescription ||
                     t("roomDetailsPage.defaultDesc")}
                 </p>
+
                 <div className="bbhh-price-circle">
                   <span>
-                    ${roomDetails.roomPrice} / {t("roomDetailsPage.night")}
+                    ${formatPrice(roomDetails.roomPrice)} /{" "}
+                    {t("roomDetailsPage.night")}
                   </span>
                 </div>
               </div>
             </div>
+
+            {/* ── Cột phải: Form đặt phòng ── */}
             <div className="bbhh-booking-card">
               <div className="bbhh-card-header">
                 <h3>{t("roomDetailsPage.bookRoom")}</h3>
@@ -213,14 +223,14 @@ const RoomDetailsPage = () => {
                   <label>{t("roomDetailsPage.checkIn")}</label>
                   <DatePicker
                     id="checkin"
-                    name="checkin"
                     selected={checkInDate}
                     onChange={(date) => setCheckInDate(date)}
                     selectsStart
                     startDate={checkInDate}
                     endDate={checkOutDate}
-                    placeholderText="Pick a date"
+                    placeholderText="Chọn ngày"
                     className="bbhh-date-input"
+                    minDate={new Date()}
                   />
                 </div>
 
@@ -228,14 +238,13 @@ const RoomDetailsPage = () => {
                   <label>{t("roomDetailsPage.checkOut")}</label>
                   <DatePicker
                     id="checkout"
-                    name="checkout"
                     selected={checkOutDate}
                     onChange={(date) => setCheckOutDate(date)}
                     selectsEnd
                     startDate={checkInDate}
                     endDate={checkOutDate}
-                    minDate={checkInDate}
-                    placeholderText="Pick a date"
+                    minDate={checkInDate || new Date()}
+                    placeholderText="Chọn ngày"
                     className="bbhh-date-input"
                   />
                 </div>
@@ -246,11 +255,12 @@ const RoomDetailsPage = () => {
                   <label>{t("roomDetailsPage.adults")}</label>
                   <input
                     id="adults"
-                    name="adults"
                     type="number"
                     min="1"
                     value={numAdults}
-                    onChange={(e) => setNumAdults(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setNumAdults(parseInt(e.target.value) || 1)
+                    }
                   />
                 </div>
 
@@ -258,11 +268,12 @@ const RoomDetailsPage = () => {
                   <label>{t("roomDetailsPage.children")}</label>
                   <input
                     id="children"
-                    name="children"
                     type="number"
                     min="0"
                     value={numChildren}
-                    onChange={(e) => setNumChildren(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setNumChildren(parseInt(e.target.value) || 0)
+                    }
                   />
                 </div>
               </div>
@@ -280,12 +291,12 @@ const RoomDetailsPage = () => {
                     <span>{t("roomDetailsPage.guests")}:</span>
                     <strong>{totalGuests}</strong>
                   </div>
-
                   <div className="summary-row">
                     <span>{t("roomDetailsPage.total")}:</span>
-                    <strong className="text-orange">${totalPrice}</strong>
+                    <strong className="text-orange">
+                      ${formatPrice(totalPrice)}
+                    </strong>
                   </div>
-
                   <button
                     onClick={acceptBooking}
                     className="bbhh-btn-confirm-final"
@@ -296,6 +307,12 @@ const RoomDetailsPage = () => {
               )}
             </div>
           </div>
+        ) : (
+          !error && (
+            <div className="ar-empty">
+              <p>Không tìm thấy thông tin phòng.</p>
+            </div>
+          )
         )}
       </div>
     </div>

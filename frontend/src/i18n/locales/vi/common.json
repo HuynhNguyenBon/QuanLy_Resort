@@ -27,6 +27,7 @@
     "checkIn": "Ngày nhận phòng",
     "checkOut": "Ngày trả phòng",
     "roomType": "Loại phòng",
+    "tc": "(Tùy chọn) ",
     "selectCheckIn": "Chọn ngày nhận phòng",
     "selectCheckOut": "Chọn ngày trả phòng",
     "selectRoomType": "Chọn loại phòng",

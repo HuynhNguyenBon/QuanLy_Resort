@@ -1,18 +1,79 @@
 {
-  "welcome": "Welcome to",
-  "subtitle": "Step into a haven of comfort and care",
-  "allRooms": "All Rooms",
-  "servicesTitle": "Services at",
+  "heroBadge": "★ リゾート＆スパ — ベトナム",
+  "heroTitle1": "あなたの",
+  "heroTitle2": "ラグジュアリー",
+  "heroTitle3": "リゾート",
+  "subtitle": "快適さと安心に満ちた癒しの空間へ",
+  "heroSubtitle": "🛏️ 今すぐ予約する",
+  "heroServices": "サービスを見る",
 
-  "pool": "Infinity Pool",
-  "poolDesc": "Open-horizon infinity pool with panoramic views, open 6:00–22:00. The perfect place to unwind.",
+  "stats_rooms": "客室",
+  "stats_satisfaction": "満足度",
+  "stats_years": "年の経験",
+  "stats_support": "24時間サポート",
 
-  "miniBar": "Restaurant & Dining",
-  "miniBarDesc": "Rich Asian–European menu with fresh daily ingredients. Easy reservations, served from breakfast to late night.",
+  "searchResultTitle": "{{count}}件の",
+  "searchResultTitle1": "空室が見つかりました",
+  "clearResult": "結果をクリア",
 
-  "parking": "Free Parking",
-  "parkingDesc": "Spacious covered parking with 24/7 security. Valet parking service available on request.",
+  "roomsTag": "客室",
+  "roomsTitle": "あなたにぴったりの部屋を選ぶ",
+  "roomsSubtitle": "スタンダードから高級スイートまで、あらゆるニーズに対応しています。",
+  "viewAll": "すべて見る",
+  "perNight": "1泊",
+  "viewRoom": "部屋を見る",
 
-  "spa": "Spa & Massage",
-  "spaDesc": "Deep-tissue massage and natural essential oil therapies. Restore your energy after long days of travel."
+  "roomTypes": {
+    "Standard": "スタンダードルーム",
+    "Superior": "スーペリアルーム",
+    "Deluxe": "デラックスルーム",
+    "Suite": "スイートルーム",
+    "Family": "ファミリールーム"
+  },
+
+  "servicesTag": "サービス",
+  "servicesSubtitle": "最新の設備と心のこもったサービスで、完璧な滞在をお届けします。",
+  "viewDetail": "詳細を見る",
+
+  "pool": "インフィニティプール",
+  "poolDesc": "パノラマビューの開放的なインフィニティプール。営業時間は6:00〜22:00。最高のリラックス空間です。",
+
+  "miniBar": "レストラン＆ダイニング",
+  "miniBarDesc": "新鮮な食材を使用したアジア・ヨーロッパ料理。朝食から深夜までご利用いただけます。",
+
+  "parking": "無料駐車場",
+  "parkingDesc": "24時間セキュリティ完備の広い屋内駐車場。バレーパーキングも利用可能です。",
+
+  "wifi": "WiFi",
+  "wifiDesc": "全客室と共用エリアで高速Wi-Fiを無料でご利用いただけます。",
+
+  "spa": "スパ＆マッサージ",
+  "spaDesc": "ディープティッシュマッサージと天然オイルセラピーで旅の疲れを癒します。",
+
+  "testimonials": {
+    "tag": "お客様の声",
+    "titlePrefix": "合計",
+    "titleSuffix": "件の満足したご滞在",
+
+    "testimonial1": "素晴らしいサービスで、部屋は広く清潔でした。また必ず利用したいです。",
+    "testimonial2": "インフィニティプールが素晴らしく、海の景色も最高でした。料理も豊富です。",
+    "testimonial3": "静かでとてもリラックスできる環境でした。スパもとてもプロフェッショナルです。",
+
+    "testimonialName1": "ミン・アイン・グエン",
+    "testimonialName2": "ヴァン・コア・チャン",
+    "testimonialName3": "トゥ・フオン・レ"
+  },
+
+  "cities": {
+    "Hanoi": "ハノイ",
+    "HCMC": "ホーチミン市",
+    "Danang": "ダナン"
+  },
+  "cta": {
+    "title": "ご旅行の準備はできましたか？",
+    "subtitle": "今すぐ予約 — 即時確認、24時間以内無料キャンセル。",
+    "bookNow": "🛏️ 今すぐ予約",
+    "findBooking": "🔍 予約を確認",
+    "note": "✓ 24時間前まで無料キャンセル · ✓ 即時確認 · ✓ 24時間サポート"
+  }
 }
