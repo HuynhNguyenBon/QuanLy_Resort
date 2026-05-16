@@ -18,6 +18,89 @@ const FindBookingPage = () => {
   const [bookingDetails,   setBookingDetails]   = useState(null);
   const [error,            setError]            = useState("");
   const [loading,          setLoading]          = useState(false);
+  const [payLoading,       setPayLoading]       = useState(false);
+  const [showContact,      setShowContact]      = useState(false);
+  const [contactForm,      setContactForm]      = useState({ name: "", email: "", message: "" });
+  const [contactSending,   setContactSending]   = useState(false);
+  const [contactSuccess,   setContactSuccess]   = useState(false);
+  const [showEmailLookup,  setShowEmailLookup]  = useState(false);
+  const [lookupEmail,      setLookupEmail]      = useState("");
+  const [lookupLoading,    setLookupLoading]    = useState(false);
+  const [lookupResults,    setLookupResults]    = useState([]);
+  const [lookupError,      setLookupError]      = useState("");
+
+  const isPending = (booking) => {
+    const s = (booking.bookingStatus || booking.status || "").toString().toLowerCase();
+    return s !== "confirmed" && s !== "true" && s !== "1";
+  };
+
+  const handlePayNow = async () => {
+    if (!ApiService.isAuthenticated()) {
+      navigate("/login", { state: { from: { pathname: "/find-booking" } } });
+      return;
+    }
+    setPayLoading(true);
+    try {
+      const res = await ApiService.createVNPayPayment(bookingDetails.id);
+      if (res.status === "OK") {
+        window.location.href = res.paymentUrl;
+      } else {
+        setError("Không thể tạo link thanh toán. Vui lòng thử lại.");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Lỗi thanh toán. Vui lòng thử lại.");
+    } finally {
+      setPayLoading(false);
+    }
+  };
+
+  const handleEmailLookup = async (e) => {
+    e.preventDefault();
+    if (!lookupEmail.trim()) return;
+    setLookupLoading(true);
+    setLookupError("");
+    setLookupResults([]);
+    try {
+      // Lấy tất cả booking của user có email này
+      const res = await ApiService.getAllBookings();
+      const allBookings = res.bookingList || [];
+      const matched = allBookings.filter(b =>
+        b.user?.email?.toLowerCase() === lookupEmail.trim().toLowerCase()
+      );
+      if (matched.length === 0) {
+        setLookupError("Không tìm thấy đặt phòng nào với email này. Kiểm tra lại hoặc liên hệ hỗ trợ.");
+      } else {
+        setLookupResults(matched);
+      }
+    } catch (err) {
+      // Nếu không có quyền gọi getAllBookings, hướng dẫn liên hệ
+      setLookupError("Không thể tra cứu tự động. Vui lòng liên hệ 0909.448.608 hoặc gửi yêu cầu hỗ trợ bên dưới.");
+    } finally {
+      setLookupLoading(false);
+    }
+  };
+
+  const handleContact = async (e) => {
+    e.preventDefault();
+    if (!contactForm.name || !contactForm.email || !contactForm.message) return;
+    setContactSending(true);
+    try {
+      // Gửi email qua mailto (mở email client)
+      const subject = encodeURIComponent(`[BBHH Resort] Hỗ trợ tìm đặt phòng - ${contactForm.name}`);
+      const body = encodeURIComponent(
+        `Họ tên: ${contactForm.name}\n` +
+        `Email: ${contactForm.email}\n\n` +
+        `Nội dung:\n${contactForm.message}\n\n` +
+        `---\nGửi từ trang Tìm đặt phòng - BBHH Resort`
+      );
+      window.location.href = `mailto:support@bbhh.com?subject=${subject}&body=${body}`;
+      setContactSuccess(true);
+      setContactForm({ name: "", email: "", message: "" });
+      setTimeout(() => { setContactSuccess(false); setShowContact(false); }, 3000);
+    } finally {
+      setContactSending(false);
+    }
+  };
 
   const handleSearch = async () => {
     if (!confirmationCode.trim()) {
@@ -153,6 +236,49 @@ const FindBookingPage = () => {
             <div className="fb-result-footer">
               🏨 Cảm ơn bạn đã chọn BBHH Resort. Chúc bạn có một kỳ nghỉ tuyệt vời!
             </div>
+            <div className="fb-result-actions">
+              {isPending(bookingDetails) ? (
+                <>
+                  <div className="fb-pay-banner">
+                    <div className="fb-pay-banner-info">
+                      <span>⏳</span>
+                      <div>
+                        <strong>Booking chưa được thanh toán</strong>
+                        <p>Hoàn tất thanh toán để xác nhận chỗ ở của bạn</p>
+                      </div>
+                    </div>
+                    <button
+                      className="fb-pay-now-btn"
+                      onClick={handlePayNow}
+                      disabled={payLoading}
+                    >
+                      {payLoading ? "Đang xử lý..." : "💳 Thanh toán ngay"}
+                    </button>
+                  </div>
+                  <button className="fb-action-btn ghost" onClick={() => { setBookingDetails(null); setConfirmationCode(""); }}>
+                    🔍 Tra cứu mã khác
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="fb-confirmed-banner">
+                    <span>✅</span>
+                    <div>
+                      <strong>Booking đã được xác nhận</strong>
+                      <p>Chúc bạn có kỳ nghỉ tuyệt vời tại BBHH Resort!</p>
+                    </div>
+                  </div>
+                  <div className="fb-action-row">
+                    <button className="fb-action-btn primary" onClick={() => navigate("/profile")}>
+                      👤 Quản lý đặt phòng
+                    </button>
+                    <button className="fb-action-btn ghost" onClick={() => { setBookingDetails(null); setConfirmationCode(""); }}>
+                      🔍 Tra cứu mã khác
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -167,7 +293,10 @@ const FindBookingPage = () => {
               <h2 className="fb-guide-title">Cách tra cứu đặt phòng</h2>
               <div className="fb-steps-grid">
                 {STEPS.map((s, i) => (
-                  <div key={i} className="fb-step-card">
+                  <div
+                    key={i}
+                    className={`fb-step-card${i === 0 ? " fb-step-clickable" : ""}`}
+                  >
                     <div className="fb-step-num">{i + 1}</div>
                     <div className="fb-step-icon">{s.icon}</div>
                     <h3 className="fb-step-title">{s.title}</h3>
@@ -175,6 +304,50 @@ const FindBookingPage = () => {
                   </div>
                 ))}
               </div>
+
+              {/* Form tra cứu theo email */}
+              {showEmailLookup && (
+                <div className="fb-email-lookup">
+                  <h4 className="fb-lookup-title">📧 Tìm mã xác nhận theo email</h4>
+                  <p className="fb-lookup-sub">Nhập email bạn dùng khi đặt phòng để tìm lại mã xác nhận.</p>
+                  <form onSubmit={handleEmailLookup} className="fb-lookup-form">
+                    <input
+                      type="email"
+                      className="fb-lookup-input"
+                      placeholder="email@gmail.com"
+                      value={lookupEmail}
+                      onChange={e => setLookupEmail(e.target.value)}
+                      required
+                    />
+                    <button type="submit" className="fb-lookup-btn" disabled={lookupLoading}>
+                      {lookupLoading ? "Đang tìm..." : "🔍 Tìm kiếm"}
+                    </button>
+                  </form>
+
+                  {lookupError && <p className="fb-lookup-error">⚠️ {lookupError}</p>}
+
+                  {lookupResults.length > 0 && (
+                    <div className="fb-lookup-results">
+                      <p className="fb-lookup-found">Tìm thấy {lookupResults.length} đặt phòng:</p>
+                      {lookupResults.map(b => (
+                        <div key={b.id} className="fb-lookup-item"
+                          onClick={() => {
+                            setConfirmationCode(b.bookingConfirmationCode);
+                            setShowEmailLookup(false);
+                            // Auto search
+                            setTimeout(() => document.querySelector(".fb-search-btn")?.click(), 100);
+                          }}
+                        >
+                          <div className="fb-lookup-item-code">{b.bookingConfirmationCode}</div>
+                          <div className="fb-lookup-item-info">
+                            📅 {b.checkInDate} → {b.checkOutDate} · 🛏️ {b.room?.roomType}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Cần hỗ trợ */}
@@ -186,8 +359,51 @@ const FindBookingPage = () => {
               </div>
               <div className="fb-help-actions">
                 <a href="tel:0909448608" className="fb-help-btn primary">📞 0909.448.608</a>
-                <button className="fb-help-btn secondary" onClick={() => navigate("/rooms")}>🛏️ Đặt phòng mới</button>
+                <button className="fb-help-btn secondary" onClick={() => setShowContact(p => !p)}>
+                  ✉️ Gửi yêu cầu hỗ trợ
+                </button>
               </div>
+
+              {showContact && (
+                <div className="fb-contact-form">
+                  {contactSuccess ? (
+                    <div className="fb-contact-success">
+                      ✅ Đã mở email. Vui lòng gửi để hoàn tất yêu cầu hỗ trợ!
+                    </div>
+                  ) : (
+                    <form onSubmit={handleContact}>
+                      <div className="auth-field">
+                        <label>Họ và tên</label>
+                        <input type="text" placeholder="Nguyễn Văn A"
+                          value={contactForm.name}
+                          onChange={e => setContactForm(p => ({ ...p, name: e.target.value }))}
+                          required />
+                      </div>
+                      <div className="auth-field">
+                        <label>Email của bạn</label>
+                        <input type="email" placeholder="email@gmail.com"
+                          value={contactForm.email}
+                          onChange={e => setContactForm(p => ({ ...p, email: e.target.value }))}
+                          required />
+                      </div>
+                      <div className="auth-field">
+                        <label>Mô tả vấn đề</label>
+                        <textarea
+                          placeholder="VD: Tôi đã đặt phòng ngày 16/05 nhưng không nhận được email xác nhận..."
+                          value={contactForm.message}
+                          onChange={e => setContactForm(p => ({ ...p, message: e.target.value }))}
+                          rows={3} required
+                          style={{ width:"100%", padding:"11px 14px", border:"1.5px solid var(--border)", borderRadius:"var(--radius-sm)", fontSize:"14px", fontFamily:"inherit", resize:"vertical", outline:"none", boxSizing:"border-box" }}
+                        />
+                      </div>
+                      <button type="submit" className="auth-submit-btn" disabled={contactSending}
+                        style={{ marginTop: 4 }}>
+                        {contactSending ? "Đang mở email..." : "📧 Gửi yêu cầu hỗ trợ"}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )}
             </div>
 
           </div>

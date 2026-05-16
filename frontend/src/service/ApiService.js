@@ -92,6 +92,13 @@ export default class ApiService {
 
 
     /* Thao tác này nhằm xóa người dùng */
+    static async updateUser(userId, userData) {
+        const response = await axios.put(`${this.BASE_URL}/users/update/${userId}`, userData, {
+            headers: this.getHeader()
+        });
+        return response.data;
+    }
+
     static async deleteUser(userId) {
         const response = await axios.delete(`${this.BASE_URL}/users/delete/${userId}`, {
             headers: this.getHeader()
@@ -203,6 +210,16 @@ export default class ApiService {
         })
         return result.data
     }
+
+    static async updateBooking(bookingId, bookingData) {
+        const result = await axios.put(`${this.BASE_URL}/bookings/update/${bookingId}`, bookingData, {
+            headers: this.getHeader()
+        })
+        return result.data
+    }
+
+    
+
 
     /**AUTHENTICATION CHECKER */
     static logout() {

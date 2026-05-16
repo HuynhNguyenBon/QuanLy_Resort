@@ -1,131 +1,106 @@
-import "../../UiverseElements.css";
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import ApiService from "../../service/ApiService";
 import { useTranslation } from "react-i18next";
+import ApiService from "../../service/ApiService";
+import "../../UiverseElements.css";
 
 function LoginPage() {
   const { t } = useTranslation("auth");
-
-  const [email, setEmail] = useState("");
+  const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
+  const [showPass, setShowPass] = useState(false);
+  const [error,    setError]    = useState("");
+  const [loading,  setLoading]  = useState(false);
+  const navigate  = useNavigate();
+  const location  = useLocation();
   const from = location.state?.from?.pathname || "/home";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!email || !password) {
-      setError(t("login.fillAllFields"));
-
-      setTimeout(() => setError(""), 5000);
-
+      setError("Vui lòng điền đầy đủ thông tin.");
+      setTimeout(() => setError(""), 4000);
       return;
     }
-
-    setIsLoading(true);
-
+    setLoading(true);
     try {
-      const response = await ApiService.loginUser({
-        email,
-        password,
-      });
-
-      if (response.statusCode === 200) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("role", response.role);
-        localStorage.setItem("userEmail", email);
-
-        window.dispatchEvent(new Event("authChange"));
-
+      const res = await ApiService.loginUser({ email, password });
+      if (res.statusCode === 200) {
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("role", res.role);
+        localStorage.setItem("userEmail", res.email || email);
         navigate(from, { replace: true });
       }
-    } catch (error) {
-      if (error.response?.data?.message?.includes("Bad credentials")) {
-        setError(t("login.fillAllFields"));
-      } else {
-        setError(error.response?.data?.message || t("login.general"));
-      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Email hoặc mật khẩu không đúng.");
       setTimeout(() => setError(""), 5000);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>{t("login.title")}</h2>
-
-      {error && <p className="error-message">{error}</p>}
-
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email:</label>
-
-          <input
-            type="email"
-            className="input-uiverse"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <div className="auth-page">
+      <div className="auth-left">
+        <div className="auth-left-content">
+          <div className="auth-brand">★ BBHH Resort</div>
+          <h2 className="auth-left-title">Chào mừng trở lại!</h2>
+          <p className="auth-left-sub">Đăng nhập để đặt phòng, tra cứu booking và quản lý tài khoản của bạn.</p>
+          <div className="auth-features">
+            <div className="auth-feature-item"><span>🛏️</span> Đặt phòng nhanh chóng</div>
+            <div className="auth-feature-item"><span>🔍</span> Tra cứu đặt phòng dễ dàng</div>
+            <div className="auth-feature-item"><span>🎁</span> Ưu đãi dành riêng cho thành viên</div>
+          </div>
         </div>
+      </div>
 
-        <div className="form-group">
-          <label>{t("login.password")}</label>
+      <div className="auth-right">
+        <div className="auth-form-box">
+          <h2 className="auth-form-title">Đăng nhập</h2>
+          <p className="auth-form-sub">Nhập thông tin tài khoản của bạn</p>
 
-          <input
-            type="password"
-            className="input-uiverse"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          {error && <div className="auth-error"><span>⚠️</span>{error}</div>}
+
+          <form onSubmit={handleSubmit} autoComplete="off">
+            <div className="auth-field">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="ten@gmail.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="auth-field">
+              <label>Mật khẩu</label>
+              <div className="auth-input-wrap">
+                <input
+                  type={showPass ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                />
+                <button type="button" className="auth-eye" onClick={() => setShowPass(p => !p)}>
+                  {showPass ? "🙈" : "👁️"}
+                </button>
+              </div>
+            </div>
+
+            <div className="auth-forgot">
+              <a href="/forgot-password">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" className="auth-submit-btn" disabled={loading}>
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </button>
+          </form>
+
+          <p className="auth-switch">
+            Chưa có tài khoản? <a href="/register">Đăng ký ngay</a>
+          </p>
         </div>
-
-        <button type="submit" className="btn-uiverse" disabled={isLoading}>
-          {isLoading ? t("login.loading") : t("login.title")}
-
-          {isLoading && <div className="loader-uiverse"></div>}
-        </button>
-      </form>
-
-      <div style={{ marginTop: "15px" }}>
-        <div
-          style={{
-            textAlign: "right",
-            marginBottom: "10px",
-            paddingRight: "20px",
-          }}
-        >
-          <a
-            href="/forgot-password"
-            style={{
-              color: "#007bff",
-              textDecoration: "none",
-              fontSize: "13px",
-            }}
-          >
-            {t("login.forgotPassword")}
-          </a>
-        </div>
-
-        <p
-          className="register-link"
-          style={{
-            margin: 0,
-            textAlign: "left",
-          }}
-        >
-          {t("login.noAccount")}
-
-          <a href="/register">{t("register.title")}</a>
-        </p>
       </div>
     </div>
   );

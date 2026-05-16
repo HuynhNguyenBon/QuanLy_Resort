@@ -46,7 +46,7 @@ function App() {
             {/* Protected Routes */}
             <Route path="/vnpay-return" element={<VNPayReturnPage />} />
             <Route path="/room-details-book/:roomId"
-              element={<ProtectedRoute element={<RoomDetailsBookingPage />} />}
+              element={<RoomDetailsBookingPage />}
             />
             <Route path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} />}
