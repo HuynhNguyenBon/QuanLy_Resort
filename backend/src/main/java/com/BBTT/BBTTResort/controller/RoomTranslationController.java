@@ -14,7 +14,7 @@ import java.util.Optional;
 public class RoomTranslationController {
 
     @Autowired
-    private RoomTranslationService roomTranslationService;
+    private RoomTranslationService roomTranslationService; // dùng service
     
     @GetMapping("/{roomId}/{lang}")
     public ResponseEntity<?> getTranslation(@PathVariable Long roomId, @PathVariable String lang) {
