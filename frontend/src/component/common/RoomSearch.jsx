@@ -146,7 +146,7 @@ const RoomSearch = ({ handleSearchResult }) => {
         <div className="search-field search-field-drop" ref={dropRef}>
           <label>
             {t("search.roomType")}{" "}
-            <span style={{ fontWeight: 400, opacity: 0.6 }}>(tuỳ chọn)</span>
+            <span style={{ fontWeight: 400, opacity: 0.6 }}></span>
             <span style={{ fontWeight: 400, opacity: 0.6 }}>
               {t("search.tc")}
             </span>
