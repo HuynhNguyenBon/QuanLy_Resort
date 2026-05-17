@@ -24,7 +24,6 @@ const RoomDetailsPage = () => {
     try { return JSON.parse(localStorage.getItem("bbhh_selected_services") || "[]"); }
     catch { return []; }
   });
-
   // Giới hạn khách theo loại phòng
   const ROOM_LIMITS = {
     Standard: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },

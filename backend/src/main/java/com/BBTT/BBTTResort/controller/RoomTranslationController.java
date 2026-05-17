@@ -15,8 +15,8 @@ public class RoomTranslationController {
 
     @Autowired
     private RoomTranslationService roomTranslationService; // dùng service
-
-    @GetMapping("/{roomId}/translations/{lang}")
+    
+    @GetMapping("/{roomId}/{lang}")
     public ResponseEntity<?> getTranslation(@PathVariable Long roomId, @PathVariable String lang) {
         RoomTranslation trans = roomTranslationService.getTranslation(roomId, lang);
         if (trans == null) return ResponseEntity.notFound().build();
