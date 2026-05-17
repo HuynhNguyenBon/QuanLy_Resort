@@ -511,10 +511,10 @@ const AllRoomsPage = () => {
                       <div className="ar-card-price">
                         {/* Giá — format chuẩn, không lẫn locale tiền tệ */}
                         <span className="ar-price-num">
-                          ${formatPrice(room.roomPrice)}
+                          {formatPrice(room.roomPrice)}
                         </span>
                         <span className="ar-price-per">
-                          / {t("allRoomsPage.night", "đêm")}
+                          {t("allRoomsPage.night", "đêm")}
                         </span>
                       </div>
                       <button
