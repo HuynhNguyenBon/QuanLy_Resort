@@ -295,19 +295,12 @@ const FindBookingPage = () => {
                 {STEPS.map((s, i) => (
                   <div
                     key={i}
-                    className={`fb-step-card${i === 0 ? " fb-step-clickable" : ""}`}
-                    onClick={i === 0 ? () => setShowEmailLookup(p => !p) : undefined}
-                    title={i === 0 ? "Click để tìm mã theo email" : undefined}
+                    className="fb-step-card"
                   >
                     <div className="fb-step-num">{i + 1}</div>
                     <div className="fb-step-icon">{s.icon}</div>
                     <h3 className="fb-step-title">{s.title}</h3>
                     <p className="fb-step-desc">{s.desc}</p>
-                    {i === 0 && (
-                      <span className="fb-step-action-hint">
-                        {showEmailLookup ? "▲ Thu gọn" : "▼ Tìm mã theo email"}
-                      </span>
-                    )}
                   </div>
                 ))}
               </div>

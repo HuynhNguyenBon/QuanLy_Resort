@@ -20,7 +20,10 @@ const RoomDetailsPage = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalGuests, setTotalGuests] = useState(1);
   const [payNow, setPayNow] = useState(true); // true=thanh toán ngay, false=đặt trước
-
+  const [selectedServices, setSelectedServices] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("bbhh_selected_services") || "[]"); }
+    catch { return []; }
+  });
   // Giới hạn khách theo loại phòng
   const ROOM_LIMITS = {
     Standard: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
@@ -158,12 +161,17 @@ const RoomDetailsPage = () => {
         checkOutDate: checkOutDate.toISOString().split("T")[0],
         numOfAdults: numAdults,
         numOfChildren: numChildren,
+        serviceIds: selectedServices.map(s => s.id),
       };
       const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
       if (bookingRes.statusCode !== 200) {
         setError(bookingRes.message);
         return;
       }
+
+      // Xóa dịch vụ khỏi cart sau khi đặt phòng thành công
+      localStorage.removeItem("bbhh_selected_services");
+      setSelectedServices([]);
 
       if (payNow) {
         // Thanh toán ngay qua VNPay
@@ -320,8 +328,35 @@ const RoomDetailsPage = () => {
                     <strong>{totalGuests} người</strong>
                   </div>
                   <div className="summary-row">
+                    <span>Tiền phòng:</span>
+                    <strong>${totalPrice}</strong>
+                  </div>
+
+                  {selectedServices.length > 0 && (
+                    <div className="sv-booking-services">
+                      <div className="sv-booking-services-title">
+                        🛎️ Dịch vụ đi kèm ({selectedServices.length})
+                      </div>
+                      {selectedServices.map(s => (
+                        <div key={s.id} className="sv-booking-service-row">
+                          <span>{s.name}</span>
+                          <span>{s.price ? `$${s.price}` : "Miễn phí"}</span>
+                        </div>
+                      ))}
+                      <button
+                        className="sv-booking-edit-services"
+                        onClick={() => navigate("/services")}
+                      >
+                        ✎ Sửa dịch vụ
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="summary-row summary-total-row">
                     <span>{t("roomDetailsPage.total")}:</span>
-                    <strong className="text-orange">${totalPrice}</strong>
+                    <strong className="text-orange">
+                      ${totalPrice + selectedServices.reduce((s, sv) => s + (sv.price || 0), 0)}
+                    </strong>
                   </div>
 
                   {/* Chọn phương thức */}

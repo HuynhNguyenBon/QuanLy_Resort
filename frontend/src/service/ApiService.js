@@ -288,12 +288,9 @@ export default class ApiService {
     const role = localStorage.getItem("role");
     return role?.toUpperCase() === "USER";
   }
-
-  // Lấy danh sách tất cả dịch vụ
+  // Lấy danh sách tất cả dịch vụ (public, không cần đăng nhập)
   static async getAllServices() {
-    const response = await axios.get(`${this.BASE_URL}/services/all`, {
-      headers: this.getHeader(),
-    });
+    const response = await axios.get(`${this.BASE_URL}/services/all`);
     return response.data;
   }
 

@@ -17,7 +17,7 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 .ar-search-toggle:focus-visible,
 .search-drop-trigger:focus-visible { outline: none; box-shadow: none; }
 
-/* TOKENS */
+/* OKENS */
 :root {
   --teal:        #007F86;
   --teal-dark:   #005f65;
@@ -3846,3 +3846,120 @@ button[type="submit"]:hover { background: var(--teal-dark); }
   .fb-support-row { grid-template-columns: 1fr; }
   .fb-support-submit { align-self: stretch; }
 }
+
+/* ── SERVICE SELECTION & CART ─────────────────────────────── */
+.sv-card { position: relative; }
+.sv-card-selected {
+  border-color: var(--teal) !important;
+  background: #F0FDFB !important;
+  box-shadow: 0 0 0 2px rgba(0,130,130,0.10);
+}
+.sv-card-selected .sv-card-img { background: linear-gradient(135deg, #C6EFF0, #E0F4F5) !important; }
+
+.sv-card-check {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--teal); color: #fff;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,130,130,0.3);
+}
+
+.sv-add-btn {
+  font-size: 12px; font-weight: 700;
+  color: var(--teal); background: none;
+  border: 1.5px solid var(--teal);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+  transition: all 0.18s;
+}
+.sv-add-btn:hover {
+  background: var(--teal); color: #fff;
+}
+.sv-add-btn-added {
+  background: #F0FDFB; color: #0d7070;
+  border-color: #0d7070;
+}
+.sv-add-btn-added:hover {
+  background: #FEF2F2; color: #dc2626;
+  border-color: #dc2626;
+}
+
+/* Floating cart bar */
+.sv-float-cart {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--navy); color: #fff;
+  border-radius: 56px;
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.22);
+  z-index: 1000; white-space: nowrap;
+  animation: slideUp 0.25s ease;
+  max-width: calc(100vw - 32px);
+}
+@keyframes slideUp {
+  from { transform: translateX(-50%) translateY(80px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
+}
+.sv-float-cart-info { display: flex; align-items: center; gap: 12px; }
+.sv-float-cart-count {
+  background: var(--amber); color: var(--navy);
+  font-size: 15px; font-weight: 800;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sv-float-cart-label { font-size: 14px; font-weight: 600; }
+.sv-float-cart-total { font-size: 12px; color: #C9A84C; margin-top: 1px; }
+.sv-float-cart-actions { display: flex; gap: 8px; }
+.sv-float-cart-clear {
+  background: rgba(255,255,255,0.12); color: #ccc;
+  border: none; border-radius: 56px;
+  padding: 7px 14px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: background 0.15s;
+}
+.sv-float-cart-clear:hover { background: rgba(255,255,255,0.22); color: #fff; }
+.sv-float-cart-book {
+  background: var(--amber); color: var(--navy);
+  border: none; border-radius: 56px;
+  padding: 8px 18px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit; transition: filter 0.15s;
+}
+.sv-float-cart-book:hover { filter: brightness(1.08); }
+
+/* Services in booking summary (RoomDetailsPage) */
+.sv-booking-services {
+  background: #F0FDFB;
+  border: 1.5px solid rgba(0,130,130,0.20);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px; margin: 8px 0;
+}
+.sv-booking-services-title {
+  font-size: 13px; font-weight: 700; color: var(--teal);
+  margin-bottom: 8px;
+}
+.sv-booking-service-row {
+  display: flex; justify-content: space-between;
+  font-size: 13px; color: var(--text-main);
+  padding: 3px 0; border-bottom: 1px dashed rgba(0,130,130,0.12);
+}
+.sv-booking-service-row:last-of-type { border-bottom: none; }
+.sv-booking-edit-services {
+  background: none !important; border: none; color: var(--teal) !important;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  font-family: inherit; margin-top: 8px; padding: 0;
+  text-decoration: underline;
+}
+.sv-booking-edit-services:hover {
+  color: var(--navy) !important;
+  background: none !important;
+  text-decoration: underline !important;
+  opacity: 1 !important;
+}
+
+.summary-total-row {
+  border-top: 2px solid var(--border);
+  padding-top: 10px; margin-top: 4px;
+}
+.summary-total-row strong { font-size: 18px; }
