@@ -1,0 +1,135 @@
+{
+  "servicePage": {
+    "heroTag": "SERVICES & AMENITIES",
+    "heroTitle1": "Experience",
+    "heroAccent": "Luxury",
+    "heroTitle2": "at BBHH Resort",
+    "heroSub": "Choose your favorite services to add to your booking",
+
+    "loading": "Loading services...",
+
+    "from": "From",
+    "added": "✓ Added!",
+    "selectedRemove": "✓ Selected · Remove",
+    "addToBooking": "+ Add to booking",
+
+    "ctaTitle": "Ready for the experience?",
+    "ctaSub": "Book today and enjoy all 5-star services.",
+
+    "bookNow": "Book Now",
+    "findBooking": "Find Booking",
+
+    "selectedServices": "selected services",
+    "serviceFee": "service fee",
+
+    "clearAll": "Clear All",
+    "chooseRoom": "Choose Room",
+
+    "services": {
+      "Luxury Mini Bar": {
+        "name": "Luxury Mini Bar",
+        "description": "Premium drinks package with wine, cocktails, fresh juice, and gourmet snacks."
+      },
+      "Gourmet Breakfast": {
+        "name": "Gourmet Breakfast",
+        "description": "International breakfast buffet with over 40 dishes and fresh ingredients daily."
+      },
+      "Spa & Wellness Center": {
+        "name": "Spa & Wellness Center",
+        "description": "Luxury wellness treatments to restore your body and mind."
+      },
+      "Spa & Massage": {
+        "name": "Spa & Massage",
+        "description": "60-minute relaxing massage therapy with natural essential oils."
+      },
+      "Laundry & Dry Cleaning": {
+        "name": "Laundry & Dry Cleaning",
+        "description": "Professional laundry service with 24-hour return."
+      },
+      "Room Service 24/7": {
+        "name": "24/7 Room Service",
+        "description": "Enjoy food and beverages delivered to your room anytime."
+      },
+      "Private Pool Access": {
+        "name": "Private Pool Access",
+        "description": "Private rooftop infinity pool access for 2 hours."
+      },
+      "Infinity Swimming Pool": {
+        "name": "Infinity Swimming Pool",
+        "description": "Enjoy our luxurious infinity swimming pool."
+      },
+      "Fitness & Yoga Class": {
+        "name": "Fitness & Yoga Class",
+        "description": "Sunrise yoga or private fitness training sessions."
+      },
+      "Modern Fitness Center": {
+        "name": "Modern Fitness Center",
+        "description": "State-of-the-art gym with premium equipment."
+      },
+      "Airport Transfer": {
+        "name": "Airport Transfer",
+        "description": "Luxury airport transportation service available 24/7."
+      },
+      "Beach BBQ Dinner": {
+        "name": "Beach BBQ Dinner",
+        "description": "Private beach BBQ dinner for two with wine and live music."
+      },
+      "Room Decoration": {
+        "name": "Room Decoration",
+        "description": "Custom room decoration for birthdays, anniversaries, or romantic occasions."
+      },
+      "Tour & Sightseeing": {
+        "name": "Tour & Sightseeing",
+        "description": "Guided local sightseeing tours available daily."
+      },
+      "Bicycle Rental": {
+        "name": "Bicycle Rental",
+        "description": "Explore the resort area with our bicycle rental service."
+      },
+      "Cocktail & Drinks Package": {
+        "name": "Cocktail & Drinks Package",
+        "description": "Handcrafted cocktails served at the pool bar."
+      },
+      "Babysitting Service": {
+        "name": "Babysitting Service",
+        "description": "Professional babysitting service for your children."
+      },
+      "Water Sports Package": {
+        "name": "Water Sports Package",
+        "description": "Kayaking, paddleboarding, and snorkeling activities."
+      },
+      "Photography Session": {
+        "name": "Photography Session",
+        "description": "Professional photo shoot at the resort’s most beautiful locations."
+      },
+      "Sunset Cruise": {
+        "name": "Sunset Cruise",
+        "description": "Enjoy a luxury sunset cruise with cocktails and snacks."
+      },
+      "Cooking Class": {
+        "name": "Cooking Class",
+        "description": "Learn local cuisine with our resort chefs."
+      },
+      "Flower Arrangement": {
+        "name": "Flower Arrangement Workshop",
+        "description": "90-minute artistic flower arrangement workshop."
+      },
+      "Pet Care Service": {
+        "name": "Pet Care Service",
+        "description": "Safe and attentive pet care service."
+      },
+      "Golf Cart Rental": {
+        "name": "Golf Cart Rental",
+        "description": "Electric golf cart rental to explore the resort."
+      },
+      "Karaoke Room": {
+        "name": "Karaoke Room",
+        "description": "Private karaoke room with premium sound system."
+      },
+      "In-Room Movie Night": {
+        "name": "In-Room Movie Night",
+        "description": "Movie package with popcorn, drinks, and cozy blankets."
+      }
+    }
+  }
+}
