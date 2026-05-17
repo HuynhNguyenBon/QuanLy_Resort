@@ -34,7 +34,7 @@
     "roomDetails": "Chi tiết phòng",
     "roomDescription": "Mô tả",
     "defaultDesc": "Không có mô tả.",
-    "night": "đêm",
+    "night": "VNĐ/ đêm",
     "bookRoom": "Đặt phòng",
     "checkIn": "Ngày nhận phòng",
     "checkOut": "Ngày trả phòng",
@@ -50,7 +50,27 @@
     "paymentError": "Lỗi thanh toán: ",
     "forbidden": "Không có quyền truy cập",
     "general": "Đã xảy ra lỗi",
-    "roomNotAvailable": "Phòng không khả dụng trong khoảng thời gian đã chọn"
+    "notFound": "Không tìm thấy phòng",
+    "roomNotAvailable": "Phòng không khả dụng trong khoảng thời gian đã chọn",
+    "maxGuests": "Tối đa {{count}} khách",
+    "maxAdults": "Tối đa {{count}} người lớn",
+    "maxChildren": "Tối đa {{count}} trẻ em",
+    "selectCheckIn": "Chọn ngày nhận",
+    "selectCheckOut": "Chọn ngày trả",
+    "roomPrice": "Tiền phòng",
+    "free": "Miễn phí",
+    "includedServices": "Dịch vụ đi kèm ({{count}})",
+    "editServices": "Sửa dịch vụ",
+    "payNow": "Thanh toán ngay",
+    "payNowDesc": "Qua VNPay — xác nhận tức thì",
+    "bookFirst": "Đặt trước",
+    "bookFirstDesc": "Thanh toán tại quầy lúc nhận phòng",
+    "payAndConfirm": "💳 Thanh toán & Xác nhận",
+    "reserveNow": "📋 Đặt trước ngay",
+    "needAdultWarning": "⚠️ Cần có ít nhất 1 người lớn đi cùng trẻ em",
+    "maxGuestError": "Tổng khách tối đa {{count}} người cho phòng {{roomType}}.",
+    "childrenLimitError": "Tổng khách tối đa {{count}} người. Lưu ý: trẻ em cần đi cùng ít nhất 1 người lớn.",
+    "hihi": "VNĐ"
   },
 
   "allRoomsPage": {
@@ -84,7 +104,7 @@
     "available": "Còn phòng",
     "amenityAC": "Điều hòa",
     "amenityPool": "Hồ bơi",
-    "night": "đêm",
+    "night": "VNĐ/ đêm",
     "bookNow": "Đặt ngay"
   }
 }
