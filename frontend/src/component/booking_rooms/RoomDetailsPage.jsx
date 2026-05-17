@@ -7,6 +7,21 @@ import "../../UiverseElements.css";
 
 const RoomDetailsPage = () => {
   const { t, i18n } = useTranslation("rooms");
+  const getDateFormat = () => {
+    switch (i18n.language) {
+      case "vi":
+        return "dd/MM/yyyy";
+
+      case "en":
+        return "MM/dd/yyyy";
+
+      case "ja":
+        return "yyyy/MM/dd";
+
+      default:
+        return "dd/MM/yyyy";
+    }
+  };
   const { roomId } = useParams();
   const navigate = useNavigate();
 
@@ -21,8 +36,11 @@ const RoomDetailsPage = () => {
   const [totalGuests, setTotalGuests] = useState(1);
   const [payNow, setPayNow] = useState(true); // true=thanh toán ngay, false=đặt trước
   const [selectedServices, setSelectedServices] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("bbhh_selected_services") || "[]"); }
-    catch { return []; }
+    try {
+      return JSON.parse(localStorage.getItem("bbhh_selected_services") || "[]");
+    } catch {
+      return [];
+    }
   });
   // Giới hạn khách theo loại phòng
   const ROOM_LIMITS = {
@@ -55,7 +73,7 @@ const RoomDetailsPage = () => {
         const room = roomRes?.room || roomRes;
 
         if (!room) {
-          setError("Không tìm thấy thông tin phòng.");
+          setError(t("roomDetailsPage.general"));
           return;
         }
 
@@ -79,7 +97,7 @@ const RoomDetailsPage = () => {
         setRoomDetails(translatedRoom);
       } catch (err) {
         console.error("Lỗi tải phòng:", err);
-        setError("Không thể tải thông tin phòng. Vui lòng thử lại.");
+        setError(t("roomDetailsPage.general"));
       } finally {
         setIsLoading(false);
       }
@@ -96,7 +114,10 @@ const RoomDetailsPage = () => {
     const n = Math.max(1, Math.min(val, limit.maxAdults));
     if (n + numChildren > limit.maxTotal) {
       setError(
-        `Tổng khách tối đa ${limit.maxTotal} người cho phòng ${roomDetails?.roomType}.`,
+        t("roomDetailsPage.maxGuestError", {
+          count: limit.maxTotal,
+          roomType: roomDetails?.roomType,
+        }),
       );
       setTimeout(() => setError(""), 4000);
       return;
@@ -109,7 +130,9 @@ const RoomDetailsPage = () => {
     const n = Math.max(0, Math.min(val, limit.maxChildren));
     if (numAdults + n > limit.maxTotal) {
       setError(
-        `Tổng khách tối đa ${limit.maxTotal} người. Lưu ý: trẻ em cần đi cùng ít nhất 1 người lớn.`,
+        t("roomDetailsPage.childrenLimitError", {
+          count: limit.maxTotal,
+        }),
       );
       setTimeout(() => setError(""), 4000);
       return;
@@ -128,7 +151,7 @@ const RoomDetailsPage = () => {
       const co = checkOutDate.toISOString().split("T")[0];
       const available = await ApiService.checkRoomAvailability(roomId, ci, co);
       if (!available) {
-        setError("Phòng đã được đặt trong khoảng thời gian này.");
+        setError(t("roomDetailsPage.roomBooked"));
         return;
       }
       const days = Math.ceil(
@@ -161,7 +184,7 @@ const RoomDetailsPage = () => {
         checkOutDate: checkOutDate.toISOString().split("T")[0],
         numOfAdults: numAdults,
         numOfChildren: numChildren,
-        serviceIds: selectedServices.map(s => s.id),
+        serviceIds: selectedServices.map((s) => s.id),
       };
       const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
       if (bookingRes.statusCode !== 200) {
@@ -222,14 +245,31 @@ const RoomDetailsPage = () => {
                     t("roomDetailsPage.defaultDesc")}
                 </p>
                 <div className="bbhh-price-circle">
-                  <span>${roomDetails.roomPrice}</span> /{" "}
+                  <span>{roomDetails.roomPrice}</span>
                   {t("roomDetailsPage.night")}
                 </div>
                 {/* Thông tin giới hạn khách */}
                 <div className="room-limit-info">
-                  <span>👥 Tối đa {limit.maxTotal} khách</span>
-                  <span>🧑 {limit.maxAdults} người lớn</span>
-                  <span>👶 {limit.maxChildren} trẻ em</span>
+                  <span>
+                    👥{" "}
+                    {t("roomDetailsPage.maxGuests", {
+                      count: limit.maxTotal,
+                    })}
+                  </span>
+
+                  <span>
+                    🧑{" "}
+                    {t("roomDetailsPage.maxAdults", {
+                      count: limit.maxAdults,
+                    })}
+                  </span>
+
+                  <span>
+                    👶{" "}
+                    {t("roomDetailsPage.maxChildren", {
+                      count: limit.maxChildren,
+                    })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -251,7 +291,8 @@ const RoomDetailsPage = () => {
                     startDate={checkInDate}
                     endDate={checkOutDate}
                     minDate={new Date()}
-                    placeholderText="Chọn ngày nhận"
+                    dateFormat={getDateFormat()}
+                    placeholderText={t("roomDetailsPage.selectCheckIn")}
                     className="bbhh-date-input"
                   />
                 </div>
@@ -264,7 +305,8 @@ const RoomDetailsPage = () => {
                     startDate={checkInDate}
                     endDate={checkOutDate}
                     minDate={checkInDate || new Date()}
-                    placeholderText="Chọn ngày trả"
+                    dateFormat={getDateFormat()}
+                    placeholderText={t("roomDetailsPage.selectCheckOut")}
                     className="bbhh-date-input"
                   />
                 </div>
@@ -275,7 +317,9 @@ const RoomDetailsPage = () => {
                   <label>
                     {t("roomDetailsPage.adults")}{" "}
                     <span className="room-limit-badge">
-                      Tối đa {limit.maxAdults}
+                      {t("roomDetailsPage.maxAdults", {
+                        count: limit.maxAdults,
+                      })}
                     </span>
                   </label>
                   <input
@@ -292,7 +336,9 @@ const RoomDetailsPage = () => {
                   <label>
                     {t("roomDetailsPage.children")}{" "}
                     <span className="room-limit-badge">
-                      Tối đa {limit.maxChildren}
+                      {t("roomDetailsPage.maxChildren", {
+                        count: limit.maxChildren,
+                      })}
                     </span>
                   </label>
                   <input
@@ -310,7 +356,7 @@ const RoomDetailsPage = () => {
               {/* Cảnh báo nếu chỉ có trẻ em */}
               {numAdults === 0 && numChildren > 0 && (
                 <div className="room-warning">
-                  ⚠️ Cần có ít nhất 1 người lớn đi cùng trẻ em
+                  {t("roomDetailsPage.needAdultWarning")}
                 </div>
               )}
 
@@ -328,26 +374,33 @@ const RoomDetailsPage = () => {
                     <strong>{totalGuests} người</strong>
                   </div>
                   <div className="summary-row">
-                    <span>Tiền phòng:</span>
-                    <strong>${totalPrice}</strong>
+                    <span>{t("roomDetailsPage.roomPrice")}:</span>
+                    <strong>{totalPrice}</strong>
                   </div>
 
                   {selectedServices.length > 0 && (
                     <div className="sv-booking-services">
                       <div className="sv-booking-services-title">
-                        🛎️ Dịch vụ đi kèm ({selectedServices.length})
+                        🛎️{" "}
+                        {t("roomDetailsPage.includedServices", {
+                          count: selectedServices.length,
+                        })}
                       </div>
-                      {selectedServices.map(s => (
+                      {selectedServices.map((s) => (
                         <div key={s.id} className="sv-booking-service-row">
                           <span>{s.name}</span>
-                          <span>{s.price ? `$${s.price}` : "Miễn phí"}</span>
+                          <span>
+                            {s.price
+                              ? `$${s.price}`
+                              : t("roomDetailsPage.free")}
+                          </span>
                         </div>
                       ))}
                       <button
                         className="sv-booking-edit-services"
                         onClick={() => navigate("/services")}
                       >
-                        ✎ Sửa dịch vụ
+                        ✎ {t("roomDetailsPage.editServices")}
                       </button>
                     </div>
                   )}
@@ -355,7 +408,12 @@ const RoomDetailsPage = () => {
                   <div className="summary-row summary-total-row">
                     <span>{t("roomDetailsPage.total")}:</span>
                     <strong className="text-orange">
-                      ${totalPrice + selectedServices.reduce((s, sv) => s + (sv.price || 0), 0)}
+                      $
+                      {totalPrice +
+                        selectedServices.reduce(
+                          (s, sv) => s + (sv.price || 0),
+                          0,
+                        )}
                     </strong>
                   </div>
 
@@ -367,8 +425,8 @@ const RoomDetailsPage = () => {
                     >
                       <span className="pay-radio">{payNow ? "●" : "○"}</span>
                       <div>
-                        <strong>Thanh toán ngay</strong>
-                        <p>Qua VNPay — xác nhận tức thì</p>
+                        <strong>{t("roomDetailsPage.payNow")}</strong>
+                        <p>{t("roomDetailsPage.payNowDescription")}</p>
                       </div>
                     </label>
                     <label
@@ -377,8 +435,8 @@ const RoomDetailsPage = () => {
                     >
                       <span className="pay-radio">{!payNow ? "●" : "○"}</span>
                       <div>
-                        <strong>Đặt trước</strong>
-                        <p>Thanh toán tại quầy lúc nhận phòng</p>
+                        <strong>{t("roomDetailsPage.prebook")}</strong>
+                        <p>{t("roomDetailsPage.prebookDescription")}</p>
                       </div>
                     </label>
                   </div>
@@ -387,7 +445,9 @@ const RoomDetailsPage = () => {
                     onClick={acceptBooking}
                     className="bbhh-btn-confirm-final"
                   >
-                    {payNow ? "💳 Thanh toán & Xác nhận" : "📋 Đặt trước ngay"}
+                    {payNow
+                      ? t("roomDetailsPage.payNowButton")
+                      : t("roomDetailsPage.prebookButton")}
                   </button>
                 </div>
               )}
