@@ -6,54 +6,99 @@ import DatePicker from "react-datepicker";
 import "../../UiverseElements.css";
 
 const RoomDetailsPage = () => {
-  const { t }       = useTranslation("rooms");
-  const { roomId }  = useParams();
-  const navigate    = useNavigate();
+  const { t, i18n } = useTranslation("rooms");
+  const { roomId } = useParams();
+  const navigate = useNavigate();
 
-  const [roomDetails,   setRoomDetails]   = useState(null);
-  const [isLoading,     setIsLoading]     = useState(true);
-  const [error,         setError]         = useState("");
-  const [checkInDate,   setCheckInDate]   = useState(null);
-  const [checkOutDate,  setCheckOutDate]  = useState(null);
-  const [numAdults,     setNumAdults]     = useState(1);
-  const [numChildren,   setNumChildren]   = useState(0);
-  const [totalPrice,    setTotalPrice]    = useState(0);
-  const [totalGuests,   setTotalGuests]   = useState(1);
-  const [payNow,        setPayNow]        = useState(true); // true=thanh toán ngay, false=đặt trước
+  const [roomDetails, setRoomDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [checkOutDate, setCheckOutDate] = useState(null);
+  const [numAdults, setNumAdults] = useState(1);
+  const [numChildren, setNumChildren] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalGuests, setTotalGuests] = useState(1);
+  const [payNow, setPayNow] = useState(true); // true=thanh toán ngay, false=đặt trước
+  const [selectedServices, setSelectedServices] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("bbhh_selected_services") || "[]"); }
+    catch { return []; }
+  });
 
   // Giới hạn khách theo loại phòng
   const ROOM_LIMITS = {
-    "Standard":     { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
-    "Superior":     { maxAdults: 2, maxChildren: 2, maxTotal: 3 },
-    "Deluxe":       { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
-    "Suite":        { maxAdults: 4, maxChildren: 3, maxTotal: 5 },
-    "Family":       { maxAdults: 4, maxChildren: 4, maxTotal: 6 },
-    "King":         { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
-    "Queen":        { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
-    "Studio":       { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
-    "Executive":    { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
-    "Presidential": { maxAdults: 6, maxChildren: 4, maxTotal: 8 },
-    "Precidential": { maxAdults: 6, maxChildren: 4, maxTotal: 8 },
-    "Bali":         { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
+    Standard: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+    Superior: { maxAdults: 2, maxChildren: 2, maxTotal: 3 },
+    Deluxe: { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
+    Suite: { maxAdults: 4, maxChildren: 3, maxTotal: 5 },
+    Family: { maxAdults: 4, maxChildren: 4, maxTotal: 6 },
+    King: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+    Queen: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+    Studio: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+    Executive: { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
+    Presidential: { maxAdults: 6, maxChildren: 4, maxTotal: 8 },
+    Precidential: { maxAdults: 6, maxChildren: 4, maxTotal: 8 },
+    Bali: { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
   };
 
   const getLimit = (roomType) => {
-    return ROOM_LIMITS[roomType] || { maxAdults: 2, maxChildren: 2, maxTotal: 3 };
+    return (
+      ROOM_LIMITS[roomType] || { maxAdults: 2, maxChildren: 2, maxTotal: 3 }
+    );
   };
 
   useEffect(() => {
-    ApiService.getRoomById(roomId)
-      .then(res => setRoomDetails(res.room))
-      .catch(err => setError(err.response?.data?.message || err.message))
-      .finally(() => setIsLoading(false));
-  }, [roomId]);
+    const fetchRoomDetails = async () => {
+      setIsLoading(true);
+      try {
+        // 1. Lấy thông tin phòng gốc (luôn có)
+        const roomRes = await ApiService.getRoomById(roomId);
+        const room = roomRes?.room || roomRes;
 
-  const limit = roomDetails ? getLimit(roomDetails.roomType) : { maxAdults: 2, maxChildren: 2, maxTotal: 3 };
+        if (!room) {
+          setError("Không tìm thấy thông tin phòng.");
+          return;
+        }
+
+        // 2. Lấy bản dịch — nếu lỗi vẫn giữ dữ liệu gốc
+        const lang = i18n.language.split("-")[0];
+        let translatedRoom = { ...room };
+
+        try {
+          const transRes = await ApiService.getRoomTranslation(roomId, lang);
+          if (transRes) {
+            // Chỉ ghi đè nếu bản dịch thực sự có giá trị
+            if (transRes.roomType) translatedRoom.roomType = transRes.roomType;
+            if (transRes.roomDescription)
+              translatedRoom.roomDescription = transRes.roomDescription;
+            if (transRes.location) translatedRoom.location = transRes.location;
+          }
+        } catch (_) {
+          // Không có bản dịch → giữ nguyên dữ liệu gốc, không crash
+        }
+
+        setRoomDetails(translatedRoom);
+      } catch (err) {
+        console.error("Lỗi tải phòng:", err);
+        setError("Không thể tải thông tin phòng. Vui lòng thử lại.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRoomDetails();
+  }, [roomId, i18n.language]);
+
+  const limit = roomDetails
+    ? getLimit(roomDetails.roomType)
+    : { maxAdults: 2, maxChildren: 2, maxTotal: 3 };
 
   const handleAdultsChange = (val) => {
     const n = Math.max(1, Math.min(val, limit.maxAdults));
     if (n + numChildren > limit.maxTotal) {
-      setError(`Tổng khách tối đa ${limit.maxTotal} người cho phòng ${roomDetails?.roomType}.`);
+      setError(
+        `Tổng khách tối đa ${limit.maxTotal} người cho phòng ${roomDetails?.roomType}.`,
+      );
       setTimeout(() => setError(""), 4000);
       return;
     }
@@ -64,7 +109,9 @@ const RoomDetailsPage = () => {
   const handleChildrenChange = (val) => {
     const n = Math.max(0, Math.min(val, limit.maxChildren));
     if (numAdults + n > limit.maxTotal) {
-      setError(`Tổng khách tối đa ${limit.maxTotal} người. Lưu ý: trẻ em cần đi cùng ít nhất 1 người lớn.`);
+      setError(
+        `Tổng khách tối đa ${limit.maxTotal} người. Lưu ý: trẻ em cần đi cùng ít nhất 1 người lớn.`,
+      );
       setTimeout(() => setError(""), 4000);
       return;
     }
@@ -74,14 +121,20 @@ const RoomDetailsPage = () => {
 
   const handleConfirmBooking = async () => {
     if (!checkInDate || !checkOutDate) {
-      setError(t("roomDetailsPage.selectDates")); return;
+      setError(t("roomDetailsPage.selectDates"));
+      return;
     }
     try {
       const ci = checkInDate.toISOString().split("T")[0];
       const co = checkOutDate.toISOString().split("T")[0];
       const available = await ApiService.checkRoomAvailability(roomId, ci, co);
-      if (!available) { setError("Phòng đã được đặt trong khoảng thời gian này."); return; }
-      const days  = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+      if (!available) {
+        setError("Phòng đã được đặt trong khoảng thời gian này.");
+        return;
+      }
+      const days = Math.ceil(
+        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24),
+      );
       setTotalPrice(days * roomDetails.roomPrice);
       setTotalGuests(numAdults + numChildren);
       setError("");
@@ -92,25 +145,40 @@ const RoomDetailsPage = () => {
 
   const acceptBooking = async () => {
     if (!ApiService.isAuthenticated()) {
-      navigate("/login", { state: { from: { pathname: `/room-details-book/${roomId}` } } });
+      navigate("/login", {
+        state: { from: { pathname: `/room-details-book/${roomId}` } },
+      });
       return;
     }
     try {
       const userProfile = await ApiService.getUserProfile();
       const userId = userProfile.user.id;
-      if (!userId) { alert(t("roomDetailsPage.loginAgain")); return; }
+      if (!userId) {
+        alert(t("roomDetailsPage.loginAgain"));
+        return;
+      }
       const booking = {
-        checkInDate:   checkInDate.toISOString().split("T")[0],
-        checkOutDate:  checkOutDate.toISOString().split("T")[0],
-        numOfAdults:   numAdults,
+        checkInDate: checkInDate.toISOString().split("T")[0],
+        checkOutDate: checkOutDate.toISOString().split("T")[0],
+        numOfAdults: numAdults,
         numOfChildren: numChildren,
+        serviceIds: selectedServices.map(s => s.id),
       };
       const bookingRes = await ApiService.bookRoom(roomId, userId, booking);
-      if (bookingRes.statusCode !== 200) { setError(bookingRes.message); return; }
+      if (bookingRes.statusCode !== 200) {
+        setError(bookingRes.message);
+        return;
+      }
+
+      // Xóa dịch vụ khỏi cart sau khi đặt phòng thành công
+      localStorage.removeItem("bbhh_selected_services");
+      setSelectedServices([]);
 
       if (payNow) {
         // Thanh toán ngay qua VNPay
-        const paymentRes = await ApiService.createVNPayPayment(bookingRes.bookingId);
+        const paymentRes = await ApiService.createVNPayPayment(
+          bookingRes.bookingId,
+        );
         if (paymentRes.status === "OK") {
           window.location.href = paymentRes.paymentUrl;
         } else {
@@ -125,7 +193,12 @@ const RoomDetailsPage = () => {
     }
   };
 
-  if (isLoading) return <div className="bbhh-loader-container"><div className="bbhh-spinner" /></div>;
+  if (isLoading)
+    return (
+      <div className="bbhh-loader-container">
+        <div className="bbhh-spinner" />
+      </div>
+    );
 
   return (
     <div className="bbhh-details-wrapper">
@@ -137,14 +210,21 @@ const RoomDetailsPage = () => {
             {/* Cột trái: Ảnh + Thông tin */}
             <div className="bbhh-details-info">
               <div className="bbhh-image-frame">
-                <img src={roomDetails.roomPhotoUrl} alt={roomDetails.roomType} />
+                <img
+                  src={roomDetails.roomPhotoUrl}
+                  alt={roomDetails.roomType}
+                />
                 <div className="bbhh-room-badge">{roomDetails.roomType}</div>
               </div>
               <div className="bbhh-info-text">
                 <h3>{t("roomDetailsPage.roomDetails")}</h3>
-                <p>{roomDetails.roomDescription || t("roomDetailsPage.defaultDesc")}</p>
+                <p>
+                  {roomDetails.roomDescription ||
+                    t("roomDetailsPage.defaultDesc")}
+                </p>
                 <div className="bbhh-price-circle">
-                  <span>${roomDetails.roomPrice}</span> / {t("roomDetailsPage.night")}
+                  <span>${roomDetails.roomPrice}</span> /{" "}
+                  {t("roomDetailsPage.night")}
                 </div>
                 {/* Thông tin giới hạn khách */}
                 <div className="room-limit-info">
@@ -168,7 +248,9 @@ const RoomDetailsPage = () => {
                   <DatePicker
                     selected={checkInDate}
                     onChange={setCheckInDate}
-                    selectsStart startDate={checkInDate} endDate={checkOutDate}
+                    selectsStart
+                    startDate={checkInDate}
+                    endDate={checkOutDate}
                     minDate={new Date()}
                     placeholderText="Chọn ngày nhận"
                     className="bbhh-date-input"
@@ -179,7 +261,9 @@ const RoomDetailsPage = () => {
                   <DatePicker
                     selected={checkOutDate}
                     onChange={setCheckOutDate}
-                    selectsEnd startDate={checkInDate} endDate={checkOutDate}
+                    selectsEnd
+                    startDate={checkInDate}
+                    endDate={checkOutDate}
                     minDate={checkInDate || new Date()}
                     placeholderText="Chọn ngày trả"
                     className="bbhh-date-input"
@@ -189,23 +273,52 @@ const RoomDetailsPage = () => {
 
               <div className="bbhh-guest-selection">
                 <div className="bbhh-input-box">
-                  <label>{t("roomDetailsPage.adults")} <span className="room-limit-badge">Tối đa {limit.maxAdults}</span></label>
-                  <input type="number" min="1" max={limit.maxAdults}
-                    value={numAdults} onChange={e => handleAdultsChange(parseInt(e.target.value) || 1)} />
+                  <label>
+                    {t("roomDetailsPage.adults")}{" "}
+                    <span className="room-limit-badge">
+                      Tối đa {limit.maxAdults}
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max={limit.maxAdults}
+                    value={numAdults}
+                    onChange={(e) =>
+                      handleAdultsChange(parseInt(e.target.value) || 1)
+                    }
+                  />
                 </div>
                 <div className="bbhh-input-box">
-                  <label>{t("roomDetailsPage.children")} <span className="room-limit-badge">Tối đa {limit.maxChildren}</span></label>
-                  <input type="number" min="0" max={limit.maxChildren}
-                    value={numChildren} onChange={e => handleChildrenChange(parseInt(e.target.value) || 0)} />
+                  <label>
+                    {t("roomDetailsPage.children")}{" "}
+                    <span className="room-limit-badge">
+                      Tối đa {limit.maxChildren}
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max={limit.maxChildren}
+                    value={numChildren}
+                    onChange={(e) =>
+                      handleChildrenChange(parseInt(e.target.value) || 0)
+                    }
+                  />
                 </div>
               </div>
 
               {/* Cảnh báo nếu chỉ có trẻ em */}
               {numAdults === 0 && numChildren > 0 && (
-                <div className="room-warning">⚠️ Cần có ít nhất 1 người lớn đi cùng trẻ em</div>
+                <div className="room-warning">
+                  ⚠️ Cần có ít nhất 1 người lớn đi cùng trẻ em
+                </div>
               )}
 
-              <button className="bbhh-btn-calculate" onClick={handleConfirmBooking}>
+              <button
+                className="bbhh-btn-calculate"
+                onClick={handleConfirmBooking}
+              >
                 {t("roomDetailsPage.checkPrice")}
               </button>
 
@@ -216,20 +329,53 @@ const RoomDetailsPage = () => {
                     <strong>{totalGuests} người</strong>
                   </div>
                   <div className="summary-row">
+                    <span>Tiền phòng:</span>
+                    <strong>${totalPrice}</strong>
+                  </div>
+
+                  {selectedServices.length > 0 && (
+                    <div className="sv-booking-services">
+                      <div className="sv-booking-services-title">
+                        🛎️ Dịch vụ đi kèm ({selectedServices.length})
+                      </div>
+                      {selectedServices.map(s => (
+                        <div key={s.id} className="sv-booking-service-row">
+                          <span>{s.name}</span>
+                          <span>{s.price ? `$${s.price}` : "Miễn phí"}</span>
+                        </div>
+                      ))}
+                      <button
+                        className="sv-booking-edit-services"
+                        onClick={() => navigate("/services")}
+                      >
+                        ✎ Sửa dịch vụ
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="summary-row summary-total-row">
                     <span>{t("roomDetailsPage.total")}:</span>
-                    <strong className="text-orange">${totalPrice}</strong>
+                    <strong className="text-orange">
+                      ${totalPrice + selectedServices.reduce((s, sv) => s + (sv.price || 0), 0)}
+                    </strong>
                   </div>
 
                   {/* Chọn phương thức */}
                   <div className="pay-options">
-                    <label className={`pay-option${payNow ? " selected" : ""}`} onClick={() => setPayNow(true)}>
+                    <label
+                      className={`pay-option${payNow ? " selected" : ""}`}
+                      onClick={() => setPayNow(true)}
+                    >
                       <span className="pay-radio">{payNow ? "●" : "○"}</span>
                       <div>
                         <strong>Thanh toán ngay</strong>
                         <p>Qua VNPay — xác nhận tức thì</p>
                       </div>
                     </label>
-                    <label className={`pay-option${!payNow ? " selected" : ""}`} onClick={() => setPayNow(false)}>
+                    <label
+                      className={`pay-option${!payNow ? " selected" : ""}`}
+                      onClick={() => setPayNow(false)}
+                    >
                       <span className="pay-radio">{!payNow ? "●" : "○"}</span>
                       <div>
                         <strong>Đặt trước</strong>
@@ -238,7 +384,10 @@ const RoomDetailsPage = () => {
                     </label>
                   </div>
 
-                  <button onClick={acceptBooking} className="bbhh-btn-confirm-final">
+                  <button
+                    onClick={acceptBooking}
+                    className="bbhh-btn-confirm-final"
+                  >
                     {payNow ? "💳 Thanh toán & Xác nhận" : "📋 Đặt trước ngay"}
                   </button>
                 </div>
