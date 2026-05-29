@@ -1,9 +1,11 @@
 package com.BBTT.BBTTResort.service;
 
+import jakarta.mail.internet.MimeMessage; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,25 +16,35 @@ public class EmailService {
 
     @Value("${spring.mail.username}")
     private String fromEmail;
+    // Tên hiển thị mà bạn muốn khách hàng nhìn thấy
+    private final String SENDER_NAME = "BBHH Resort";
 
     // ── Gửi OTP quên mật khẩu ──────────────────────────────────────────────
     public void sendOtpEmail(String toEmail, String otp) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(toEmail);
-        message.setSubject("🔐 Mã OTP đặt lại mật khẩu - BBHH Resort");
-        message.setText(
-                "Xin chào,\n\n" +
-                        "Bạn đã yêu cầu đặt lại mật khẩu tại BBHH Resort.\n\n" +
-                        "━━━━━━━━━━━━━━━━━━━━━━━━\n" +
-                        "  Mã OTP của bạn: " + otp + "\n" +
-                        "━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                        "⏱️ Mã có hiệu lực trong 5 phút.\n" +
-                        "⚠️ Không chia sẻ mã này với bất kỳ ai.\n\n" +
-                        "Nếu bạn không yêu cầu, hãy bỏ qua email này.\n\n" +
-                        "BBHH Resort | 📞 0909.448.608"
-        );
-        mailSender.send(message);
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            // Quan trọng: Set fromEmail kèm SENDER_NAME
+            helper.setFrom(fromEmail, SENDER_NAME);
+            helper.setTo(toEmail);
+            helper.setSubject("🔐 Mã OTP đặt lại mật khẩu - BBHH Resort");
+            helper.setText(
+                    "Xin chào,\n\n" +
+                            "Bạn đã yêu cầu đặt lại mật khẩu tại BBHH Resort.\n\n" +
+                            "━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                            "  Mã OTP của bạn: " + otp + "\n" +
+                            "━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                            "⏱️ Mã có hiệu lực trong 5 phút.\n" +
+                            "⚠️ Không chia sẻ mã này với bất kỳ ai.\n\n" +
+                            "Nếu bạn không yêu cầu, hãy bỏ qua email này.\n\n" +
+                            "BBHH Resort | 📞 0909.448.608"
+            );
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("❌ Không thể gửi email OTP: " + e.getMessage());
+        }
     }
 
     // ── Gửi email xác nhận đặt phòng ───────────────────────────────────────
@@ -49,16 +61,18 @@ public class EmailService {
             double totalPrice) {
 
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("✅ Xác nhận đặt phòng - BBHH Resort | Mã: " + confirmationCode);
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail, SENDER_NAME);
+            helper.setTo(toEmail);
+            helper.setSubject("✅ Xác nhận đặt phòng - BBHH Resort | Mã: " + confirmationCode);
 
             String guestInfo = numOfChildren > 0
                     ? numOfAdults + " người lớn, " + numOfChildren + " trẻ em"
                     : numOfAdults + " người lớn";
 
-            message.setText(
+            helper.setText(
                     "Xin chào " + guestName + ",\n\n" +
                             "Đặt phòng của bạn đã được xác nhận thành công! 🎉\n\n" +
                             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
@@ -84,6 +98,7 @@ public class EmailService {
                             "BBHH Resort | Khu nghỉ dưỡng sang trọng\n" +
                             "📍 Địa chỉ: [Địa chỉ resort]"
             );
+
             mailSender.send(message);
         } catch (Exception e) {
             System.err.println("❌ Không thể gửi email xác nhận đặt phòng: " + e.getMessage());
@@ -98,11 +113,14 @@ public class EmailService {
             String roomType,
             String checkInDate) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("❌ Hủy đặt phòng - BBHH Resort | Mã: " + confirmationCode);
-            message.setText(
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail, SENDER_NAME);
+            helper.setTo(toEmail);
+            helper.setSubject("❌ Hủy đặt phòng - BBHH Resort | Mã: " + confirmationCode);
+
+            helper.setText(
                     "Xin chào " + guestName + ",\n\n" +
                             "Đặt phòng của bạn đã được hủy thành công.\n\n" +
                             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
@@ -114,6 +132,7 @@ public class EmailService {
                             "📞 Hỗ trợ: 0909.448.608\n\n" +
                             "BBHH Resort"
             );
+
             mailSender.send(message);
         } catch (Exception e) {
             System.err.println("❌ Không thể gửi email hủy đặt phòng: " + e.getMessage());
