@@ -321,38 +321,6 @@ public class UserService implements IUserService {
     }
 
 
-    @Override
-    public Response updateMyProfile(String userId, String email, String name, String phoneNumber) {
-        Response response = new Response();
-        try {
-            User user = null;
-            if (userId != null && !userId.trim().isEmpty()) {
-                user = userRepository.findById(Long.parseLong(userId)).orElse(null);
-            }
-            if (user == null && email != null && !email.trim().isEmpty()) {
-                user = userRepository.findByEmail(email).orElse(null);
-            }
-            if (user == null) {
-                response.setStatusCode(404);
-                response.setMessage("Không tìm thấy người dùng");
-                return response;
-            }
-            if (name != null && !name.trim().isEmpty()) {
-                user.setName(name.trim());
-            }
-            if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
-                user.setPhoneNumber(phoneNumber.trim());
-            }
-            userRepository.save(user);
-            response.setStatusCode(200);
-            response.setMessage("Cập nhật thông tin thành công");
-            response.setUser(Utils.mapUserEntityToUserDTO(user));
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Lỗi cập nhật: " + e.getMessage());
-        }
-        return response;
-    }
 
     @Override
     public Response updateMyProfile(String userId, String email, String name, String phoneNumber) {
