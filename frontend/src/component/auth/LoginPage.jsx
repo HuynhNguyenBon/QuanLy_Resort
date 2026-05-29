@@ -32,7 +32,6 @@ function LoginPage() {
       setTimeout(() => setError(""), 4000); // Ẩn lỗi sau 4 giây
       return;
     }
-
     setLoading(true);
     try {
       const res = await ApiService.loginUser({ email, password });
@@ -43,6 +42,7 @@ function LoginPage() {
         navigate(from, { replace: true });
       }
     } catch (err) {
+
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
@@ -73,7 +73,6 @@ function LoginPage() {
         <div className="auth-form-box">
           <h2 className="auth-form-title">Đăng nhập</h2>
           <p className="auth-form-sub">Nhập thông tin tài khoản của bạn</p>
-
           
           {error && <div className="auth-error"><span>⚠️</span>{error}</div>}
 

@@ -1,5 +1,7 @@
 package com.BBTT.BBTTResort.service.impl;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import com.BBTT.BBTTResort.dto.BookingDTO;
 import com.BBTT.BBTTResort.dto.BookingServiceDTO;
 import com.BBTT.BBTTResort.dto.Response;
@@ -14,6 +16,7 @@ import com.BBTT.BBTTResort.repo.UserRepository;
 import com.BBTT.BBTTResort.service.interfac.IBookingService;
 import com.BBTT.BBTTResort.service.interfac.IRoomService;
 import com.BBTT.BBTTResort.utils.Utils;
+import com.BBTT.BBTTResort.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,8 @@ public class BookingService implements IBookingService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Response saveBooking(Long roomId, Long userId, Booking bookingRequest) {
@@ -42,6 +47,85 @@ public class BookingService implements IBookingService {
         Response response = new Response();
 
         try {
+
+            if (bookingRequest.getCheckInDate() == null || bookingRequest.getCheckOutDate() == null) {
+                throw new OurException("Check in/check out date is required");
+            }
+
+            if (bookingRequest.getCheckInDate().isBefore(LocalDate.now())) {
+                throw new OurException("Check in date cannot be in the past");
+            }
+
+            if (!bookingRequest.getCheckOutDate().isAfter(bookingRequest.getCheckInDate())) {
+                throw new OurException("Check out date must be after check in date");
+            }
+
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() -> new OurException("Room Not Found"));
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new OurException("User Not Found"));
+
+
+            boolean isBooked = bookingRepository.existsOverlappingBooking(
+                    roomId,
+                    bookingRequest.getCheckInDate(),
+                    bookingRequest.getCheckOutDate()
+            );
+
+            if (isBooked) {
+                throw new OurException("Room already booked for selected dates");
+            }
+
+
+            long totalDays = ChronoUnit.DAYS.between(
+                    bookingRequest.getCheckInDate(),
+                    bookingRequest.getCheckOutDate()
+            );
+
+            double totalPrice = room.getRoomPrice().doubleValue() * totalDays;
+
+
+            bookingRequest.setRoom(room);
+            bookingRequest.setUser(user);
+            bookingRequest.setTotalPrice(totalPrice);
+            bookingRequest.setBookingStatus("BOOKED");
+            bookingRequest.setCreatedAt(LocalDate.now());
+
+            String bookingCode = Utils.generateRandomConfirmationCode(10);
+
+            bookingRequest.setBookingConfirmationCode(bookingCode);
+
+            bookingRepository.save(bookingRequest);
+
+            // Gửi email xác nhận sau khi đặt phòng thành công
+            try {
+                emailService.sendBookingConfirmationEmail(
+                        user.getEmail(),
+                        user.getName(),
+                        bookingCode,
+                        room.getRoomType(),
+                        bookingRequest.getCheckInDate().toString(),
+                        bookingRequest.getCheckOutDate().toString(),
+                        bookingRequest.getTotalNumOfGuest(),
+                        bookingRequest.getNumOfAdults(),
+                        bookingRequest.getNumOfChildren(),
+                        totalPrice
+                );
+            } catch (Exception emailEx) {
+                System.err.println("Lỗi gửi email: " + emailEx.getMessage());
+            }
+
+            response.setStatusCode(200);
+            response.setMessage("Booking created successfully");
+            response.setBookingConfirmationCode(bookingCode);
+
+            response.setBookingId(bookingRequest.getId());
+
+        } catch (OurException e) {
+
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
             if (bookingRequest.getCheckOutDate().isBefore(bookingRequest.getCheckInDate())) {
                 throw new IllegalArgumentException("Check in date must come after check out date");
             }
@@ -63,14 +147,9 @@ public class BookingService implements IBookingService {
             response.setMessage("successful");
             response.setBookingConfirmationCode(bookingConfirmationCode);
 
-        } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error Saving a booking: " + e.getMessage());
-
         }
         return response;
     }
@@ -143,6 +222,31 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+    public Response getBookingsByUserId(Long userId) {
+
+        Response response = new Response();
+
+        try {
+
+            List<Booking> bookingList = bookingRepository.findByUserId(userId);
+
+            List<BookingDTO> bookingDTOList =
+                    Utils.mapBookingListEntityToBookingListDTO(bookingList);
+
+            response.setStatusCode(200);
+            response.setMessage("success");
+            response.setBookingList(bookingDTOList);
+
+        } catch (Exception e) {
+
+            response.setStatusCode(500);
+            response.setMessage(e.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
     public Response cancelBooking(Long bookingId) {
 
         Response response = new Response();
@@ -164,7 +268,32 @@ public class BookingService implements IBookingService {
         }
         return response;
     }
-
+    @Override
+    public Response updateBooking(Long bookingId, Booking updateRequest) {
+        Response response = new Response();
+        try {
+            Booking booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new OurException("Booking not found"));
+            if (updateRequest.getCheckInDate() != null)
+                booking.setCheckInDate(updateRequest.getCheckInDate());
+            if (updateRequest.getCheckOutDate() != null)
+                booking.setCheckOutDate(updateRequest.getCheckOutDate());
+            if (updateRequest.getNumOfAdults() > 0)
+                booking.setNumOfAdults(updateRequest.getNumOfAdults());
+            booking.setNumOfChildren(updateRequest.getNumOfChildren());
+            booking.calculateTotalnumberOfGuest();
+            bookingRepository.save(booking);
+            response.setStatusCode(200);
+            response.setMessage("Booking updated successfully");
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error updating booking: " + e.getMessage());
+        }
+        return response;
+    }
 
     private boolean roomIsAvailable(Booking bookingRequest, List<Booking> existingBookings) {
 

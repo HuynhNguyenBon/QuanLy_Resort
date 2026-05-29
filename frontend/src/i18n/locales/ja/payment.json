@@ -1,0 +1,12 @@
+{
+  "vnpayReturnPage": {
+    "verifying": "支払いを確認中...",
+    "successTitle": "支払い成功！",
+    "failedTitle": "支払い失敗",
+    "bookingCode": "予約コード",
+    "transactionId": "取引ID",
+    "viewBookings": "予約を確認する",
+    "tryAgain": "もう一度試す",
+    "goHome": "ホームへ戻る"
+  }
+}
