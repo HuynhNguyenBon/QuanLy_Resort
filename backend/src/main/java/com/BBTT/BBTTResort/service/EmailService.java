@@ -1,8 +1,9 @@
 package com.BBTT.BBTTResort.service;
 
-import jakarta.mail.internet.MimeMessage; // Dùng javax.mail.internet.MimeMessage nếu đang dùng Spring Boot 2.x
+import jakarta.mail.internet.MimeMessage; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ public class EmailService {
 
     @Value("${spring.mail.username}")
     private String fromEmail;
-
     // Tên hiển thị mà bạn muốn khách hàng nhìn thấy
     private final String SENDER_NAME = "BBHH Resort";
 

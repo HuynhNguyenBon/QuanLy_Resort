@@ -1,0 +1,17 @@
+{
+  "menu": {
+    "home": "Home",
+    "rooms": "Rooms",
+    "booking": "Find My Booking",
+    "services": "Services",
+    "profile": "Profile",
+    "admin": "Admin",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+
+  "logout": {
+    "confirm": "Are you sure you want to logout this user?"
+  }
+}

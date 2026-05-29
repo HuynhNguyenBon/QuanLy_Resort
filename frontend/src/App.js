@@ -1,29 +1,29 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './component/common/Navbar';
 import FooterComponent from './component/common/Footer';
-import LoginPage from './component/auth/LoginPage';
-import RegisterPage from './component/auth/RegisterPage';
-import ForgotPasswordPage from './component/auth/ForgotPasswordPage';
-import ResetPasswordPage from './component/auth/ResetPasswordPage';
-import HomePage from './component/home/HomePage';
-import AllRoomsPage from './component/booking_rooms/AllRoomsPage';
-import RoomDetailsBookingPage from './component/booking_rooms/RoomDetailsPage';
-import FindBookingPage from './component/booking_rooms/FindBookingPage';
-import AdminPage from './component/admin/AdminPage';
-import ManageRoomPage from './component/admin/ManageRoomPage';
-import EditRoomPage from './component/admin/EditRoomPage';
-import AddRoomPage from './component/admin/AddRoomPage';
-import ManageBookingsPage from './component/admin/ManageBookingsPage';
-import EditBookingPage from './component/admin/EditBookingPage';
-import ProfilePage from './component/profile/ProfilePage';
-import EditProfilePage from './component/profile/EditProfilePage';
 import { ProtectedRoute, AdminRoute } from './service/guard';
-import ServicePage from './component/service/ServicePage';
-
 import ChatSupport from './component/common/ChatSupport';
 
-import ManageChat from './component/admin/ManageChat';
+const LoginPage             = lazy(() => import('./component/auth/LoginPage'));
+const RegisterPage          = lazy(() => import('./component/auth/RegisterPage'));
+const ForgotPasswordPage    = lazy(() => import('./component/auth/ForgotPasswordPage'));
+const ResetPasswordPage     = lazy(() => import('./component/auth/ResetPasswordPage'));
+const HomePage              = lazy(() => import('./component/home/HomePage'));
+const AllRoomsPage          = lazy(() => import('./component/booking_rooms/AllRoomsPage'));
+const RoomDetailsBookingPage = lazy(() => import('./component/booking_rooms/RoomDetailsPage'));
+const FindBookingPage       = lazy(() => import('./component/booking_rooms/FindBookingPage'));
+const AdminPage             = lazy(() => import('./component/admin/AdminPage'));
+const ManageRoomPage        = lazy(() => import('./component/admin/ManageRoomPage'));
+const EditRoomPage          = lazy(() => import('./component/admin/EditRoomPage'));
+const AddRoomPage           = lazy(() => import('./component/admin/AddRoomPage'));
+const ManageBookingsPage    = lazy(() => import('./component/admin/ManageBookingsPage'));
+const EditBookingPage       = lazy(() => import('./component/admin/EditBookingPage'));
+const ProfilePage           = lazy(() => import('./component/profile/ProfilePage'));
+const EditProfilePage       = lazy(() => import('./component/profile/EditProfilePage'));
+const VNPayReturnPage       = lazy(() => import('./component/payment/VNPayReturnPage'));
+const ServicePage           = lazy(() => import('./component/service/ServicePage'));
+const ManageChat            = lazy(() => import('./component/admin/ManageChat'));
 
 function App() {
   return (
@@ -31,56 +31,58 @@ function App() {
       <div className="App">
         <Navbar />
         <div className="content">
-          <Routes>
-            {/* Public Routes */}
-            <Route exact path="/home" element={<HomePage />} />
-            <Route exact path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />        
-            <Route path="/rooms" element={<AllRoomsPage />} />
-            <Route path="/find-booking" element={<FindBookingPage />} />
-            <Route path="/services" element={<ServicePage />} />
+          <Suspense fallback={<div className="page-loading"><div className="page-loading-spinner" /></div>}>
+            <Routes>
+              {/* Public Routes */}
+              <Route exact path="/home" element={<HomePage />} />
+              <Route exact path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/rooms" element={<AllRoomsPage />} />
+              <Route path="/find-booking" element={<FindBookingPage />} />
+              <Route path="/services" element={<ServicePage />} />
 
-            {/* Protected Routes */}
-            <Route path="/room-details-book/:roomId"
-              element={<ProtectedRoute element={<RoomDetailsBookingPage />} />}
-            />
-            <Route path="/profile"
-              element={<ProtectedRoute element={<ProfilePage />} />}
-            />
-            <Route path="/edit-profile"
-              element={<ProtectedRoute element={<EditProfilePage />} />}
-            />
+              {/* Protected Routes */}
+              <Route path="/vnpay-return" element={<VNPayReturnPage />} />
+              <Route path="/room-details-book/:roomId"
+                element={<RoomDetailsBookingPage />}
+              />
+              <Route path="/profile"
+                element={<ProtectedRoute element={<ProfilePage />} />}
+              />
+              <Route path="/edit-profile"
+                element={<ProtectedRoute element={<EditProfilePage />} />}
+              />
+              {/* Admin Routes */}
+              <Route path="/admin"
+                element={<AdminRoute element={<AdminPage />} />}
+              />
+              <Route path="/admin/manage-rooms"
+                element={<AdminRoute element={<ManageRoomPage />} />}
+              />
+              <Route path="/admin/edit-room/:roomId"
+                element={<AdminRoute element={<EditRoomPage />} />}
+              />
+              <Route path="/admin/add-room"
+                element={<AdminRoute element={<AddRoomPage />} />}
+              />
+              <Route path="/admin/manage-bookings"
+                element={<AdminRoute element={<ManageBookingsPage />} />}
+              />
+              <Route path="/admin/edit-booking/:bookingCode"
+                element={<AdminRoute element={<EditBookingPage />} />}
+              />
+              <Route path="/admin/chat" element={<ManageChat />} />
 
-            {/* Admin Routes */}
-            <Route path="/admin"
-              element={<AdminRoute element={<AdminPage />} />}
-            />
-            <Route path="/admin/manage-rooms"
-              element={<AdminRoute element={<ManageRoomPage />} />}
-            />
-            <Route path="/admin/edit-room/:roomId"
-              element={<AdminRoute element={<EditRoomPage />} />}
-            />
-            <Route path="/admin/add-room"
-              element={<AdminRoute element={<AddRoomPage />} />}
-            />
-            <Route path="/admin/manage-bookings"
-              element={<AdminRoute element={<ManageBookingsPage />} />}
-            />
-            <Route path="/admin/edit-booking/:bookingCode"
-              element={<AdminRoute element={<EditBookingPage />} />}
-            />
-            <Route path="/admin/chat" element={<ManageChat />} />
-
-            {/* Fallback Route */}
-            <Route path="*" element={<Navigate to="/home" />} />
-          </Routes>
+              {/* Fallback Route */}
+              <Route path="*" element={<Navigate to="/home" />} />
+            </Routes>
+          </Suspense>
         </div>
 
         <ChatSupport />
-        
+
         <FooterComponent />
       </div>
     </BrowserRouter>

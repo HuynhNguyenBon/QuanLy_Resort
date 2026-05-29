@@ -1,0 +1,17 @@
+{
+  "menu": {
+    "home": "ホーム",
+    "rooms": "客室",
+    "booking": "予約確認",
+    "services": "サービス",
+    "profile": "プロフィール",
+    "admin": "管理者",
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト"
+  },
+
+  "logout": {
+    "confirm": "ログアウトしてもよろしいですか？"
+  }
+}
