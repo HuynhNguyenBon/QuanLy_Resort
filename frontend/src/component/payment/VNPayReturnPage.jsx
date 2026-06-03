@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ApiService from "../../service/ApiService";
 
 const VNPayReturnPage = () => {
-  const { t } = useTranslation("payment");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const prev = document.body.style.background;
+    document.body.style.background = "linear-gradient(145deg, #0f2027 0%, #203a43 50%, #2c5364 100%)";
+    return () => { document.body.style.background = prev; };
+  }, []);
+
+  useEffect(() => {
     const verifyPayment = async () => {
       try {
-        // Chuyển tất cả query params thành object
         const params = {};
-        searchParams.forEach((value, key) => {
-          params[key] = value;
-        });
+        searchParams.forEach((value, key) => { params[key] = value; });
 
         const response = await ApiService.getVNPayReturn(params);
         setResult(response);
@@ -35,7 +36,6 @@ const VNPayReturnPage = () => {
             sessionStorage.removeItem("pendingBookingId");
           }
         } else {
-          // Thanh toán thành công - clear pending booking ID
           sessionStorage.removeItem("pendingBookingId");
         }
       } catch (err) {
@@ -54,173 +54,108 @@ const VNPayReturnPage = () => {
         setLoading(false);
       }
     };
-
     verifyPayment();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (loading)
-    return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <div style={styles.spinner}></div>
-          <p>{t("vnpayReturnPage.verifying")}</p>
-        </div>
-      </div>
-    );
-
-  const isSuccess = result?.status === "SUCCESS";
-
-  return (
-    <div style={styles.container}>
-      <div
-        style={{
-          ...styles.card,
-          borderTop: `4px solid ${isSuccess ? "#22c55e" : "#ef4444"}`,
-        }}
-      >
-        <div style={styles.iconWrap}>
-          {isSuccess ? (
-            <span
-              style={{
-                ...styles.icon,
-                background: "#dcfce7",
-                color: "#16a34a",
-              }}
-            >
-              ✓
-            </span>
-          ) : (
-            <span
-              style={{
-                ...styles.icon,
-                background: "#fee2e2",
-                color: "#dc2626",
-              }}
-            >
-              ✗
-            </span>
-          )}
-        </div>
-
-        <h2
-          style={{ color: isSuccess ? "#16a34a" : "#dc2626", margin: "12px 0" }}
-        >
-          {isSuccess
-            ? t("vnpayReturnPage.successTitle")
-            : t("vnpayReturnPage.failedTitle")}
-        </h2>
-
-        <p style={styles.message}>{result?.message}</p>
-
-        {isSuccess && (
-          <div style={styles.infoBox}>
-            <div style={styles.infoRow}>
-              <span>{t("vnpayReturnPage.bookingCode")}:</span>
-              <strong>{result?.bookingConfirmationCode}</strong>
-            </div>
-            <div style={styles.infoRow}>
-              <span>{t("vnpayReturnPage.transactionId")}:</span>
-              <strong>{result?.transactionId}</strong>
-            </div>
+  if (loading) return (
+    <div className="vp-page">
+      <div className="vp-card">
+        <div className="vp-card-header vp-header-loading">
+          <div className="vp-loading-anim">
+            <div className="vp-ring" />
+            <div className="vp-ring vp-ring-2" />
           </div>
-        )}
-
-        <div style={styles.btnGroup}>
-          {isSuccess ? (
-            <button
-              style={styles.btnPrimary}
-              onClick={() => navigate("/profile")}
-            >
-              {t("vnpayReturnPage.viewBookings")}
-            </button>
-          ) : (
-            <button style={styles.btnDanger} onClick={() => navigate("/rooms")}>
-              {t("vnpayReturnPage.tryAgain")}
-            </button>
-          )}
-          <button style={styles.btnSecondary} onClick={() => navigate("/home")}>
-            {t("vnpayReturnPage.goHome")}
-          </button>
+          <div className="vp-hotel-brand">⭐ BBHH Resort</div>
+        </div>
+        <div className="vp-card-body">
+          <p className="vp-loading-text">Đang xác minh thanh toán…</p>
+          <p className="vp-loading-sub">Vui lòng không đóng trình duyệt</p>
         </div>
       </div>
     </div>
   );
-};
 
-const styles = {
-  container: {
-    minHeight: "80vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#f8fafc",
-    padding: "20px",
-  },
-  card: {
-    background: "#fff",
-    borderRadius: "16px",
-    padding: "48px 40px",
-    maxWidth: "480px",
-    width: "100%",
-    boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-    textAlign: "center",
-  },
-  iconWrap: { display: "flex", justifyContent: "center", marginBottom: "8px" },
-  icon: {
-    width: "64px",
-    height: "64px",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "28px",
-    fontWeight: "bold",
-  },
-  message: { color: "#6b7280", marginBottom: "24px" },
-  infoBox: {
-    background: "#f0fdf4",
-    borderRadius: "10px",
-    padding: "16px 20px",
-    marginBottom: "28px",
-    textAlign: "left",
-  },
-  infoRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "6px 0",
-    borderBottom: "1px solid #dcfce7",
-    fontSize: "14px",
-    color: "#374151",
-  },
-  btnGroup: { display: "flex", gap: "12px", justifyContent: "center" },
-  btnPrimary: {
-    padding: "12px 24px",
-    background: "#16a34a",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "600",
-    fontSize: "15px",
-  },
-  btnDanger: {
-    padding: "12px 24px",
-    background: "#dc2626",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "600",
-  },
-  btnSecondary: {
-    padding: "12px 24px",
-    background: "#e5e7eb",
-    color: "#374151",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "600",
-  },
+  const isSuccess = result?.status === "SUCCESS";
+
+  return (
+    <div className="vp-page">
+      <div className="vp-card">
+
+        {/* Colored header section */}
+        <div className={`vp-card-header ${isSuccess ? "vp-header-success" : "vp-header-fail"}`}>
+          <div className="vp-hotel-brand">⭐ BBHH Resort</div>
+          <div className="vp-main-icon">
+            {isSuccess ? (
+              <svg viewBox="0 0 52 52" className="vp-check-svg">
+                <circle className="vp-check-circle" cx="26" cy="26" r="24" />
+                <path className="vp-check-tick" d="M14 27 l8 8 l16-16" />
+              </svg>
+            ) : (
+              <div className="vp-x-circle">
+                <span>✕</span>
+              </div>
+            )}
+          </div>
+          <h2 className="vp-header-title">
+            {isSuccess ? "Thanh toán thành công!" : "Thanh toán thất bại"}
+          </h2>
+        </div>
+
+        {/* Body */}
+        <div className="vp-card-body">
+          <p className="vp-msg">{result?.message}</p>
+
+          {isSuccess && (
+            <div className="vp-info-box">
+              <div className="vp-info-row">
+                <span className="vp-info-label">📋 Mã đặt phòng</span>
+                <strong className="vp-info-val vp-code">{result?.bookingConfirmationCode}</strong>
+              </div>
+              <div className="vp-info-row">
+                <span className="vp-info-label">💳 Mã giao dịch</span>
+                <strong className="vp-info-val">{result?.transactionId}</strong>
+              </div>
+              <div className="vp-info-note">
+                📧 Email xác nhận đã được gửi đến hộp thư của bạn
+              </div>
+            </div>
+          )}
+
+          {!isSuccess && (
+            <div className="vp-fail-hint">
+              <p>💡 <strong>Nguyên nhân phổ biến:</strong></p>
+              <ul>
+                <li>Số dư tài khoản không đủ</li>
+                <li>Thẻ bị từ chối hoặc hết hạn</li>
+                <li>Quá thời gian xác nhận</li>
+              </ul>
+            </div>
+          )}
+
+          <div className="vp-btns">
+            {isSuccess ? (
+              <button className="vp-btn-primary" onClick={() => navigate("/profile")}>
+                📋 Xem lịch sử đặt phòng
+              </button>
+            ) : (
+              <button className="vp-btn-danger" onClick={() => navigate("/rooms")}>
+                🔄 Thử lại
+              </button>
+            )}
+            <button className="vp-btn-ghost" onClick={() => navigate("/home")}>
+              🏠 Về trang chủ
+            </button>
+          </div>
+
+          {isSuccess && (
+            <div className="vp-footer-note">
+              Chúng tôi rất mong được chào đón bạn tại BBHH Resort! 🌟
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default VNPayReturnPage;
