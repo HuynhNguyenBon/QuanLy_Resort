@@ -123,6 +123,15 @@ export default class ApiService {
     return response.data;
   }
 
+  static async setUserRole(userId, role) {
+    const response = await axios.put(
+      `${this.BASE_URL}/users/set-role/${userId}`,
+      { role },
+      { headers: this.getHeader() },
+    );
+    return response.data;
+  }
+
   /**ROOM */
   /* Thao tác này thêm một phòng mới vào cơ sở dữ liệu */
   static async addRoom(formData) {
@@ -284,10 +293,16 @@ export default class ApiService {
     return role?.toUpperCase() === "ADMIN";
   }
 
+  static isStaff() {
+    const role = localStorage.getItem("role");
+    return role?.toUpperCase() === "STAFF";
+  }
+
   static isUser() {
     const role = localStorage.getItem("role");
     return role?.toUpperCase() === "USER";
   }
+
   // Lấy danh sách tất cả dịch vụ (public, không cần đăng nhập)
   static async getAllServices() {
     const response = await axios.get(`${this.BASE_URL}/services/all`);
@@ -302,23 +317,33 @@ export default class ApiService {
 
   // (Dành cho Admin) Thêm dịch vụ mới
   static async addService(serviceData) {
-    const response = await axios.post(
-      `${this.BASE_URL}/services/add`,
-      serviceData,
-      {
-        headers: this.getHeader(),
+    const params = new URLSearchParams();
+    params.append("name", serviceData.name);
+    params.append("description", serviceData.description);
+    params.append("price", serviceData.price ?? 0);
+    const response = await axios.post(`${this.BASE_URL}/services/add`, params, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-    );
+    });
     return response.data;
   }
 
   // (Dành cho Admin) Cập nhật dịch vụ
   static async updateService(serviceId, serviceData) {
+    const params = new URLSearchParams();
+    params.append("name", serviceData.name);
+    params.append("description", serviceData.description);
+    params.append("price", serviceData.price ?? 0);
     const response = await axios.put(
       `${this.BASE_URL}/services/update/${serviceId}`,
-      serviceData,
+      params,
       {
-        headers: this.getHeader(),
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       },
     );
     return response.data;

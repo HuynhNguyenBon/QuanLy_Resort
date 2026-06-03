@@ -1,14 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ApiService from "../../service/ApiService";
 import Pagination from "../common/Pagination";
+import { useCompare } from "../common/CompareContext";
 import "../../UiverseElements.css";
+
+const SkeletonCard = () => (
+  <div className="ar-skeleton-card">
+    <div className="ar-skeleton ar-sk-img" />
+    <div className="ar-skeleton-body">
+      <div className="ar-skeleton ar-sk-title" />
+      <div className="ar-skeleton ar-sk-line" />
+      <div className="ar-skeleton ar-sk-line ar-sk-short" />
+      <div className="ar-skeleton ar-sk-footer" />
+    </div>
+  </div>
+);
 
 const AllRoomsPage = () => {
   const { t, i18n } = useTranslation("rooms");
+  const { toggle, isSelected } = useCompare();
   const getDateFormat = () => {
     switch (i18n.language) {
       case "vi":
@@ -25,6 +39,7 @@ const AllRoomsPage = () => {
     }
   };
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [allRooms, setAllRooms] = useState([]);
   const [filteredRooms, setFilteredRooms] = useState([]);
@@ -32,7 +47,8 @@ const AllRoomsPage = () => {
   // Map: roomId → { roomType, roomDescription } bản dịch theo ngôn ngữ hiện tại
   const [translations, setTranslations] = useState({});
 
-  const [selectedType, setSelectedType] = useState("");
+  const initialType = searchParams.get("type") || "";
+  const [selectedType, setSelectedType] = useState(initialType);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
@@ -57,8 +73,12 @@ const AllRoomsPage = () => {
           ApiService.getAllRooms(),
           ApiService.getRoomTypes(),
         ]);
-        setAllRooms(roomsRes.roomList || []);
-        setFilteredRooms(roomsRes.roomList || []);
+        const rooms = roomsRes.roomList || [];
+        const typeParam = searchParams.get("type");
+        setAllRooms(rooms);
+        setFilteredRooms(
+          typeParam ? rooms.filter((r) => r.roomType === typeParam) : rooms,
+        );
         setRoomTypes(typesRes || []);
       } catch (err) {
         console.error("Lỗi tải phòng:", err.message);
@@ -67,7 +87,7 @@ const AllRoomsPage = () => {
       }
     };
     init();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Tải bản dịch khi ngôn ngữ hoặc danh sách phòng thay đổi ───────────────
   useEffect(() => {
@@ -426,16 +446,16 @@ const AllRoomsPage = () => {
       {/* ── ROOM GRID ── */}
       <div className="ar-body">
         {loading ? (
-          <div className="ar-loading">
-            <div className="bbhh-spinner" />
-            <p>
-              {t("allRoomsPage.loadingRooms", "Đang tải danh sách phòng...")}
-            </p>
+          <div className="ar-grid">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         ) : searching ? (
-          <div className="ar-loading">
-            <div className="bbhh-spinner" />
-            <p>{t("allRoomsPage.searchingRooms", "Đang tìm phòng trống...")}</p>
+          <div className="ar-grid">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         ) : currentRooms.length === 0 ? (
           <div className="ar-empty">
@@ -509,7 +529,6 @@ const AllRoomsPage = () => {
 
                     <div className="ar-card-footer">
                       <div className="ar-card-price">
-                        {/* Giá — format chuẩn, không lẫn locale tiền tệ */}
                         <span className="ar-price-num">
                           {formatPrice(room.roomPrice)}
                         </span>
@@ -517,15 +536,27 @@ const AllRoomsPage = () => {
                           {t("allRoomsPage.night", "đêm")}
                         </span>
                       </div>
-                      <button
-                        className="ar-card-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/room-details-book/${room.id}`);
-                        }}
-                      >
-                        {t("allRoomsPage.bookNow", "Đặt ngay")}
-                      </button>
+                      <div className="ar-card-actions">
+                        <button
+                          className={`ar-compare-btn${isSelected(room.id) ? " active" : ""}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggle(room);
+                          }}
+                          title="So sánh phòng"
+                        >
+                          ⇄
+                        </button>
+                        <button
+                          className="ar-card-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/room-details-book/${room.id}`);
+                          }}
+                        >
+                          {t("allRoomsPage.bookNow", "Đặt ngay")}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
