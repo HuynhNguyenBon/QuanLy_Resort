@@ -46,6 +46,12 @@ public class Booking {
     private String vnpayTransactionId;
 
     private LocalDate createdAt;
+
+    private String promoCode;
+
+    private Double discountPercent;
+
+    private Double discountAmount;
   
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
