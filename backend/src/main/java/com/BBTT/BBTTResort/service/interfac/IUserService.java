@@ -25,4 +25,6 @@ public interface IUserService {
     Response resetPassword(String email, String otp, String newPassword);
 
     Response updateMyProfile(String userId, String email, String name, String phoneNumber);
+
+    Response setUserRole(String userId, String role);
 }
