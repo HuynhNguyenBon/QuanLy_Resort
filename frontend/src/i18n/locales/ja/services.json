@@ -129,6 +129,46 @@
       "In-Room Movie Night": {
         "name": "客室映画ナイト",
         "description": "ポップコーン、ドリンク、ブランケット付き映画パッケージ。"
+      },
+      "Airport Shuttle Service": {
+        "name": "空港送迎サービス",
+        "description": "24時間対応の専用車による空港送迎サービス。6時間前までにご予約ください。"
+      },
+      "Private Beach Bonfire": {
+        "name": "プライベートビーチ焚き火",
+        "description": "2〜6名様向けのプライベートビーチ焚き火パーティー。シーフードBBQ、アコースティック音楽、カクテル付き。"
+      },
+      "Private Romantic Dinner": {
+        "name": "プライベートロマンティックディナー",
+        "description": "ビーチまたはリゾートガーデンでの親密なキャンドルライトディナー。生花、5コースメニュー、ワイン付き。"
+      },
+      "Yacht Charter": {
+        "name": "ヨットチャーター",
+        "description": "3時間の湾内探索プライベートヨットレンタル。最大8名、キャプテンとプレミアム飲料付き。"
+      },
+      "Sunrise Yoga on Beach": {
+        "name": "ビーチ日の出ヨガ",
+        "description": "毎朝6:00〜7:00のビーチヨガセッション。マットとタオルを提供します。"
+      },
+      "Honeymoon Package": {
+        "name": "ハネムーンパッケージ",
+        "description": "特別なハネムーン設定：フローラルルームデコレーション、シャンパン、ケーキ、花びらバス、プライベートディナー。"
+      },
+      "Kids Club & Activities": {
+        "name": "キッズクラブ＆アクティビティ",
+        "description": "絵画、工芸、ミニプール付きの終日キッズクラブ。3〜12歳のお子様向け。"
+      },
+      "Wine & Cocktail Tasting": {
+        "name": "ワイン＆カクテルテイスティング",
+        "description": "スカイバーでのワインと手作りカクテル90分テイスティングセッション。専門バーテンダーが案内。"
+      },
+      "Traditional Herbal Spa": {
+        "name": "伝統ハーブスパ",
+        "description": "90分間の伝統ハーブスパトリートメント：ハーブバス、ミネラルマッドマスク、スカルプマッサージ。"
+      },
+      "Stargazing Night Experience": {
+        "name": "星空観察ナイト体験",
+        "description": "プロ用望遠鏡でのプライベートビーチ星空観察。2名様向けワインとプレミアムスナック付き。"
       }
     }
   }

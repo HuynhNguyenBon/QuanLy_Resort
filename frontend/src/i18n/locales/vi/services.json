@@ -129,6 +129,46 @@
       "In-Room Movie Night": {
         "name": "Đêm Phim Trong Phòng",
         "description": "Gói xem phim với popcorn và đồ uống."
+      },
+      "Airport Shuttle Service": {
+        "name": "Đưa Đón Sân Bay",
+        "description": "Đưa đón sân bay bằng xe sang, đúng giờ, phục vụ 24/7. Đặt trước ít nhất 6 giờ."
+      },
+      "Private Beach Bonfire": {
+        "name": "Tiệc Lửa Trại Bãi Biển",
+        "description": "Tiệc lửa trại riêng tư trên bãi biển cho 2–6 người. Kèm BBQ hải sản, nhạc acoustic và cocktail."
+      },
+      "Private Romantic Dinner": {
+        "name": "Bữa Tối Lãng Mạn Riêng Tư",
+        "description": "Bữa tối lãng mạn riêng tư tại bãi biển hoặc vườn resort. Nến, hoa tươi, thực đơn 5 món và rượu vang."
+      },
+      "Yacht Charter": {
+        "name": "Thuê Du Thuyền Riêng",
+        "description": "Thuê du thuyền riêng khám phá vịnh 3 giờ. Dành cho tối đa 8 người, kèm thuyền trưởng và đồ uống cao cấp."
+      },
+      "Sunrise Yoga on Beach": {
+        "name": "Yoga Bình Minh Bãi Biển",
+        "description": "Lớp yoga bình minh trên bãi biển mỗi sáng 6:00–7:00. Thảm và khăn được cung cấp."
+      },
+      "Honeymoon Package": {
+        "name": "Gói Trăng Mật Đặc Biệt",
+        "description": "Gói trăng mật đặc biệt: trang trí phòng hoa tươi, champagne, bánh, bồn tắm cánh hoa và bữa tối riêng tư."
+      },
+      "Kids Club & Activities": {
+        "name": "Câu Lạc Bộ Thiếu Nhi",
+        "description": "Câu lạc bộ thiếu nhi trọn ngày với hoạt động vẽ tranh, làm đồ thủ công, bể bơi mini. Cho trẻ 3–12 tuổi."
+      },
+      "Wine & Cocktail Tasting": {
+        "name": "Thưởng Thức Rượu & Cocktail",
+        "description": "Buổi thưởng rượu vang và cocktail thủ công 90 phút tại sky bar. Chuyên gia pha chế hướng dẫn."
+      },
+      "Traditional Herbal Spa": {
+        "name": "Spa Thảo Dược Truyền Thống",
+        "description": "Liệu trình spa thảo dược truyền thống 90 phút: tắm thảo dược, đắp mặt nạ bùn khoáng và massage đầu."
+      },
+      "Stargazing Night Experience": {
+        "name": "Ngắm Sao Đêm Biển",
+        "description": "Ngắm sao trên bãi biển riêng tư với kính thiên văn chuyên nghiệp, rượu vang và đồ ăn nhẹ cao cấp cho 2 người."
       }
     }
   }
