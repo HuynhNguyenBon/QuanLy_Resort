@@ -206,77 +206,176 @@ const EditRoomPage = () => {
     }
   };
 
+  const fileInputRef = React.useRef(null);
+
+  const fieldStyle = {
+    width: "100%", padding: "10px 14px", borderRadius: 8,
+    border: "1.5px solid #e8ecef", fontSize: "0.9rem", outline: "none",
+    background: "#fafbfd", boxSizing: "border-box",
+    color: "#1a1a2e", fontFamily: "inherit", transition: "border-color 0.15s, background 0.15s",
+  };
+  const labelStyle = {
+    display: "block", marginBottom: 6, fontWeight: 600,
+    fontSize: "0.8rem", color: "#6b7280", letterSpacing: "0.03em",
+  };
+
   return (
-    <div className="edit-room-container">
-      {toast && (
-        <Toast type={toast.type} message={toast.message} onClose={dismissToast} />
-      )}
+    <div className="adm-dashboard">
+      {toast && <Toast type={toast.type} message={toast.message} onClose={dismissToast} />}
 
-      <h2>{t("editRoomPage.title")}</h2>
-
-      <div className="edit-room-form">
-        {/* Photo */}
-        <div className="form-group">
-          {preview ? (
-            <img src={preview} alt="Room Preview" className="room-photo-preview" />
-          ) : (
-            roomDetails.roomPhotoUrl && (
-              <img src={roomDetails.roomPhotoUrl} alt="Room" className="room-photo" />
-            )
-          )}
-          <input
-            type="file"
-            name="roomPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-            disabled={loading}
-          />
-        </div>
-
-        {/* Room Type */}
-        <div className="form-group">
-          <label>{t("editRoomPage.roomType")}</label>
-          <input
-            type="text"
-            name="roomType"
-            value={roomDetails.roomType}
-            onChange={handleChange}
-            disabled={loading}
-          />
-        </div>
-
-        {/* Room Price */}
-        <div className="form-group">
-          <label>{t("editRoomPage.roomPrice")}</label>
-          <input
-            type="number"
-            name="roomPrice"
-            min="20"
-            placeholder="Tối thiểu 20$"
-            value={roomDetails.roomPrice}
-            onChange={handleChange}
-            disabled={loading}
-          />
-        </div>
-
-        {/* Room Description */}
-        <div className="form-group">
-          <label>{t("editRoomPage.roomDescription")}</label>
-          <textarea
-            name="roomDescription"
-            value={roomDetails.roomDescription}
-            onChange={handleChange}
-            disabled={loading}
-          />
-        </div>
-
-        <button className="update-button" onClick={handleUpdate} disabled={loading}>
-          {loading ? "Đang xử lý..." : t("editRoomPage.updateRoom")}
+      {/* Page header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+        <button onClick={() => navigate("/admin/manage-rooms")}
+          style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 14px",
+            borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff",
+            color: "#555", cursor: "pointer", fontSize: "0.83rem", fontWeight: 600,
+            transition: "all 0.15s" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "#0d9488"; e.currentTarget.style.color = "#0d9488"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.color = "#555"; }}>
+          ← Quay lại
         </button>
+        <div>
+          <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "#1a1a2e" }}>
+            Chỉnh sửa phòng <span style={{ color: "#0d9488" }}>#{roomId}</span>
+          </h2>
+        </div>
+      </div>
 
-        <button className="delete-button" onClick={handleDelete} disabled={loading}>
-          {t("editRoomPage.deleteRoom")}
-        </button>
+      {/* Main card */}
+      <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #e8ecef",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.06)", overflow: "hidden" }}>
+
+        {/* Card header bar */}
+        <div style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+          padding: "18px 28px", display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: "1.3rem" }}>🛏️</span>
+          <div>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
+              {roomDetails.roomType || "Đang tải..."} — Phòng #{roomId}
+            </div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}>
+              Cập nhật thông tin và ảnh phòng
+            </div>
+          </div>
+        </div>
+
+        {/* Card body: image left + form right */}
+        <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
+
+          {/* Left: image panel */}
+          <div style={{ borderRight: "1px solid #f0f2f5", padding: 24,
+            background: "#fafbfd", display: "flex", flexDirection: "column", gap: 14 }}>
+
+            {/* Image preview */}
+            <div style={{ borderRadius: 12, overflow: "hidden",
+              border: "1px solid #e8ecef", aspectRatio: "4/3",
+              background: "#f0f2f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {(preview || roomDetails.roomPhotoUrl) ? (
+                <img src={preview || roomDetails.roomPhotoUrl} alt="Preview"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                <div style={{ textAlign: "center", color: "#ccc" }}>
+                  <div style={{ fontSize: "2rem" }}>🖼️</div>
+                  <div style={{ fontSize: "0.78rem", marginTop: 6 }}>Chưa có ảnh</div>
+                </div>
+              )}
+            </div>
+
+            {/* Upload button */}
+            <input ref={fileInputRef} type="file" accept="image/*"
+              onChange={handleFileChange} disabled={loading} style={{ display: "none" }} />
+
+            <button onClick={() => fileInputRef.current?.click()} disabled={loading}
+              style={{ padding: "10px 0", borderRadius: 9, border: "2px dashed #0d9488",
+                background: "#f0fdfa", color: "#0d9488", cursor: loading ? "not-allowed" : "pointer",
+                fontSize: "0.85rem", fontWeight: 600, transition: "background 0.15s",
+                width: "100%", textAlign: "center" }}
+              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = "#ccfbf1"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "#f0fdfa"; }}>
+              {file ? `✓ ${file.name.length > 20 ? file.name.slice(0, 18) + "…" : file.name}` : "📁  Chọn ảnh mới"}
+            </button>
+
+            {file && (
+              <button onClick={() => { setFile(null); setPreview(null); }} disabled={loading}
+                style={{ padding: "7px 0", borderRadius: 8, border: "1px solid #fecaca",
+                  background: "#fff5f5", color: "#e74c3c", cursor: "pointer",
+                  fontSize: "0.8rem", fontWeight: 600, width: "100%" }}>
+                ✕  Bỏ ảnh mới
+              </button>
+            )}
+
+            <p style={{ margin: 0, color: "#b0b7c3", fontSize: "0.75rem", textAlign: "center" }}>
+              JPG · PNG · tối đa 5 MB
+            </p>
+          </div>
+
+          {/* Right: form */}
+          <div style={{ padding: 28, display: "flex", flexDirection: "column", gap: 20 }}>
+
+            {/* Row 1: loại phòng + giá */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+              <div>
+                <label style={labelStyle}>Loại phòng</label>
+                <input type="text" name="roomType" value={roomDetails.roomType}
+                  onChange={handleChange} disabled={loading}
+                  placeholder="VD: Deluxe, Suite, King..."
+                  style={fieldStyle}
+                  onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
+                  onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+              </div>
+              <div>
+                <label style={labelStyle}>Giá / đêm</label>
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: 13, top: "50%",
+                    transform: "translateY(-50%)", color: "#0d9488", fontWeight: 700, fontSize: "0.88rem" }}>$</span>
+                  <input type="number" name="roomPrice" min="20" value={roomDetails.roomPrice}
+                    onChange={handleChange} disabled={loading} placeholder="20"
+                    style={{ ...fieldStyle, paddingLeft: 28 }}
+                    onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
+                    onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Mô tả */}
+            <div style={{ flex: 1 }}>
+              <label style={labelStyle}>Mô tả phòng</label>
+              <textarea name="roomDescription" value={roomDetails.roomDescription}
+                onChange={handleChange} disabled={loading} rows={7}
+                placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
+                style={{ ...fieldStyle, resize: "vertical", lineHeight: 1.65 }}
+                onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
+                onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderTop: "1px solid #f0f2f5" }} />
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={handleUpdate} disabled={loading}
+                style={{ flex: 1, padding: "12px 0", borderRadius: 10, border: "none",
+                  background: loading ? "#99d6d0" : "#0d9488", color: "#fff",
+                  fontSize: "0.92rem", fontWeight: 700,
+                  cursor: loading ? "not-allowed" : "pointer", transition: "background 0.15s",
+                  boxShadow: "0 2px 8px rgba(13,148,136,0.3)" }}
+                onMouseEnter={e => { if (!loading) e.currentTarget.style.background = "#0a7c73"; }}
+                onMouseLeave={e => { if (!loading) e.currentTarget.style.background = "#0d9488"; }}>
+                {loading ? "Đang xử lý..." : "✓  Cập nhật phòng"}
+              </button>
+              <button onClick={handleDelete} disabled={loading}
+                style={{ padding: "12px 22px", borderRadius: 10,
+                  border: "1.5px solid #fca5a5", background: "#fff5f5",
+                  color: "#e74c3c", fontSize: "0.9rem", fontWeight: 700,
+                  cursor: loading ? "not-allowed" : "pointer", transition: "all 0.15s" }}
+                onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = "#e74c3c"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "#e74c3c"; }}}
+                onMouseLeave={e => { e.currentTarget.style.background = "#fff5f5"; e.currentTarget.style.color = "#e74c3c"; e.currentTarget.style.borderColor = "#fca5a5"; }}>
+                🗑  Xoá phòng
+              </button>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   );

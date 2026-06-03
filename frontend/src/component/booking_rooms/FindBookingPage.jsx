@@ -83,7 +83,6 @@ const FindBookingPage = () => {
     setLookupError("");
     setLookupResults([]);
     try {
-      // Lấy tất cả booking của user có email này
       const res = await ApiService.getAllBookings();
       const allBookings = res.bookingList || [];
       const matched = allBookings.filter(
@@ -98,7 +97,6 @@ const FindBookingPage = () => {
         setLookupResults(matched);
       }
     } catch (err) {
-      // Nếu không có quyền gọi getAllBookings, hướng dẫn liên hệ
       setLookupError(
         "Không thể tra cứu tự động. Vui lòng liên hệ 0909.448.608 hoặc gửi yêu cầu hỗ trợ bên dưới.",
       );
@@ -112,7 +110,6 @@ const FindBookingPage = () => {
     if (!contactForm.name || !contactForm.email || !contactForm.message) return;
     setContactSending(true);
     try {
-      // Gửi email qua mailto (mở email client)
       const subject = encodeURIComponent(
         `[BBHH Resort] Hỗ trợ tìm đặt phòng - ${contactForm.name}`,
       );
@@ -147,7 +144,6 @@ const FindBookingPage = () => {
       const response =
         await ApiService.getBookingByConfirmationCode(confirmationCode);
       setBookingDetails(response.booking);
-      // Scroll xuống kết quả
       setTimeout(
         () =>
           document
@@ -428,7 +424,6 @@ const FindBookingPage = () => {
                           onClick={() => {
                             setConfirmationCode(b.bookingConfirmationCode);
                             setShowEmailLookup(false);
-                            // Auto search
                             setTimeout(
                               () =>
                                 document

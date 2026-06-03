@@ -123,6 +123,15 @@ export default class ApiService {
     return response.data;
   }
 
+  static async setUserRole(userId, role) {
+    const response = await axios.put(
+      `${this.BASE_URL}/users/set-role/${userId}`,
+      { role },
+      { headers: this.getHeader() },
+    );
+    return response.data;
+  }
+
   /**ROOM */
   /* Thao tác này thêm một phòng mới vào cơ sở dữ liệu */
   static async addRoom(formData) {
@@ -294,14 +303,6 @@ export default class ApiService {
     return role?.toUpperCase() === "USER";
   }
 
-  static async setUserRole(userId, role) {
-    const response = await axios.put(
-      `${this.BASE_URL}/users/set-role/${userId}`,
-      { role },
-      { headers: this.getHeader() },
-    );
-    return response.data;
-  }
   // Lấy danh sách tất cả dịch vụ (public, không cần đăng nhập)
   static async getAllServices() {
     const response = await axios.get(`${this.BASE_URL}/services/all`);

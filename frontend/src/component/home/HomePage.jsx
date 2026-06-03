@@ -61,6 +61,8 @@ const HomePage = () => {
           src="./assets/images/hotel.webp"
           alt="BBHH Resort"
           className="hp-hero-bg"
+          fetchpriority="high"
+          decoding="async"
         />
         <div className="hp-hero-overlay" />
         <div className="hp-hero-content">
