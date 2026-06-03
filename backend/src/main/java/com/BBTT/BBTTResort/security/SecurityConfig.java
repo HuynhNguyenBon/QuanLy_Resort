@@ -37,6 +37,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**", "/rooms/**", "/bookings/**", "/services/**").permitAll()
                         .requestMatchers("/payment/vnpay-ipn").permitAll()
                         .requestMatchers("/payment/vnpay-return").permitAll()
