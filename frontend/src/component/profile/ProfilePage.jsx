@@ -68,6 +68,7 @@ const ProfilePage = () => {
     try {
       const paymentRes = await ApiService.createVNPayPayment(booking.id);
       if (paymentRes.status === "OK") {
+        sessionStorage.setItem("pendingBookingId", booking.id);
         window.location.href = paymentRes.paymentUrl;
       } else {
         showMsg("Không thể tạo link thanh toán. Vui lòng thử lại.", "error");
@@ -113,10 +114,24 @@ const ProfilePage = () => {
     } finally { setSaving(false); }
   };
 
-  const getStatusBadge = (booking) => {
+  const isExpired = (booking) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(booking.checkOutDate) < today;
+  };
+
+  const isPaid = (booking) => {
+    const p = (booking.paymentStatus || "").toString().toUpperCase();
+    if (p === "PAID") return true;
     const s = (booking.bookingStatus || booking.status || "").toString().toLowerCase();
-    if (s === "confirmed" || s === "true" || s === "1")
-      return <span className="pf-status-badge confirmed">✓ Đã xác nhận</span>;
+    return s === "confirmed" || s === "true" || s === "1";
+  };
+
+  const getStatusBadge = (booking) => {
+    if (isExpired(booking))
+      return <span className="pf-status-badge expired">✕ Đã hết hạn</span>;
+    if (isPaid(booking))
+      return <span className="pf-status-badge confirmed">✓ Đã thanh toán</span>;
     return <span className="pf-status-badge pending">⏳ Chờ thanh toán</span>;
   };
 
@@ -154,7 +169,7 @@ const ProfilePage = () => {
         <div className="pf-stats">
           {[
             { num: activeBookings.length, lbl: "Đặt phòng" },
-            { num: activeBookings.filter(b => { const s=(b.bookingStatus||b.status||"").toLowerCase(); return s==="confirmed"||s==="true"||s==="1"; }).length, lbl: "Đã xác nhận" },
+            { num: activeBookings.filter(b => isPaid(b)).length, lbl: "Đã thanh toán" },
             { num: activeBookings.reduce((s,b)=>s+getNights(b.checkInDate,b.checkOutDate),0), lbl: "Đêm lưu trú" },
             { num: user?.phoneNumber ? "✓" : "—", lbl: "SĐT xác minh" },
           ].map((s,i) => (
@@ -234,17 +249,13 @@ const ProfilePage = () => {
                           </div>
                         </div>
                         <div className="pf-booking-actions">
-                          {(() => {
-                            const s = (booking.bookingStatus || booking.status || "").toString().toLowerCase();
-                            const isPending = s !== "confirmed" && s !== "true" && s !== "1";
-                            return isPending && (
-                              <button className="pf-action-btn pay" onClick={() => handlePayNow(booking)}>
-                                💳 Thanh toán
-                              </button>
-                            );
-                          })()}
-                          <button className="pf-action-btn edit" onClick={() => openEdit(booking)}>✎ Sửa</button>
-                          <button className="pf-action-btn cancel" onClick={() => handleCancel(booking.id)}>✕ Hủy</button>
+                          {!isExpired(booking) && !isPaid(booking) && (
+                            <button className="pf-action-btn pay" onClick={() => handlePayNow(booking)}>
+                              💳 Thanh toán
+                            </button>
+                          )}
+                          {!isExpired(booking) && <button className="pf-action-btn edit" onClick={() => openEdit(booking)}>✎ Sửa</button>}
+                          {!isExpired(booking) && <button className="pf-action-btn cancel" onClick={() => handleCancel(booking.id)}>✕ Hủy</button>}
                         </div>
                       </div>
                     </div>

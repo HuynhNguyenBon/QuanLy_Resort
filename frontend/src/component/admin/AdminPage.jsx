@@ -1,160 +1,204 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
-import "../../UiverseElements.css";
+
+const ROOMS_PER_FLOOR = 5;
+
+const todayDate = () => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+const isCancelled = (b) => {
+  const s = (b.bookingStatus || b.status || "").toLowerCase();
+  return s === "cancelled" || s === "canceled";
+};
+
+// Kiểm tra booking có đang active hôm nay không
+const isActiveBooking = (b) => {
+  if (isCancelled(b)) return false;
+  const today = todayDate();
+  const ci = new Date(b.checkInDate);
+  const co = new Date(b.checkOutDate);
+  ci.setHours(0, 0, 0, 0);
+  co.setHours(0, 0, 0, 0);
+  return ci <= today && today < co;
+};
+
+// Dùng danh sách bookings riêng (đã fetch), match theo room.id
+const isOccupiedToday = (room, bookings) =>
+  bookings.some(b => (b.room?.id === room.id || b.roomId === room.id) && isActiveBooking(b));
+
+const getActiveGuest = (room, bookings) => {
+  const b = bookings.find(b => (b.room?.id === room.id || b.roomId === room.id) && isActiveBooking(b));
+  return b?.user?.name || null;
+};
+
+const QUICK_ACTIONS = [
+  { label: "Thêm phòng mới", icon: "➕", path: "/admin/add-room", color: "#3498db" },
+  { label: "Xem đặt phòng", icon: "📋", path: "/admin/manage-bookings", color: "#27ae60" },
+  { label: "Quản lý phòng", icon: "🛏️", path: "/admin/manage-rooms", color: "#f39c12" },
+  { label: "Xem đánh giá", icon: "⭐", path: "/admin/manage-reviews", color: "#9b59b6" },
+];
 
 const AdminPage = () => {
-  const { t } = useTranslation("admin");
-  const [adminName, setAdminName] = useState("");
   const navigate = useNavigate();
-  const stats = [
-    {
-      label: t("adminPage.single"),
-      value: 80,
-      color: "#0088FE",
-    },
-    {
-      label: t("adminPage.double"),
-      value: 65,
-      color: "#00C49F",
-    },
-    {
-      label: t("adminPage.luxury"),
-      value: 45,
-      color: "#FFBB28",
-    },
-    {
-      label: t("adminPage.suite"),
-      value: 30,
-      color: "#FF8042",
-    },
-  ];
+  const [adminName, setAdminName] = useState("");
+  const [rooms, setRooms] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAdminName = async () => {
+    const fetchData = async () => {
       try {
-        const response = await ApiService.getUserProfile();
-
-        setAdminName(response.user.name);
-      } catch (error) {
-        console.error("Error fetching admin details:", error.message);
+        const [profileRes, roomsRes, bookingsRes] = await Promise.all([
+          ApiService.getUserProfile(),
+          ApiService.getAllRooms(),
+          ApiService.getAllBookings(),
+        ]);
+        setAdminName(profileRes.user?.name || "Admin");
+        setRooms(roomsRes.roomList || []);
+        setBookings(bookingsRes.bookingList || []);
+      } catch (e) {
+        console.error("Dashboard load error:", e);
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchAdminName();
+    fetchData();
   }, []);
 
+  const occupiedCount = rooms.filter(r => isOccupiedToday(r, bookings)).length;
+  const availableCount = rooms.length - occupiedCount;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const todayCheckIns = bookings.filter((b) => {
+    if (b.bookingStatus === "CANCELLED") return false;
+    const ci = new Date(b.checkInDate);
+    return ci >= today && ci < tomorrow;
+  }).length;
+
+  const todayCheckOuts = bookings.filter((b) => {
+    if (b.bookingStatus === "CANCELLED") return false;
+    const co = new Date(b.checkOutDate);
+    return co >= today && co < tomorrow;
+  }).length;
+
+  const stats = [
+    { label: "Tổng phòng", value: rooms.length, icon: "🏨", color: "#3498db" },
+    { label: "Đang có khách", value: occupiedCount, icon: "🔴", color: "#e74c3c" },
+    { label: "Phòng trống", value: availableCount, icon: "🟢", color: "#27ae60" },
+    { label: "Check-in hôm nay", value: todayCheckIns, icon: "📥", color: "#f39c12" },
+    { label: "Check-out hôm nay", value: todayCheckOuts, icon: "📤", color: "#9b59b6" },
+  ];
+
+  const floors = [];
+  for (let i = 0; i < rooms.length; i += ROOMS_PER_FLOOR) {
+    floors.push(rooms.slice(i, i + ROOMS_PER_FLOOR));
+  }
+
   return (
-    <div className="bbhh-profile-container">
-      <div className="bbhh-profile-card">
-        <div className="bbhh-profile-header">
-          <h2 className="welcome-message">
-            {t("adminPage.welcome")},{" "}
-            <span className="text-orange">{adminName}</span>
-          </h2>
-
-          <div className="bbhh-action-buttons">
-            <button
-              className="bbhh-btn bbhh-btn-edit"
-              onClick={() => navigate("/admin/manage-rooms")}
-            >
-              {t("adminPage.manageRooms")}
-            </button>
-
-            <button
-              className="bbhh-btn bbhh-btn-logout"
-              onClick={() => navigate("/admin/manage-bookings")}
-            >
-              {t("adminPage.manageBookings")}
-            </button>
-          </div>
-        </div>
-
-        <div className="bbhh-profile-body">
-          <div className="bbhh-box">
-            <h3>{t("adminPage.systemStatus")}</h3>
-
-            <div className="bbhh-divider"></div>
-
-            <p>
-              <strong>{t("adminPage.server")}:</strong>{" "}
-              <span style={{ color: "#28a745" }}>{t("adminPage.online")}</span>
-            </p>
-
-            <p>
-              <strong>{t("adminPage.database")}:</strong>{" "}
-              {t("adminPage.connected")}
-            </p>
-
-            <p>
-              <strong>{t("adminPage.totalStaff")}:</strong> 05
-            </p>
-
-            <div
-              style={{
-                marginTop: "15px",
-                padding: "10px",
-                background: "#e7f3ff",
-                borderRadius: "8px",
-                fontSize: "0.85rem",
-              }}
-            >
-              {t("adminPage.quickTip")}
-            </div>
-          </div>
-
-          <div className="bbhh-box">
-            <h3>{t("adminPage.roomPopularity")}</h3>
-
-            <div className="bbhh-divider"></div>
-
-            <div style={{ marginTop: "20px" }}>
-              {stats.map((item, index) => (
-                <div key={index} style={{ marginBottom: "15px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "5px",
-                      fontSize: "0.9rem",
-                    }}
-                  >
-                    <span>{item.label}</span>
-
-                    <span>{item.value}%</span>
-                  </div>
-
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "10px",
-                      background: "#eee",
-                      borderRadius: "10px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${item.value}%`,
-                        height: "100%",
-                        background: item.color,
-                        transition: "width 1s ease-in-out",
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="bbhh-profile-footer">
-          <p>{t("adminPage.footer")}</p>
-        </div>
+    <div className="adm-dashboard">
+      <div className="adm-welcome">
+        Xin chào, <span className="adm-welcome-name">{adminName}</span> 👋
       </div>
+
+      {/* Stats cards */}
+      <div className="adm-stats-row">
+        {stats.map((s) => (
+          <div key={s.label} className="adm-stat-card" style={{ borderTopColor: s.color }}>
+            <div className="adm-stat-icon">{s.icon}</div>
+            <div className="adm-stat-value" style={{ color: s.color }}>
+              {loading ? "—" : s.value}
+            </div>
+            <div className="adm-stat-label">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Floor map */}
+      <div className="adm-section">
+        <div className="adm-section-header">
+          <h3>🗺️ Sơ đồ phòng</h3>
+          <div className="adm-map-legend">
+            <span className="adm-legend-dot" style={{ background: "#27ae60" }} />
+            Trống
+            <span className="adm-legend-dot" style={{ background: "#e74c3c", marginLeft: 12 }} />
+            Có khách
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="adm-map-loading">Đang tải sơ đồ phòng...</div>
+        ) : floors.length === 0 ? (
+          <div className="adm-map-loading">Chưa có phòng nào trong hệ thống.</div>
+        ) : (
+          <div className="adm-floor-map">
+            {floors.map((floorRooms, floorIdx) => (
+              <div key={floorIdx} className="adm-floor">
+                <div className="adm-floor-label">Tầng {floorIdx + 1}</div>
+                <div className="adm-floor-rooms">
+                  {floorRooms.map((room) => {
+                    const occupied = isOccupiedToday(room, bookings);
+                    const guest = getActiveGuest(room, bookings);
+                    return (
+                      <div
+                        key={room.id}
+                        className={`adm-room-cell${occupied ? " occupied" : " available"}`}
+                        title={
+                          occupied
+                            ? `Có khách: ${guest || "Không rõ tên"}`
+                            : "Phòng trống"
+                        }
+                        onClick={() => navigate(`/admin/edit-room/${room.id}`)}
+                      >
+                        <div className="adm-room-id">#{room.id}</div>
+                        <div className="adm-room-type">{room.roomType}</div>
+                        {occupied && guest && (
+                          <div className="adm-room-guest">{guest}</div>
+                        )}
+                        <div className="adm-room-status">
+                          {occupied ? "Có khách" : "Trống"}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Quick actions — chỉ hiện cho admin */}
+      {ApiService.isAdmin() && (
+        <div className="adm-section">
+          <div className="adm-section-header">
+            <h3>⚡ Thao tác nhanh</h3>
+          </div>
+          <div className="adm-quick-actions">
+            {QUICK_ACTIONS.map((a) => (
+              <button
+                key={a.path}
+                className="adm-quick-btn"
+                style={{ borderLeftColor: a.color }}
+                onClick={() => navigate(a.path)}
+              >
+                <span className="adm-quick-icon">{a.icon}</span>
+                {a.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
+
 };
 
 export default AdminPage;
