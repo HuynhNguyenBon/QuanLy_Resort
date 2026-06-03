@@ -1,0 +1,12 @@
+{
+  "vnpayReturnPage": {
+    "verifying": "Verifying payment...",
+    "successTitle": "Payment Successful!",
+    "failedTitle": "Payment Failed",
+    "bookingCode": "Booking Code",
+    "transactionId": "Transaction ID",
+    "viewBookings": "View My Bookings",
+    "tryAgain": "Try Again",
+    "goHome": "Back to Home"
+  }
+}

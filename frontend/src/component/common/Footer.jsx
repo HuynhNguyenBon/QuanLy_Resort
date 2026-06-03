@@ -1,13 +1,13 @@
+import "../../UiverseElements.css";
+import { useTranslation } from "react-i18next";
+
 const FooterComponent = () => {
-
-
-    return (
-        <footer>
-            <span className="my-footer">
-                BBHH Resort | All Right Reserved &copy; {new Date().getFullYear()}
-            </span>
-        </footer>
-    );
+  const { t } = useTranslation("footer");
+  return (
+    <footer className="bbhh-footer">
+      <strong>BBHH Resort</strong> &nbsp;·&nbsp; {t("copyright")} &copy; {new Date().getFullYear()}
+    </footer>
+  );
 };
 
 export default FooterComponent;

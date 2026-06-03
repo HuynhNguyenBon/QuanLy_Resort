@@ -23,10 +23,16 @@ const VNPayReturnPage = () => {
         const response = await ApiService.getVNPayReturn(params);
         setResult(response);
 
+        // Nếu thanh toán thất bại, xóa booking đã tạo
         if (response?.status !== "SUCCESS") {
           const pendingBookingId = sessionStorage.getItem("pendingBookingId");
           if (pendingBookingId) {
-            try { await ApiService.cancelBooking(pendingBookingId); } catch {}
+            try {
+              await ApiService.cancelBooking(pendingBookingId);
+              console.log("Cancelled pending booking:", pendingBookingId);
+            } catch (cancelError) {
+              console.error("Error canceling pending booking:", cancelError);
+            }
             sessionStorage.removeItem("pendingBookingId");
           }
         } else {
@@ -34,9 +40,14 @@ const VNPayReturnPage = () => {
         }
       } catch (err) {
         setResult({ status: "ERROR", message: err.message });
+        // Cũng xóa booking nếu có lỗi xác minh
         const pendingBookingId = sessionStorage.getItem("pendingBookingId");
         if (pendingBookingId) {
-          try { await ApiService.cancelBooking(pendingBookingId); } catch {}
+          try {
+            await ApiService.cancelBooking(pendingBookingId);
+          } catch (cancelError) {
+            console.error("Error canceling pending booking:", cancelError);
+          }
           sessionStorage.removeItem("pendingBookingId");
         }
       } finally {

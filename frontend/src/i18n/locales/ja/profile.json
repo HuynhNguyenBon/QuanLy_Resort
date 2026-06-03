@@ -1,0 +1,24 @@
+{
+  "welcome": "ようこそ",
+  "editProfile": "プロフィール編集",
+  "logout": "ログアウト",
+  "profileDetails": "プロフィール詳細",
+  "email": "メール",
+  "phone": "電話番号",
+  "bookingHistory": "予約履歴",
+  "code": "コード",
+  "checkIn": "チェックイン",
+  "room": "部屋",
+  "guests": "宿泊人数",
+  "noBooking": "予約履歴はありません。",
+  "footer": "BBHH Resort | あなたの贅沢な楽園",
+
+  "editYour": "プロフィール編集",
+  "fullName": "氏名",
+  "emailAddress": "メールアドレス",
+  "phoneNumber": "電話番号",
+  "warning": "警告: アカウントを削除すると元に戻せません。",
+  "deleteAccount": "アカウント削除",
+  "backToProfile": "プロフィールへ戻る",
+  "deleteConfirm": "本当にアカウントを削除しますか？"
+}

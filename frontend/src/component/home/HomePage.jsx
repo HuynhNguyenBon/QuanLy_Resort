@@ -29,9 +29,9 @@ const TESTIMONIALS = [
 ];
 
 const PROMOS = [
-  { icon: "🌙", badge: "HOT", titleKey: "promoEarly", descKey: "promoEarlyDesc", discount: "20%", color: "#0F3460", path: "/rooms" },
+  { icon: "🌙", badge: "HOT", titleKey: "promoEarly",  descKey: "promoEarlyDesc",  discount: "20%", color: "#0F3460", path: "/rooms" },
   { icon: "👨‍👩‍👧", badge: "NEW", titleKey: "promoFamily", descKey: "promoFamilyDesc", discount: "15%", color: "#0F3460", path: "/rooms?type=Family" },
-  { icon: "💆", badge: "DEAL", titleKey: "promoSpa", descKey: "promoSpaDesc", discount: "FREE", color: "#0F3460", path: "/services?highlight=spa" },
+  { icon: "💆", badge: "DEAL", titleKey: "promoSpa",   descKey: "promoSpaDesc",    discount: "FREE", color: "#0F3460", path: "/services?highlight=spa" },
 ];
 
 const HomePage = () => {

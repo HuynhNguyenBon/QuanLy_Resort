@@ -1,0 +1,41 @@
+{
+  "bookingResult": {
+    "roomId": "部屋ID",
+    "userId": "ユーザーID",
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "status": "ステータス",
+    "edit": "編集"
+  },
+
+  "chat": {
+    "header": "カスタマーサポート",
+    "empty": "会話を始めましょう！",
+    "needLogin": "チャットするにはログインが必要です",
+    "login": "ログイン",
+    "placeholder": "メッセージを入力..."
+  },
+
+  "room": {
+    "perNight": "1泊",
+    "wifi": "📶 Wi-Fi",
+    "pool": "🏊 プール",
+    "ac": "❄️ エアコン",
+    "edit": "部屋を編集",
+    "book": "詳細 / 予約"
+  },
+
+  "search": {
+    "checkIn": "チェックイン日",
+    "checkOut": "チェックアウト日",
+    "roomType": "部屋タイプ",
+    "tc": "(オプション)",
+    "selectCheckIn": "チェックイン日を選択",
+    "selectCheckOut": "チェックアウト日を選択",
+    "selectRoomType": "部屋タイプを選択",
+    "button": "検索",
+    "fillAll": "すべての項目を選択してください",
+    "notAvailable": "空室がありません",
+    "error": "エラー: "
+  }
+}

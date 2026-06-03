@@ -1,0 +1,17 @@
+{
+  "menu": {
+    "home": "Trang chủ",
+    "rooms": "Phòng",
+    "booking": "Tìm đặt phòng",
+    "services": "Dịch vụ",
+    "profile": "Hồ sơ",
+    "admin": "Quản trị",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất"
+  },
+
+  "logout": {
+    "confirm": "Bạn có chắc muốn đăng xuất không?"
+  }
+}

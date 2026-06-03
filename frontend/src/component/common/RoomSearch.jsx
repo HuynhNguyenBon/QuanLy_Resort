@@ -1,101 +1,217 @@
-import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import ApiService from '../../service/ApiService';
+import React, { useState, useEffect, useRef } from "react";
+import DatePicker from "react-datepicker";
+import { useTranslation } from "react-i18next";
+import "react-datepicker/dist/react-datepicker.css";
+import ApiService from "../../service/ApiService";
+import "../../UiverseElements.css";
 
 const RoomSearch = ({ handleSearchResult }) => {
+  const { t, i18n } = useTranslation("common");
+  const getDateFormat = () => {
+    switch (i18n.language) {
+      case "vi":
+        return "dd/MM/yyyy";
+
+      case "en":
+        return "MM/dd/yyyy";
+
+      case "ja":
+        return "yyyy/MM/dd";
+
+      default:
+        return "dd/MM/yyyy";
+    }
+  };
+
+  const dateFormat = getDateFormat();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [roomType, setRoomType] = useState('');
+  const [roomType, setRoomType] = useState("");
   const [roomTypes, setRoomTypes] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [dropOpen, setDropOpen] = useState(false);
+  const dropRef = useRef(null);
 
   useEffect(() => {
-    const fetchRoomTypes = async () => {
-      try {
-        const types = await ApiService.getRoomTypes();
-        setRoomTypes(types);
-      } catch (error) {
-        console.error('Error fetching room types:', error.message);
-      }
-    };
-    fetchRoomTypes();
+    ApiService.getRoomTypes()
+      .then((types) => setRoomTypes(types))
+      .catch((err) => console.error(err.message));
   }, []);
 
-  /**Phương pháp này sẽ được sử dụng để chỉ ra lỗi */
-  const showError = (message, timeout = 5000) => {
-    setError(message);
-    setTimeout(() => {
-      setError('');
-    }, timeout);
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target))
+        setDropOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const showError = (msg, ms = 5000) => {
+    setError(msg);
+    setTimeout(() => setError(""), ms);
   };
 
-  /**Phương pháp này sẽ được sử dụng để fetch các phòng còn trống từ cơ sở dữ liệu dựa trên dữ liệu tìm kiếm được truyền vào */
-  const handleInternalSearch = async () => {
-    if (!startDate || !endDate || !roomType) {
-      showError('Please select all fields');
-      return false;
+  const handleSearch = async () => {
+    if (!startDate || !endDate) {
+      showError("Vui lòng chọn ngày nhận và ngày trả phòng.");
+      return;
     }
+    if (startDate >= endDate) {
+      showError("Ngày trả phòng phải sau ngày nhận phòng.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    setLoading(true);
+    setError("");
+
     try {
-      // Chuyển đổi ngày bắt đầu sang định dạng mong muốn
-      const formattedStartDate = startDate ? startDate.toISOString().split('T')[0] : null;
-      const formattedEndDate = endDate ? endDate.toISOString().split('T')[0] : null;
-      // Gọi API để lấy thông tin về các phòng còn trống
-      const response = await ApiService.getAvailableRoomsByDateAndType(formattedStartDate, formattedEndDate, roomType);
+      const start = startDate.toISOString().split("T")[0];
+      const end = endDate.toISOString().split("T")[0];
 
-      // Kiểm tra xem phản hồi có thành công không
-      if (response.statusCode === 200) {
-        if (response.roomList.length === 0) {
-          showError('Room not currently available for this date range on the selected rom type.');
-          return
-        }
-        handleSearchResult(response.roomList);
-        setError('');
+      let availableRooms = [];
+
+      if (roomType) {
+        // Có chọn loại — gọi 1 API
+        const res = await ApiService.getAvailableRoomsByDateAndType(
+          start,
+          end,
+          roomType,
+        );
+        availableRooms = res.roomList || [];
+      } else {
+        // Không chọn loại — gọi song song tất cả loại rồi gộp lại
+        const results = await Promise.all(
+          roomTypes.map((type) =>
+            ApiService.getAvailableRoomsByDateAndType(start, end, type)
+              .then((r) => r.roomList || [])
+              .catch(() => []),
+          ),
+        );
+        availableRooms = results.flat();
       }
-    } catch (error) {
-      showError("Unown error occured: " + error.response.data.message);
+
+      if (availableRooms.length === 0) {
+        showError(
+          "Không có phòng trống trong khoảng thời gian này. Hãy thử ngày khác.",
+        );
+        return;
+      }
+
+      handleSearchResult(availableRooms);
+    } catch (err) {
+      showError("Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const selectedLabel = roomType || t("search.selectRoomType");
 
   return (
     <section>
       <div className="search-container">
+        {/* Check-in */}
         <div className="search-field">
-          <label>Check-in Date</label>
+          <label>{t("search.checkIn")}</label>
           <DatePicker
             selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="Select Check-in Date"
-          />
-        </div>
-        <div className="search-field">
-          <label>Check-out Date</label>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="Select Check-out Date"
+            onChange={setStartDate}
+            dateFormat={dateFormat}
+            placeholderText={t("search.selectCheckIn")}
+            minDate={new Date()}
+            autoComplete="off"
           />
         </div>
 
+        {/* Check-out */}
         <div className="search-field">
-          <label>Room Type</label>
-          <select value={roomType} onChange={(e) => setRoomType(e.target.value)}>
-            <option disabled value="">
-              Select Room Type
-            </option>
-            {roomTypes.map((roomType) => (
-              <option key={roomType} value={roomType}>
-                {roomType}
-              </option>
-            ))}
-          </select>
+          <label>{t("search.checkOut")}</label>
+          <DatePicker
+            selected={endDate}
+            onChange={setEndDate}
+            dateFormat={dateFormat}
+            placeholderText={t("search.selectCheckOut")}
+            minDate={startDate || new Date()}
+            autoComplete="off"
+          />
         </div>
-        <button className="home-search-button" onClick={handleInternalSearch}>
-          Search Rooms
+
+        {/* Loại phòng — tuỳ chọn */}
+        <div className="search-field search-field-drop" ref={dropRef}>
+          <label>
+            {t("search.roomType")}{" "}
+            <span style={{ fontWeight: 400, opacity: 0.6 }}></span>
+            <span style={{ fontWeight: 400, opacity: 0.6 }}>
+              {t("search.tc")}
+            </span>
+          </label>
+          <button
+            type="button"
+            className={`search-drop-trigger${roomType ? " selected" : ""}`}
+            onClick={() => setDropOpen((p) => !p)}
+          >
+            <span>{selectedLabel}</span>
+            <svg
+              className={`search-drop-chevron${dropOpen ? " open" : ""}`}
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          {dropOpen && (
+            <div className="search-drop-menu">
+              <div
+                className={`search-drop-item${!roomType ? " active" : ""}`}
+                onClick={() => {
+                  setRoomType("");
+                  setDropOpen(false);
+                }}
+              >
+                Tất cả loại phòng
+              </div>
+              {roomTypes.map((type) => (
+                <div
+                  key={type}
+                  className={`search-drop-item${roomType === type ? " active" : ""}`}
+                  onClick={() => {
+                    setRoomType(type);
+                    setDropOpen(false);
+                  }}
+                >
+                  {roomType === type && (
+                    <span className="search-drop-check">✓</span>
+                  )}
+                  {type}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <button
+          className="home-search-button"
+          onClick={handleSearch}
+          disabled={loading}
+          style={{ opacity: loading ? 0.7 : 1 }}
+        >
+          {loading ? "Đang tìm..." : t("search.button")}
         </button>
       </div>
+
       {error && <p className="error-message">{error}</p>}
     </section>
   );

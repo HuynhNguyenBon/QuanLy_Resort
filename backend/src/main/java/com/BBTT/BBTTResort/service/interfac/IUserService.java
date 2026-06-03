@@ -5,6 +5,7 @@ import com.BBTT.BBTTResort.dto.Response;
 import com.BBTT.BBTTResort.entity.User;
 
 public interface IUserService {
+
     Response register(User user);
 
     Response login(LoginRequest loginRequest);
@@ -19,4 +20,9 @@ public interface IUserService {
 
     Response getMyInfo(String email);
 
+    Response forgotPassword(String email);
+
+    Response resetPassword(String email, String otp, String newPassword);
+
+    Response updateMyProfile(String userId, String email, String name, String phoneNumber);
 }
