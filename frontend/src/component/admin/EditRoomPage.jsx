@@ -35,10 +35,11 @@ const Toast = ({ type, message, onClose }) => {
         .phong-toast__title { font-weight:600; font-size:14px; margin-bottom:2px; }
         .phong-toast__msg   { font-size:13px; opacity:0.85; }
         .phong-toast__close {
-          background:none; border:none; cursor:pointer;
-          font-size:16px; opacity:0.5; padding:0; color:inherit; flex-shrink:0;
+          background:none !important; border:none !important; cursor:pointer;
+          font-size:16px; opacity:0.5; padding:4px 6px; color:inherit; flex-shrink:0;
+          border-radius:4px; transition:opacity 0.15s;
         }
-        .phong-toast__close:hover { opacity:1; }
+        .phong-toast__close:hover { opacity:1 !important; background:rgba(0,0,0,0.08) !important; }
         .phong-toast__bar {
           position:absolute; bottom:0; left:0; height:3px; border-radius:0 0 12px 12px;
         }
@@ -60,7 +61,7 @@ const Toast = ({ type, message, onClose }) => {
 
 /* ─── EditRoomPage ─────────────────────────────────────────────────────── */
 const EditRoomPage = () => {
-  const { t } = useTranslation("admin");
+  const { t } = useTranslation("adminPanel");
   const { roomId } = useParams();
   const navigate = useNavigate();
 
@@ -76,6 +77,7 @@ const EditRoomPage = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [toastTimer, setToastTimer] = useState(null);
+
 
   const showToast = (type, message, duration) => {
     if (toastTimer) clearTimeout(toastTimer);
@@ -102,9 +104,9 @@ const EditRoomPage = () => {
     return err.message || "Đã xảy ra lỗi không xác định.";
   };
 
-  /* fetch room details on mount */
+  /* fetch room details + existing translations on mount */
   useEffect(() => {
-    const fetchRoomDetails = async () => {
+    const fetchAll = async () => {
       try {
         const response = await ApiService.getRoomById(roomId);
         setRoomDetails({
@@ -117,7 +119,7 @@ const EditRoomPage = () => {
         showToast("error", parseError(err));
       }
     };
-    fetchRoomDetails();
+    fetchAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
@@ -130,11 +132,11 @@ const EditRoomPage = () => {
     const selected = e.target.files[0];
     if (!selected) { setFile(null); setPreview(null); return; }
     if (!selected.type.startsWith("image/")) {
-      showToast("error", "Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, ...).");
+      showToast("error", t("addRoom.imageInvalid"));
       return;
     }
     if (selected.size > 5 * 1024 * 1024) {
-      showToast("error", "Kích thước ảnh không được vượt quá 5MB.");
+      showToast("error", t("addRoom.imageSize"));
       return;
     }
     setFile(selected);
@@ -144,20 +146,20 @@ const EditRoomPage = () => {
   /* client-side validation */
   const validate = () => {
     if (!roomDetails.roomType.trim()) {
-      showToast("error", "Loại phòng không được để trống.");
+      showToast("error", t("editRoom.typeLabel") + " không được để trống.");
       return false;
     }
     const price = Number(roomDetails.roomPrice);
     if (!roomDetails.roomPrice || isNaN(price) || price <= 0) {
-      showToast("error", "Giá phòng phải là số dương hợp lệ.");
+      showToast("error", t("addRoom.priceInvalid"));
       return false;
     }
     if (price < 20) {
-      showToast("error", "Giá phòng tối thiểu là 20$. Vui lòng nhập lại.");
+      showToast("error", t("addRoom.priceMin"));
       return false;
     }
     if (!roomDetails.roomDescription.trim()) {
-      showToast("error", "Mô tả phòng không được để trống.");
+      showToast("error", t("editRoom.descLabel") + " không được để trống.");
       return false;
     }
     return true;
@@ -176,7 +178,7 @@ const EditRoomPage = () => {
       const result = await ApiService.updateRoom(roomId, formData);
 
       if (result.statusCode === 200) {
-        showToast("success", t("editRoomPage.updateSuccess"), 3000);
+        showToast("success", t("editRoom.updateSuccess"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
         showToast("error", `Cập nhật thất bại (mã: ${result.statusCode}).`);
@@ -189,12 +191,12 @@ const EditRoomPage = () => {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(t("editRoomPage.deleteConfirm"))) return;
+    if (!window.confirm(t("editRoom.deleteConfirm"))) return;
     setLoading(true);
     try {
       const result = await ApiService.deleteRoom(roomId);
       if (result.statusCode === 200) {
-        showToast("success", t("editRoomPage.deleteSuccess"), 3000);
+        showToast("success", t("editRoom.deleteSuccess"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
         showToast("error", `Xóa thất bại (mã: ${result.statusCode}).`);
@@ -232,11 +234,11 @@ const EditRoomPage = () => {
             transition: "all 0.15s" }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = "#0d9488"; e.currentTarget.style.color = "#0d9488"; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.color = "#555"; }}>
-          ← Quay lại
+          ← {t("editRoom.back")}
         </button>
         <div>
           <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "#1a1a2e" }}>
-            Chỉnh sửa phòng <span style={{ color: "#0d9488" }}>#{roomId}</span>
+            {t("editRoom.title")} <span style={{ color: "#0d9488" }}>#{roomId}</span>
           </h2>
         </div>
       </div>
@@ -254,7 +256,7 @@ const EditRoomPage = () => {
               {roomDetails.roomType || "Đang tải..."} — Phòng #{roomId}
             </div>
             <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}>
-              Cập nhật thông tin và ảnh phòng
+              {t("editRoom.subtitle")}
             </div>
           </div>
         </div>
@@ -292,7 +294,7 @@ const EditRoomPage = () => {
                 width: "100%", textAlign: "center" }}
               onMouseEnter={e => { if (!loading) e.currentTarget.style.background = "#ccfbf1"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "#f0fdfa"; }}>
-              {file ? `✓ ${file.name.length > 20 ? file.name.slice(0, 18) + "…" : file.name}` : "📁  Chọn ảnh mới"}
+              {file ? `✓ ${file.name.length > 20 ? file.name.slice(0, 18) + "…" : file.name}` : `📁  ${t("editRoom.newImage")}`}
             </button>
 
             {file && (
@@ -300,12 +302,12 @@ const EditRoomPage = () => {
                 style={{ padding: "7px 0", borderRadius: 8, border: "1px solid #fecaca",
                   background: "#fff5f5", color: "#e74c3c", cursor: "pointer",
                   fontSize: "0.8rem", fontWeight: 600, width: "100%" }}>
-                ✕  Bỏ ảnh mới
+                ✕  {t("editRoom.removeImage")}
               </button>
             )}
 
             <p style={{ margin: 0, color: "#b0b7c3", fontSize: "0.75rem", textAlign: "center" }}>
-              JPG · PNG · tối đa 5 MB
+              {t("editRoom.imageHint")}
             </p>
           </div>
 
@@ -315,7 +317,7 @@ const EditRoomPage = () => {
             {/* Row 1: loại phòng + giá */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <div>
-                <label style={labelStyle}>Loại phòng</label>
+                <label style={labelStyle}>{t("editRoom.typeLabel")}</label>
                 <input type="text" name="roomType" value={roomDetails.roomType}
                   onChange={handleChange} disabled={loading}
                   placeholder="VD: Deluxe, Suite, King..."
@@ -324,7 +326,7 @@ const EditRoomPage = () => {
                   onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
               </div>
               <div>
-                <label style={labelStyle}>Giá / đêm</label>
+                <label style={labelStyle}>{t("editRoom.priceLabel")}</label>
                 <div style={{ position: "relative" }}>
                   <span style={{ position: "absolute", left: 13, top: "50%",
                     transform: "translateY(-50%)", color: "#0d9488", fontWeight: 700, fontSize: "0.88rem" }}>$</span>
@@ -339,7 +341,7 @@ const EditRoomPage = () => {
 
             {/* Mô tả */}
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>Mô tả phòng</label>
+              <label style={labelStyle}>{t("editRoom.descLabel")}</label>
               <textarea name="roomDescription" value={roomDetails.roomDescription}
                 onChange={handleChange} disabled={loading} rows={7}
                 placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
@@ -349,6 +351,9 @@ const EditRoomPage = () => {
             </div>
 
             {/* Divider */}
+            <div style={{ borderTop: "1px solid #f0f2f5" }} />
+
+            {/* Divider before main buttons */}
             <div style={{ borderTop: "1px solid #f0f2f5" }} />
 
             {/* Buttons */}
@@ -361,7 +366,7 @@ const EditRoomPage = () => {
                   boxShadow: "0 2px 8px rgba(13,148,136,0.3)" }}
                 onMouseEnter={e => { if (!loading) e.currentTarget.style.background = "#0a7c73"; }}
                 onMouseLeave={e => { if (!loading) e.currentTarget.style.background = "#0d9488"; }}>
-                {loading ? "Đang xử lý..." : "✓  Cập nhật phòng"}
+                {loading ? t("editRoom.updating") : `✓  ${t("editRoom.updateBtn")}`}
               </button>
               <button onClick={handleDelete} disabled={loading}
                 style={{ padding: "12px 22px", borderRadius: 10,
@@ -370,7 +375,7 @@ const EditRoomPage = () => {
                   cursor: loading ? "not-allowed" : "pointer", transition: "all 0.15s" }}
                 onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = "#e74c3c"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "#e74c3c"; }}}
                 onMouseLeave={e => { e.currentTarget.style.background = "#fff5f5"; e.currentTarget.style.color = "#e74c3c"; e.currentTarget.style.borderColor = "#fca5a5"; }}>
-                🗑  Xoá phòng
+                🗑  {t("editRoom.deleteBtn")}
               </button>
             </div>
 
