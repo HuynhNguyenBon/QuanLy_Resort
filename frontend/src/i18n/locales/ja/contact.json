@@ -1,0 +1,53 @@
+{
+  "heroTag": "📞 お問い合わせ",
+  "heroTitle1": "私たちはいつでも",
+  "heroAccent": "準備ができています",
+  "heroTitle2": "",
+  "heroSub": "BBHHリゾートのチームは24時間365日対応しております",
+  "infoItems": [
+    {
+      "icon": "📍",
+      "label": "住所",
+      "value": "123 ブルーシーロード、7区",
+      "sub": "ホーチミン市、ベトナム"
+    },
+    {
+      "icon": "📞",
+      "label": "電話",
+      "value": "+84 (028) 1234 5678",
+      "sub": "ホットライン24/7: 1800 6868"
+    },
+    {
+      "icon": "📧",
+      "label": "メール",
+      "value": "info@bbhhresort.com",
+      "sub": "booking@bbhhresort.com"
+    },
+    {
+      "icon": "🕐",
+      "label": "営業時間",
+      "value": "フロント: 24時間",
+      "sub": "オフィス: 8:00 – 17:00"
+    }
+  ],
+  "formTitle": "メッセージを送る",
+  "successMsg": "ありがとうございます！24時間以内にご返信いたします。",
+  "nameLabel": "お名前",
+  "namePlaceholder": "山田 太郎",
+  "emailLabel": "メール",
+  "phoneLabel": "電話番号",
+  "phonePlaceholder": "090-1234-5678",
+  "subjectLabel": "件名",
+  "subjectPlaceholder": "件名を選択...",
+  "subjects": [
+    "予約について",
+    "サービスについて",
+    "キャンペーン・特典",
+    "クレーム",
+    "その他"
+  ],
+  "messageLabel": "メッセージ内容",
+  "messagePlaceholder": "メッセージを入力してください...",
+  "submitBtn": "送信する",
+  "required": "*"
+}

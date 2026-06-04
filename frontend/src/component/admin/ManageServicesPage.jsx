@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
-import { STATIC_SERVICES, EMOJI_MAP, mergeServices } from "../../data/staticServices";
+import { STATIC_SERVICES, EMOJI_MAP, mergeServices, getServiceTranslation } from "../../data/staticServices";
 
 const EMPTY = { name: "", description: "", price: "", icon: "" };
 const HIDDEN_KEY = "bbhh_hidden_static_services";
@@ -9,6 +10,10 @@ const getHidden = () => { try { return JSON.parse(localStorage.getItem(HIDDEN_KE
 const addHidden = (name) => { const h = getHidden(); if (!h.includes(name)) { h.push(name); localStorage.setItem(HIDDEN_KEY, JSON.stringify(h)); } };
 
 const ManageServicesPage = () => {
+  const { t, i18n } = useTranslation("adminPanel");
+  const lang = i18n.language.split("-")[0];
+  const getSvcName = (s) => getServiceTranslation(s.name, lang)?.name || s.name;
+  const getSvcDesc = (s) => getServiceTranslation(s.name, lang)?.description || s.description;
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
@@ -118,11 +123,11 @@ const ManageServicesPage = () => {
           </div>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontWeight: 700, color: "#1a1a2e", fontSize: "0.93rem" }}>{s.name}</span>
+              <span style={{ fontWeight: 700, color: "#1a1a2e", fontSize: "0.93rem" }}>{getSvcName(s)}</span>
             </div>
             <div style={{ fontWeight: 700, fontSize: "0.85rem",
               color: Number(s.price) > 0 ? "#0d9488" : "#94a3b8" }}>
-              {Number(s.price) > 0 ? `$${s.price}` : "Miễn phí"}
+              {Number(s.price) > 0 ? `$${s.price}` : t("services.free")}
             </div>
           </div>
         </div>
@@ -146,9 +151,9 @@ const ManageServicesPage = () => {
           </button>
         </div>
       </div>
-      {s.description && (
+      {(getSvcDesc(s)) && (
         <p style={{ margin: "12px 0 0", color: "#666", fontSize: "0.83rem", lineHeight: 1.5 }}>
-          {s.description.length > 100 ? s.description.slice(0, 100) + "..." : s.description}
+          {getSvcDesc(s).length > 100 ? getSvcDesc(s).slice(0, 100) + "..." : getSvcDesc(s)}
         </p>
       )}
     </div>
@@ -168,14 +173,14 @@ const ManageServicesPage = () => {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
           <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: 700, color: "#1a1a2e", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>🛎️</span> Dịch vụ
+            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>🛎️</span> {t("services.title")}
           </h2>
-          <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>{services.length} dịch vụ trong hệ thống</p>
+          <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>{services.length} {t("services.subtitle")}</p>
         </div>
         <button onClick={openAdd}
           className="adm-quick-btn"
           style={{ borderLeftColor: "#0d9488", flex: "none", fontWeight: 700 }}>
-          ➕ Thêm dịch vụ
+          ➕ {t("services.addBtn")}
         </button>
       </div>
 
@@ -190,10 +195,10 @@ const ManageServicesPage = () => {
 
       {/* Grid of services */}
       {loading ? (
-        <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>Đang tải...</div>
+        <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>{t("revenue.loading")}</div>
       ) : services.length === 0 ? (
         <div className="adm-section" style={{ padding: 60, textAlign: "center", color: "#aaa" }}>
-          Chưa có dịch vụ nào. Nhấn "Thêm dịch vụ" để bắt đầu.
+          {t("services.noServices")}
         </div>
       ) : (
         <>
@@ -202,11 +207,11 @@ const ManageServicesPage = () => {
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                 <span style={{ fontWeight: 700, fontSize: "0.88rem", color: "#1a1a2e" }}>
-                  Dịch vụ tính phí
+                  {t("services.paidSection")}
                 </span>
                 <span style={{ background: "#f0fdf4", color: "#15803d", fontSize: "0.75rem",
                   fontWeight: 600, padding: "3px 10px", borderRadius: 20, border: "1px solid #bbf7d0" }}>
-                  Hiển thị với khách hàng
+                  {t("services.paidBadge")}
                 </span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 24 }}>
@@ -232,7 +237,7 @@ const ManageServicesPage = () => {
               padding: "18px 24px", borderRadius: "16px 16px 0 0",
               display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
-                {modal.mode === "add" ? "➕ Thêm dịch vụ mới" : "✎ Chỉnh sửa dịch vụ"}
+                {modal.mode === "add" ? `➕ ${t("services.addModal.addTitle")}` : `✎ ${t("services.addModal.editTitle")}`}
               </span>
               <button onClick={closeModal}
                 style={{ background: "rgba(255,255,255,0.25)", border: "none", color: "#fff",
@@ -246,7 +251,7 @@ const ManageServicesPage = () => {
             {/* Modal body */}
             <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
               <div>
-                <label style={labelStyle}>Tên dịch vụ *</label>
+                <label style={labelStyle}>{t("services.addModal.nameLabel")} *</label>
                 <input value={modal.data.name}
                   onChange={e => setModal(m => ({ ...m, data: { ...m.data, name: e.target.value } }))}
                   placeholder="VD: Spa & Massage, Airport Transfer..."
@@ -257,7 +262,7 @@ const ManageServicesPage = () => {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <div>
-                  <label style={labelStyle}>Icon (emoji)</label>
+                  <label style={labelStyle}>{t("services.addModal.iconLabel")}</label>
                   <input value={modal.data.icon || ""}
                     onChange={e => setModal(m => ({ ...m, data: { ...m.data, icon: e.target.value } }))}
                     placeholder="🛎️"
@@ -266,7 +271,7 @@ const ManageServicesPage = () => {
                     onBlur={e => e.target.style.borderColor = "#e8ecef"} />
                 </div>
                 <div>
-                  <label style={labelStyle}>Giá ($) — tuỳ chọn</label>
+                  <label style={labelStyle}>{t("services.addModal.priceLabel")}</label>
                   <input type="number" min="0" value={modal.data.price || ""}
                     onChange={e => setModal(m => ({ ...m, data: { ...m.data, price: e.target.value } }))}
                     placeholder="0"
@@ -277,7 +282,7 @@ const ManageServicesPage = () => {
               </div>
 
               <div>
-                <label style={labelStyle}>Mô tả *</label>
+                <label style={labelStyle}>{t("services.addModal.descLabel")} *</label>
                 <textarea rows={4} value={modal.data.description}
                   onChange={e => setModal(m => ({ ...m, data: { ...m.data, description: e.target.value } }))}
                   placeholder="Mô tả chi tiết về dịch vụ..."
@@ -303,7 +308,7 @@ const ManageServicesPage = () => {
                     transition: "background 0.15s" }}
                   onMouseEnter={e => { if (!saving) e.currentTarget.style.background = "#0a7c73"; }}
                   onMouseLeave={e => { if (!saving) e.currentTarget.style.background = "#0d9488"; }}>
-                  {saving ? "Đang lưu..." : (modal.mode === "add" ? "✓ Thêm dịch vụ" : "✓ Lưu thay đổi")}
+                  {saving ? t("services.addModal.saving") : `✓ ${modal.mode === "add" ? t("services.addModal.saveBtn") : t("services.addModal.updateBtn")}`}
                 </button>
                 <button onClick={closeModal} disabled={saving}
                   style={{ padding: "11px 20px", borderRadius: 10, border: "1.5px solid #e2e8f0",

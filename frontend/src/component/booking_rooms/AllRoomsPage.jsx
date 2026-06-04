@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
+import { getRoomTranslation } from "../../data/roomTranslations";
 import "react-datepicker/dist/react-datepicker.css";
 import ApiService from "../../service/ApiService";
 import Pagination from "../common/Pagination";
@@ -117,11 +118,19 @@ const AllRoomsPage = () => {
   }, [allRooms, i18n.language]);
 
   // ─── Helper: lấy tên & mô tả phòng theo ngôn ngữ hiện tại ──────────────────
+  const lang = i18n.language.split("-")[0];
+
   const getRoomType = (room) =>
-    translations[room.id]?.roomType || room.roomType || "";
+    translations[room.id]?.roomType ||
+    getRoomTranslation(room.roomType, lang)?.roomType ||
+    room.roomType ||
+    "";
 
   const getRoomDescription = (room) =>
-    translations[room.id]?.roomDescription || room.roomDescription || "";
+    translations[room.id]?.roomDescription ||
+    getRoomTranslation(room.roomType, lang)?.roomDescription ||
+    room.roomDescription ||
+    "";
 
   const formatPrice = (price) => {
     if (!price) return "0";
@@ -301,10 +310,7 @@ const AllRoomsPage = () => {
                 className={`ar-pill${selectedType === type ? " active" : ""}`}
                 onClick={() => filterByType(type)}
               >
-                {/* Dùng bản dịch roomType từ translations nếu có */}
-                {Object.values(translations).find(
-                  (tr) => tr.roomType && tr._origType === type,
-                )?.roomType || type}
+                {getRoomTranslation(type, lang)?.roomType || type}
               </button>
             ))}
           </div>

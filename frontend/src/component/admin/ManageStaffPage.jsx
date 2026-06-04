@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 
 const STAFF_KEY      = "bbhh_staff_list";
@@ -17,6 +18,7 @@ const COLORS = ["#6366f1","#0d9488","#f59e0b","#e74c3c","#8b5cf6","#06b6d4","#ec
 const colorFor = (name) => COLORS[(name?.charCodeAt(0) || 0) % COLORS.length];
 
 const ManageStaffPage = () => {
+  const { t } = useTranslation("adminPanel");
   const [staff, setStaff]               = useState([]);
   const [modal, setModal]               = useState(null);
   const [saving, setSaving]             = useState(false);
@@ -70,15 +72,15 @@ const ManageStaffPage = () => {
 
   const handleSave = () => {
     const { name, role, phone } = modal.data;
-    if (!name.trim()) { setModalErr("Tên nhân viên không được để trống."); return; }
-    if (!role)        { setModalErr("Vui lòng chọn chức vụ."); return; }
-    if (!phone.trim()){ setModalErr("Số điện thoại không được để trống."); return; }
+    if (!name.trim()) { setModalErr(`${t("staff.addModal.nameLabel")} không được để trống.`); return; }
+    if (!role)        { setModalErr(`${t("staff.addModal.roleLabel")} không được để trống.`); return; }
+    if (!phone.trim()){ setModalErr(`${t("staff.addModal.phoneLabel")} không được để trống.`); return; }
     setSaving(true);
     const list = getStaff();
     if (modal.mode === "add") {
       const next = [...list, { ...modal.data, id: Date.now(), name: name.trim(), phone: phone.trim() }];
       saveStaff(next);
-      showMsg("Đã thêm nhân viên.");
+      showMsg(t("staff.deleteSuccess"));
     } else if (modal.data._fromApi) {
       // Lưu metadata cho nhân viên từ API
       const meta = getMeta();
@@ -89,12 +91,12 @@ const ManageStaffPage = () => {
         note: modal.data.note || "",
       };
       saveMeta(meta);
-      showMsg("Đã cập nhật thông tin nhân viên.");
+      showMsg(t("staff.deleteSuccess"));
     } else {
       // Nhân viên thủ công — update localStorage
       const next = list.map(s => s.id === modal.data.id ? { ...modal.data, name: name.trim() } : s);
       saveStaff(next);
-      showMsg("Đã cập nhật nhân viên.");
+      showMsg(t("staff.deleteSuccess"));
     }
     setSaving(false);
     closeModal();
@@ -102,7 +104,7 @@ const ManageStaffPage = () => {
   };
 
   const handleDelete = (id) => {
-    if (!window.confirm("Xác nhận xoá nhân viên này?")) return;
+    if (!window.confirm(t("staff.confirmDelete"))) return;
     // Chỉ xoá khỏi localStorage, không xoá tài khoản backend
     const next = getStaff().filter(s => s.id !== id);
     saveStaff(next);
@@ -155,12 +157,12 @@ const ManageStaffPage = () => {
         <div>
           <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: 700, color: "#1a1a2e",
             display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>👨‍💼</span> Nhân viên
+            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>👨‍💼</span> {t("staff.title")}
           </h2>
-          <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>{staff.length} nhân viên trong hệ thống</p>
+          <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>{staff.length} {t("staff.subtitle")}</p>
         </div>
         <button onClick={openAdd} className="adm-quick-btn" style={{ borderLeftColor: "#0d9488", flex: "none", fontWeight: 700 }}>
-          ➕ Thêm nhân viên
+          ➕ {t("staff.addBtn")}
         </button>
       </div>
 
@@ -177,7 +179,7 @@ const ManageStaffPage = () => {
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
           <div style={{ position: "relative", minWidth: 240 }}>
             <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aab4be", pointerEvents: "none" }}>🔍</span>
-            <input placeholder="Tìm tên, SĐT, email..." value={search}
+            <input placeholder={t("staff.searchPlaceholder")} value={search}
               onChange={e => setSearch(e.target.value)}
               style={{ width: "100%", padding: "9px 14px 9px 36px", borderRadius: 10, border: "1.5px solid #e2e8f0",
                 fontSize: "0.875rem", outline: "none", background: "#f8fafc", boxSizing: "border-box" }}
@@ -188,12 +190,12 @@ const ManageStaffPage = () => {
             style={{ padding: "9px 14px", borderRadius: 10, border: `1.5px solid ${roleFilter ? "#0d9488" : "#e2e8f0"}`,
               fontSize: "0.875rem", background: roleFilter ? "#f0fdfa" : "#f8fafc",
               color: roleFilter ? "#0d9488" : "#374151", outline: "none", cursor: "pointer" }}>
-            <option value="">Tất cả chức vụ</option>
+            <option value="">{t("staff.allRoles")}</option>
             {ROLES.map(r => <option key={r} value={r}>{r} ({roleCounts[r] || 0})</option>)}
           </select>
           <span style={{ marginLeft: "auto", background: "#f0fdf4", color: "#0d9488",
             fontSize: "0.8rem", fontWeight: 600, padding: "6px 12px", borderRadius: 20, border: "1px solid #bbf7d0" }}>
-            {filtered.length} nhân viên
+            {filtered.length} {t("staff.results")}
           </span>
         </div>
       </div>
@@ -203,7 +205,7 @@ const ManageStaffPage = () => {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.875rem" }}>
           <thead>
             <tr style={{ background: "#f7f9fc", borderBottom: "2px solid #e8ecef" }}>
-              {["Nhân viên", "Chức vụ", "Số điện thoại", "Email", "Ngày vào làm", "Thao tác"].map(h => (
+              {[t("staff.cols.staff"), t("staff.cols.role"), t("staff.cols.phone"), t("staff.cols.email"), t("staff.cols.startDate"), t("staff.cols.actions")].map(h => (
                 <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontWeight: 700,
                   color: "#6b7280", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   {h}
@@ -215,7 +217,7 @@ const ManageStaffPage = () => {
             {filtered.length === 0 ? (
               <tr><td colSpan={6} style={{ padding: 60, textAlign: "center", color: "#aaa" }}>
                 <div style={{ fontSize: "2rem", marginBottom: 8 }}>👥</div>
-                {staff.length === 0 ? "Chưa có nhân viên nào. Nhấn \"Thêm nhân viên\" để bắt đầu." : "Không tìm thấy nhân viên phù hợp."}
+                {staff.length === 0 ? t("staff.noStaff") : t("staff.noStaff")}
               </td></tr>
             ) : filtered.map((s, idx) => (
               <tr key={s.id}
@@ -250,7 +252,7 @@ const ManageStaffPage = () => {
                         background: "transparent", color: "#0d9488", cursor: "pointer", fontSize: "0.8rem", fontWeight: 600 }}
                       onMouseEnter={e => { e.target.style.background = "#0d9488"; e.target.style.color = "#fff"; }}
                       onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = "#0d9488"; }}>
-                      ✎ Sửa
+                      ✎ {t("staff.edit")}
                     </button>
                     {s.hasAccount ? (
                       <span style={{ padding: "5px 12px", borderRadius: 7, fontSize: "0.8rem", fontWeight: 600,
@@ -291,7 +293,7 @@ const ManageStaffPage = () => {
             <div style={{ background: "linear-gradient(135deg, #0d9488, #0f766e)", padding: "18px 24px",
               borderRadius: "16px 16px 0 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
-                {modal.mode === "add" ? "➕ Thêm nhân viên" : "✎ Chỉnh sửa nhân viên"}
+                {modal.mode === "add" ? `➕ ${t("staff.addModal.title")}` : `✎ ${t("staff.addModal.editTitle")}`}
               </span>
               <button onClick={closeModal} style={{ background: "rgba(255,255,255,0.25)", border: "none",
                 color: "#fff", width: 30, height: 30, borderRadius: "50%", cursor: "pointer", fontSize: "0.9rem",
@@ -300,13 +302,13 @@ const ManageStaffPage = () => {
             <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 <div>
-                  <label style={labelStyle}>Họ và tên *</label>
+                  <label style={labelStyle}>{t("staff.addModal.nameLabel")} *</label>
                   <input value={modal.data.name} onChange={e => setModal(m => ({ ...m, data: { ...m.data, name: e.target.value } }))}
                     placeholder="Nguyễn Văn A" style={fieldStyle}
                     onFocus={e => e.target.style.borderColor = "#0d9488"} onBlur={e => e.target.style.borderColor = "#e8ecef"} />
                 </div>
                 <div>
-                  <label style={labelStyle}>Chức vụ *</label>
+                  <label style={labelStyle}>{t("staff.addModal.roleLabel")} *</label>
                   <select value={modal.data.role} onChange={e => setModal(m => ({ ...m, data: { ...m.data, role: e.target.value } }))}
                     style={{ ...fieldStyle, cursor: "pointer" }}>
                     <option value="">— Chọn chức vụ —</option>
@@ -316,7 +318,7 @@ const ManageStaffPage = () => {
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 <div>
-                  <label style={labelStyle}>Số điện thoại *</label>
+                  <label style={labelStyle}>{t("staff.addModal.phoneLabel")} *</label>
                   <input value={modal.data.phone} onChange={e => setModal(m => ({ ...m, data: { ...m.data, phone: e.target.value } }))}
                     placeholder="0901234567" style={fieldStyle}
                     onFocus={e => e.target.style.borderColor = "#0d9488"} onBlur={e => e.target.style.borderColor = "#e8ecef"} />
@@ -329,13 +331,13 @@ const ManageStaffPage = () => {
                 </div>
               </div>
               <div>
-                <label style={labelStyle}>Ngày vào làm</label>
+                <label style={labelStyle}>{t("staff.addModal.startDateLabel")}</label>
                 <input type="date" value={modal.data.startDate} onChange={e => setModal(m => ({ ...m, data: { ...m.data, startDate: e.target.value } }))}
                   style={fieldStyle}
                   onFocus={e => e.target.style.borderColor = "#0d9488"} onBlur={e => e.target.style.borderColor = "#e8ecef"} />
               </div>
               <div>
-                <label style={labelStyle}>Ghi chú</label>
+                <label style={labelStyle}>{t("staff.addModal.noteLabel")}</label>
                 <input value={modal.data.note} onChange={e => setModal(m => ({ ...m, data: { ...m.data, note: e.target.value } }))}
                   placeholder="Ca làm việc, khu vực phụ trách..." style={fieldStyle}
                   onFocus={e => e.target.style.borderColor = "#0d9488"} onBlur={e => e.target.style.borderColor = "#e8ecef"} />
@@ -350,11 +352,11 @@ const ManageStaffPage = () => {
                 <button onClick={handleSave} disabled={saving}
                   style={{ flex: 1, padding: "11px 0", borderRadius: 10, border: "none",
                     background: "#0d9488", color: "#fff", fontWeight: 700, fontSize: "0.92rem", cursor: "pointer" }}>
-                  {modal.mode === "add" ? "✓ Thêm nhân viên" : "✓ Lưu thay đổi"}
+                  {modal.mode === "add" ? `✓ ${t("staff.addModal.saveBtn")}` : `✓ ${t("staff.addModal.updateBtn")}`}
                 </button>
                 <button onClick={closeModal} style={{ padding: "11px 20px", borderRadius: 10,
                   border: "1.5px solid #e2e8f0", background: "#fff", color: "#666", cursor: "pointer", fontWeight: 600 }}>
-                  Huỷ
+                  {t("staff.addModal.cancelBtn")}
                 </button>
               </div>
             </div>
@@ -418,12 +420,12 @@ const ManageStaffPage = () => {
                   style={{ flex: 1, padding: "11px 0", borderRadius: 10, border: "none",
                     background: accountSaving ? "#a5b4fc" : "#6366f1", color: "#fff",
                     fontWeight: 700, fontSize: "0.92rem", cursor: accountSaving ? "not-allowed" : "pointer" }}>
-                  {accountSaving ? "Đang tạo..." : "🔑 Tạo tài khoản"}
+                  {accountSaving ? "..." : "🔑 " + t("staff.addModal.saveBtn")}
                 </button>
                 <button onClick={() => setAccountModal(null)}
                   style={{ padding: "11px 20px", borderRadius: 10, border: "1.5px solid #e2e8f0",
                     background: "#fff", color: "#666", cursor: "pointer", fontWeight: 600 }}>
-                  Huỷ
+                  {t("staff.addModal.cancelBtn")}
                 </button>
               </div>
             </div>

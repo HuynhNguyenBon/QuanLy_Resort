@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../../UiverseElements.css";
 
 const today = () => new Date().toISOString().split("T")[0];
@@ -10,80 +11,13 @@ const addDays = (days) => {
   return d.toISOString().split("T")[0];
 };
 
-const PROMOS = [
-  {
-    id: "early_bird",
-    badge: "HOT", icon: "🌙", discount: "20%",
-    title: "Đặt sớm 20% OFF",
-    desc: "Đặt phòng trước 30 ngày để nhận ngay ưu đãi 20% cho mọi loại phòng. Áp dụng toàn bộ mùa.",
-    conditions: ["Đặt trước ít nhất 30 ngày", "Không hoàn tiền khi hủy", "Áp dụng tất cả loại phòng"],
-    preferredType: null,
-    minDaysAdvance: 30,
-    minNights: 1,
-    path: "/rooms",
-    hint: "Ngày nhận phòng phải cách hôm nay ít nhất 30 ngày.",
-  },
-  {
-    id: "family",
-    badge: "NEW", icon: "👨‍👩‍👧", discount: "15%",
-    title: "Gói gia đình 15% OFF",
-    desc: "Kỳ nghỉ lý tưởng cho cả gia đình! Giảm 15% khi đặt phòng Family hoặc Suite cho 4 người trở lên.",
-    conditions: ["Tối thiểu 4 khách", "Phòng Family hoặc Suite", "Có thể hủy trước 48h"],
-    preferredType: "Family",
-    minDaysAdvance: 0,
-    minNights: 1,
-    path: "/rooms?type=Family",
-    hint: "Ưu đãi áp dụng cho phòng Family. Trang phòng sẽ lọc sẵn loại phòng phù hợp.",
-  },
-  {
-    id: "spa",
-    badge: "DEAL", icon: "💆", discount: "FREE",
-    title: "Spa miễn phí",
-    desc: "Tặng 1 lần spa trị giá $50 khi đặt phòng Deluxe trở lên. Trải nghiệm thư giãn hoàn toàn miễn phí.",
-    conditions: ["Phòng Deluxe, Suite hoặc Family", "1 lần spa / phòng", "Đặt lịch spa trước 24h"],
-    preferredType: "Precidential",
-    minDaysAdvance: 0,
-    minNights: 1,
-    path: "/rooms",
-    hint: "Chọn phòng Deluxe trở lên để nhận ưu đãi spa miễn phí.",
-  },
-  {
-    id: "weekend",
-    badge: "NEW", icon: "🌊", discount: "10%",
-    title: "Gói cuối tuần",
-    desc: "Check-in thứ 6, check-out chủ nhật — nhận ngay 10% OFF và bữa sáng buffet miễn phí cho 2 người.",
-    conditions: ["Nhận phòng đúng thứ 6", "Trả phòng đúng chủ nhật", "Đặt trước 7 ngày"],
-    preferredType: null,
-    minDaysAdvance: 7,
-    minNights: 2,
-    weekendOnly: true,
-    path: "/rooms",
-    hint: "Ngày nhận phòng phải là thứ 6, trả phòng chủ nhật.",
-  },
-  {
-    id: "honeymoon",
-    badge: "HOT", icon: "💑", discount: "25%",
-    title: "Gói tuần trăng mật",
-    desc: "Ưu đãi đặc biệt cho cặp đôi: 25% OFF + trang trí phòng + champagne + bữa tối lãng mạn.",
-    conditions: ["Phòng Suite hoặc Deluxe", "Tối thiểu 2 đêm", "Xuất trình giấy đăng ký kết hôn"],
-    preferredType: "Suit",
-    minDaysAdvance: 0,
-    minNights: 2,
-    path: "/rooms?type=Suit",
-    hint: "Tối thiểu 2 đêm. Trang phòng sẽ lọc sẵn phòng Suite.",
-  },
-  {
-    id: "gym",
-    badge: "DEAL", icon: "🏋️", discount: "FREE",
-    title: "Gym & Yoga miễn phí",
-    desc: "Truy cập không giới hạn phòng tập Gym và lớp Yoga khi lưu trú từ 3 đêm trở lên.",
-    conditions: ["Lưu trú tối thiểu 3 đêm", "Mọi loại phòng", "Đăng ký tại quầy lễ tân"],
-    preferredType: null,
-    minDaysAdvance: 0,
-    minNights: 3,
-    path: "/rooms",
-    hint: "Tối thiểu 3 đêm lưu trú để được sử dụng Gym & Yoga miễn phí.",
-  },
+const PROMO_META = [
+  { id: "early_bird", badge: "HOT", icon: "🌙", discount: "20%", preferredType: null,        minDaysAdvance: 30, minNights: 1, path: "/rooms" },
+  { id: "family",     badge: "NEW", icon: "👨‍👩‍👧", discount: "15%", preferredType: "Family",    minDaysAdvance: 0,  minNights: 1, path: "/rooms?type=Family" },
+  { id: "spa",        badge: "DEAL",icon: "💆", discount: "FREE",preferredType: "Precidential",minDaysAdvance: 0,  minNights: 1, path: "/rooms" },
+  { id: "weekend",    badge: "NEW", icon: "🌊", discount: "10%", preferredType: null,        minDaysAdvance: 7,  minNights: 2, path: "/rooms", weekendOnly: true },
+  { id: "honeymoon",  badge: "HOT", icon: "💑", discount: "25%", preferredType: "Suit",      minDaysAdvance: 0,  minNights: 2, path: "/rooms?type=Suit" },
+  { id: "gym",        badge: "DEAL",icon: "🏋️", discount: "FREE",preferredType: null,        minDaysAdvance: 0,  minNights: 3, path: "/rooms" },
 ];
 
 const BADGE_COLORS = {
@@ -99,8 +33,7 @@ const getNights = (ci, co) => {
 
 const getNextFriday = () => {
   const d = new Date();
-  const day = d.getDay();
-  const daysUntilFriday = (5 - day + 7) % 7 || 7;
+  const daysUntilFriday = (5 - d.getDay() + 7) % 7 || 7;
   d.setDate(d.getDate() + daysUntilFriday);
   return d.toISOString().split("T")[0];
 };
@@ -114,10 +47,20 @@ const getSundayAfter = (fridayStr) => {
 
 const PromoPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation("promo");
   const [modal, setModal] = useState(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [error, setError] = useState("");
+
+  // Merge meta + i18n translations
+  const PROMOS = PROMO_META.map(p => ({
+    ...p,
+    title:      t(`promos.${p.id}.title`),
+    desc:       t(`promos.${p.id}.desc`),
+    conditions: t(`promos.${p.id}.conditions`, { returnObjects: true }),
+    hint:       t(`promos.${p.id}.hint`),
+  }));
 
   const openModal = (promo) => {
     setError("");
@@ -133,46 +76,35 @@ const PromoPage = () => {
   };
 
   const validate = () => {
-    if (!checkIn || !checkOut) return "Vui lòng chọn đầy đủ ngày nhận và trả phòng.";
-
+    if (!checkIn)  return t("validation.selectCheckin");
+    if (!checkOut) return t("validation.selectCheckout");
     const ci = new Date(checkIn);
     const co = new Date(checkOut);
     const now = new Date(); now.setHours(0, 0, 0, 0);
-
-    if (ci <= now) return "Ngày nhận phòng phải sau hôm nay.";
-    if (co <= ci)  return "Ngày trả phòng phải sau ngày nhận phòng.";
-
+    if (ci <= now) return t("validation.selectCheckin");
+    if (co <= ci)  return t("validation.checkoutAfter");
     const nights = getNights(checkIn, checkOut);
     if (nights < modal.minNights)
-      return `Ưu đãi này yêu cầu lưu trú tối thiểu ${modal.minNights} đêm.`;
-
+      return t("validation.minNights", { n: modal.minNights });
     if (modal.minDaysAdvance > 0) {
       const daysAhead = Math.floor((ci - now) / 86400000);
       if (daysAhead < modal.minDaysAdvance)
-        return `Ưu đãi này yêu cầu đặt trước ít nhất ${modal.minDaysAdvance} ngày.`;
+        return t("validation.minDays", { n: modal.minDaysAdvance });
     }
-
     if (modal.weekendOnly) {
-      if (ci.getDay() !== 5) return "Ngày nhận phòng phải là thứ 6 (Friday).";
-      if (co.getDay() !== 0) return "Ngày trả phòng phải là chủ nhật (Sunday).";
+      if (ci.getDay() !== 5) return t("validation.weekendOnly");
+      if (co.getDay() !== 0) return t("validation.checkoutSunday");
     }
-
     return null;
   };
 
   const handleConfirm = () => {
     const err = validate();
     if (err) { setError(err); return; }
-
     sessionStorage.setItem("bbhh_active_promo", JSON.stringify({
-      id: modal.id,
-      title: modal.title,
-      discount: modal.discount,
-      checkIn,
-      checkOut,
-      nights: getNights(checkIn, checkOut),
+      id: modal.id, title: modal.title, discount: modal.discount,
+      checkIn, checkOut, nights: getNights(checkIn, checkOut),
     }));
-
     setModal(null);
     navigate(modal.path);
   };
@@ -183,9 +115,11 @@ const PromoPage = () => {
     <div className="promo-page">
       <div className="promo-hero">
         <div className="promo-hero-inner">
-          <p className="promo-hero-tag">🏷️ ƯU ĐÃI ĐẶC BIỆT</p>
-          <h1 className="promo-hero-h1">Khuyến mãi <span className="accent">độc quyền</span></h1>
-          <p className="promo-hero-sub">Chọn ưu đãi phù hợp — chúng tôi sẽ kiểm tra điều kiện trước khi đặt phòng</p>
+          <p className="promo-hero-tag">{t("heroTag")}</p>
+          <h1 className="promo-hero-h1">
+            {t("heroTitle1")} <span className="accent">{t("heroAccent")}</span> {t("heroTitle2")}
+          </h1>
+          <p className="promo-hero-sub">{t("heroSub")}</p>
         </div>
       </div>
 
@@ -210,7 +144,7 @@ const PromoPage = () => {
                       {p.conditions.map((c, j) => <li key={j}>✓ {c}</li>)}
                     </ul>
                     <button className="promo-card-btn" onClick={() => openModal(p)}>
-                      Đặt ngay →
+                      {t("bookBtn")}
                     </button>
                   </div>
                 </div>
@@ -234,50 +168,43 @@ const PromoPage = () => {
             </div>
 
             {modal.hint && (
-              <div className="promo-modal-hint">ℹ️ {modal.hint}</div>
+              <div className="promo-modal-hint">{t("hintLabel")} {modal.hint}</div>
             )}
 
             <div className="promo-modal-body">
               <div className="promo-modal-row">
                 <div className="promo-modal-field">
-                  <label>Ngày nhận phòng *</label>
-                  <input
-                    type="date"
-                    value={checkIn}
+                  <label>{t("checkIn")} *</label>
+                  <input type="date" value={checkIn}
                     min={modal.minDaysAdvance > 0 ? addDays(modal.minDaysAdvance) : addDays(1)}
                     onChange={e => {
-                      setCheckIn(e.target.value);
-                      setError("");
+                      setCheckIn(e.target.value); setError("");
                       if (modal.weekendOnly) setCheckOut(getSundayAfter(e.target.value));
-                    }}
-                  />
+                    }} />
                 </div>
                 <div className="promo-modal-field">
-                  <label>Ngày trả phòng *</label>
-                  <input
-                    type="date"
-                    value={checkOut}
+                  <label>{t("checkOut")} *</label>
+                  <input type="date" value={checkOut}
                     min={checkIn || addDays(2)}
                     readOnly={modal.weekendOnly}
                     onChange={e => { setCheckOut(e.target.value); setError(""); }}
-                    style={modal.weekendOnly ? { opacity: 0.6, cursor: "not-allowed" } : {}}
-                  />
+                    style={modal.weekendOnly ? { opacity: 0.6, cursor: "not-allowed" } : {}} />
                 </div>
               </div>
 
               {nights > 0 && (
                 <div className="promo-modal-nights">
-                  🌙 {nights} đêm lưu trú
+                  🌙 {nights} {nights === 1 ? t("checkIn") : t("checkIn")}
                   {nights >= modal.minNights
-                    ? <span className="promo-nights-ok"> · Đủ điều kiện ✓</span>
-                    : <span className="promo-nights-fail"> · Cần tối thiểu {modal.minNights} đêm</span>}
+                    ? <span className="promo-nights-ok"> · ✓</span>
+                    : <span className="promo-nights-fail"> · {t("validation.minNights", { n: modal.minNights })}</span>}
                 </div>
               )}
 
               {error && <div className="promo-modal-error">⚠️ {error}</div>}
 
               <div className="promo-modal-conditions">
-                <div className="promo-modal-conditions-title">Điều kiện áp dụng:</div>
+                <div className="promo-modal-conditions-title">{t("conditionsLabel")}</div>
                 <ul>
                   {modal.conditions.map((c, i) => <li key={i}>✓ {c}</li>)}
                 </ul>
@@ -285,9 +212,9 @@ const PromoPage = () => {
             </div>
 
             <div className="promo-modal-footer">
-              <button className="promo-modal-cancel" onClick={() => setModal(null)}>Hủy</button>
+              <button className="promo-modal-cancel" onClick={() => setModal(null)}>{t("cancel")}</button>
               <button className="promo-modal-confirm" onClick={handleConfirm}>
-                Xác nhận & Chọn phòng →
+                {t("applyPromo")} →
               </button>
             </div>
           </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 
-const fmt = (n) => new Intl.NumberFormat("vi-VN").format(Math.round(n));
+const fmt = (n) => new Intl.NumberFormat().format(Math.round(n));
 
 // Dùng cùng logic với ManageBookingsPage
 const isPaid = (b) => {
@@ -27,6 +28,7 @@ const getRevenue = (b) => {
 };
 
 const RevenuePage = () => {
+  const { t } = useTranslation("adminPanel");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("month");
@@ -87,37 +89,37 @@ const RevenuePage = () => {
     .slice(0, 6);
 
   const PERIOD_LABELS = {
-    week: "7 ngày qua",
-    month: "Tháng này",
-    year: "Năm nay",
-    all: "Tất cả",
+    week: t("revenue.week"),
+    month: t("revenue.month"),
+    year: t("revenue.year"),
+    all: t("revenue.all"),
   };
   const statCards = [
     {
-      label: "Tổng doanh thu",
+      label: t("revenue.totalRevenue"),
       value: `$${fmt(totalRevenue)}`,
-      sub: `${paid.length} đặt phòng đã thanh toán`,
+      sub: `${paid.length} ${t("revenue.paidBookings")}`,
       color: "#0d9488",
       icon: "💰",
     },
     {
-      label: `Doanh thu ${PERIOD_LABELS[period]}`,
+      label: `${t("revenue.periodRevenue")} ${PERIOD_LABELS[period]}`,
       value: `$${fmt(periodRevenue)}`,
-      sub: `${periodPaid.length} đặt phòng đã thanh toán`,
+      sub: `${periodPaid.length} ${t("revenue.paidBookings")}`,
       color: "#6366f1",
       icon: "📈",
     },
     {
-      label: "Tổng đặt phòng",
+      label: t("revenue.totalBookings"),
       value: bookings.length,
-      sub: `${paid.length} đã thanh toán`,
+      sub: `${paid.length} ${t("revenue.paidBookings")}`,
       color: "#f59e0b",
       icon: "📋",
     },
     {
-      label: "Đặt phòng chờ TT",
+      label: t("revenue.pendingBookings"),
       value: bookings.length - paid.length,
-      sub: "Chưa hoàn tất thanh toán",
+      sub: t("revenue.pendingDesc"),
       color: "#e74c3c",
       icon: "⏳",
     },
@@ -145,8 +147,8 @@ const RevenuePage = () => {
               gap: 8,
             }}
           >
-            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>📊</span> Doanh
-            thu
+            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>📊</span>{" "}
+            {t("revenue.title")}
           </h2>
           <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>
             Thống kê tài chính từ đặt phòng
@@ -189,7 +191,7 @@ const RevenuePage = () => {
 
       {loading ? (
         <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>
-          Đang tải dữ liệu...
+          {t("revenue.loading")}
         </div>
       ) : (
         <>
@@ -266,7 +268,7 @@ const RevenuePage = () => {
                 color: "#1a1a2e",
               }}
             >
-              Doanh thu theo tháng (12 tháng gần nhất)
+              {t("revenue.chartTitle")}
             </h3>
             <div
               style={{
@@ -339,7 +341,7 @@ const RevenuePage = () => {
                     marginRight: 4,
                   }}
                 />
-                Tháng hiện tại
+                {t("revenue.currentMonth")}
               </span>
               <span>
                 <span
@@ -352,7 +354,7 @@ const RevenuePage = () => {
                     marginRight: 4,
                   }}
                 />
-                Tháng trước
+                {t("revenue.prevMonth")}
               </span>
             </div>
           </div>
@@ -368,7 +370,7 @@ const RevenuePage = () => {
                   color: "#1a1a2e",
                 }}
               >
-                Doanh thu theo loại phòng
+                {t("revenue.byRoomType")}
               </h3>
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 12 }}

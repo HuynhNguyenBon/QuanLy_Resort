@@ -1,0 +1,53 @@
+{
+  "heroTag": "📞 LIÊN HỆ",
+  "heroTitle1": "Chúng tôi luôn",
+  "heroAccent": "sẵn sàng",
+  "heroTitle2": "hỗ trợ",
+  "heroSub": "Đội ngũ BBHH Resort phục vụ 24/7, hãy liên hệ bất cứ lúc nào",
+  "infoItems": [
+    {
+      "icon": "📍",
+      "label": "Địa chỉ",
+      "value": "123 Đường Biển Xanh, Quận 7",
+      "sub": "TP. Hồ Chí Minh, Việt Nam"
+    },
+    {
+      "icon": "📞",
+      "label": "Điện thoại",
+      "value": "+84 (028) 1234 5678",
+      "sub": "Hotline 24/7: 1800 6868"
+    },
+    {
+      "icon": "📧",
+      "label": "Email",
+      "value": "info@bbhhresort.com",
+      "sub": "booking@bbhhresort.com"
+    },
+    {
+      "icon": "🕐",
+      "label": "Giờ làm việc",
+      "value": "Lễ tân: 24/7",
+      "sub": "Văn phòng: 8:00 – 17:00"
+    }
+  ],
+  "formTitle": "Gửi tin nhắn cho chúng tôi",
+  "successMsg": "Cảm ơn! Chúng tôi sẽ phản hồi trong vòng 24 giờ.",
+  "nameLabel": "Họ và tên",
+  "namePlaceholder": "Nguyễn Văn A",
+  "emailLabel": "Email",
+  "phoneLabel": "Số điện thoại",
+  "phonePlaceholder": "0912 345 678",
+  "subjectLabel": "Chủ đề",
+  "subjectPlaceholder": "Chọn chủ đề...",
+  "subjects": [
+    "Đặt phòng",
+    "Dịch vụ",
+    "Ưu đãi & Khuyến mãi",
+    "Khiếu nại",
+    "Khác"
+  ],
+  "messageLabel": "Nội dung",
+  "messagePlaceholder": "Nhập nội dung tin nhắn...",
+  "submitBtn": "Gửi tin nhắn",
+  "required": "*"
+}

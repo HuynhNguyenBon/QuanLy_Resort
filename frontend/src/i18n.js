@@ -52,6 +52,36 @@ import enServices from "./i18n/locales/en/services.json";
 import viServices from "./i18n/locales/vi/services.json";
 import jaServices from "./i18n/locales/ja/services.json";
 
+// CONTACT
+import enContact from "./i18n/locales/en/contact.json";
+import viContact from "./i18n/locales/vi/contact.json";
+import jaContact from "./i18n/locales/ja/contact.json";
+
+// PROMO
+import enPromo from "./i18n/locales/en/promo.json";
+import viPromo from "./i18n/locales/vi/promo.json";
+import jaPromo from "./i18n/locales/ja/promo.json";
+
+// FIND BOOKING
+import enFindBooking from "./i18n/locales/en/findBooking.json";
+import viFindBooking from "./i18n/locales/vi/findBooking.json";
+import jaFindBooking from "./i18n/locales/ja/findBooking.json";
+
+// GALLERY
+import enGallery from "./i18n/locales/en/gallery.json";
+import viGallery from "./i18n/locales/vi/gallery.json";
+import jaGallery from "./i18n/locales/ja/gallery.json";
+
+// CHAT
+import enChat from "./i18n/locales/en/chat.json";
+import viChat from "./i18n/locales/vi/chat.json";
+import jaChat from "./i18n/locales/ja/chat.json";
+
+// ADMIN PANEL
+import enAdminPanel from "./i18n/locales/en/adminPanel.json";
+import viAdminPanel from "./i18n/locales/vi/adminPanel.json";
+import jaAdminPanel from "./i18n/locales/ja/adminPanel.json";
+
 i18n
   .use(LanguageDetector) // Tự động nhận diện ngôn ngữ máy tính khách
   .use(initReactI18next)
@@ -68,6 +98,12 @@ i18n
         common: enCommon,
         payment: enPayment,
         services: enServices,
+        contact: enContact,
+        promo: enPromo,
+        findBooking: enFindBooking,
+        gallery: enGallery,
+        chat: enChat,
+        adminPanel: enAdminPanel,
       },
       vi: {
         navbar: viNavbar,
@@ -80,6 +116,12 @@ i18n
         common: viCommon,
         payment: viPayment,
         services: viServices,
+        contact: viContact,
+        promo: viPromo,
+        findBooking: viFindBooking,
+        gallery: viGallery,
+        chat: viChat,
+        adminPanel: viAdminPanel,
       },
       ja: {
         navbar: jaNavbar,
@@ -92,6 +134,12 @@ i18n
         common: jaCommon,
         payment: jaPayment,
         services: jaServices,
+        contact: jaContact,
+        promo: jaPromo,
+        findBooking: jaFindBooking,
+        gallery: jaGallery,
+        chat: jaChat,
+        adminPanel: jaAdminPanel,
       },
     },
     fallbackLng: "en",
@@ -106,6 +154,12 @@ i18n
       "common",
       "payment",
       "services",
+      "contact",
+      "promo",
+      "findBooking",
+      "gallery",
+      "chat",
+      "adminPanel",
     ],
     defaultNS: "translation",
     interpolation: {
