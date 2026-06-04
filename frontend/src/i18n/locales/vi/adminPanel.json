@@ -14,7 +14,8 @@
     "staff": "Nhân viên",
     "services": "Dịch vụ",
     "reviews": "Đánh giá",
-    "floorMap": "Sơ đồ phòng"
+    "floorMap": "Sơ đồ phòng",
+    "walkIn": "Đặt phòng tại quầy"
   },
   "overview": {
     "greeting": "Xin chào",
@@ -30,8 +31,7 @@
     "addRoom": "Thêm phòng mới",
     "viewBookings": "Xem đặt phòng",
     "manageRooms": "Quản lý phòng",
-    "viewReviews": "Xem đánh giá",
-    "walkIn": "Đặt phòng tại quầy"
+    "viewReviews": "Xem đánh giá"
   },
   "rooms": {
     "title": "Quản lý phòng",
