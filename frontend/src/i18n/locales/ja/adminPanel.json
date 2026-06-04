@@ -14,7 +14,8 @@
     "staff": "スタッフ",
     "services": "サービス",
     "reviews": "レビュー",
-    "floorMap": "フロアマップ"
+    "floorMap": "フロアマップ",
+    "walkIn": "フロント予約"
   },
   "overview": {
     "greeting": "ようこそ",
