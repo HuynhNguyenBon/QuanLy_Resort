@@ -66,6 +66,14 @@ public class Utils {
             roomDTO.setRoomPhotoUrl(booking.getRoom().getRoomPhotoUrl());
             bookingDTO.setRoom(roomDTO);
         }
+        if (booking.getUser() != null) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(booking.getUser().getId());
+            userDTO.setName(booking.getUser().getName());
+            userDTO.setEmail(booking.getUser().getEmail());
+            userDTO.setPhoneNumber(booking.getUser().getPhoneNumber());
+            bookingDTO.setUser(userDTO);
+        }
         return bookingDTO;
     }
 
