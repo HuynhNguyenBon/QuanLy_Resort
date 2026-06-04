@@ -205,9 +205,12 @@ const WalkInBookingPage = () => {
               </div>
             )}
             <button onClick={handleSearch} disabled={loading}
-              style={{ padding: "13px", borderRadius: 10, border: "none",
-                background: loading?"#99d6d0":"#0d9488", color: "#fff",
-                fontWeight: 700, fontSize: "0.95rem", cursor: loading?"not-allowed":"pointer" }}>
+              style={{ padding: "13px", borderRadius: 10, border: "none", width: "100%",
+                backgroundColor: loading ? "#99d6d0" : "#0d9488", color: "#fff",
+                fontWeight: 700, fontSize: "0.95rem",
+                cursor: loading ? "not-allowed" : "pointer", transition: "background-color 0.2s" }}
+              onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = "#0a7c73"; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = loading ? "#99d6d0" : "#0d9488"; }}>
               {loading ? t("walkIn.searching") : `🔍 ${t("walkIn.searchBtn")}`}
             </button>
           </div>

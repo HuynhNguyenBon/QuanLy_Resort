@@ -2105,9 +2105,9 @@ button[type="submit"]:hover { background: var(--teal-dark); }
 
 .ar-search-btn {
   flex-shrink: 0;
-  background: var(--teal);
+  background: #007F86 !important;
   color: #fff !important;
-  border: none;
+  border: none !important;
   padding: 10px 24px;
   border-radius: var(--radius-sm);
   font-size: 14px;
@@ -2115,11 +2115,11 @@ button[type="submit"]:hover { background: var(--teal-dark); }
   cursor: pointer;
   white-space: nowrap;
   font-family: inherit;
-  transition: background 0.2s;
+  transition: background-color 0.2s;
   align-self: flex-end;
 }
-.ar-search-btn:hover    { background: var(--teal-dark); }
-.ar-search-btn:disabled { background: var(--text-muted); cursor: not-allowed; }
+.ar-search-btn:hover    { background: #005f65 !important; }
+.ar-search-btn:disabled { background: #94a3b8 !important; cursor: not-allowed; }
 
 .ar-search-error {
   margin-top: 10px;

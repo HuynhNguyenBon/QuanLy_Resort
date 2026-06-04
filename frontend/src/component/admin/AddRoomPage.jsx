@@ -31,8 +31,8 @@ const Toast = ({ type, message, onClose }) => {
         .phong-toast__body  { flex:1; }
         .phong-toast__title { font-weight:600; font-size:14px; margin-bottom:2px; }
         .phong-toast__msg   { font-size:13px; opacity:0.85; }
-        .phong-toast__close { background:none;border:none;cursor:pointer;font-size:16px;opacity:0.5;padding:0;color:inherit;flex-shrink:0; }
-        .phong-toast__close:hover { opacity:1; }
+        .phong-toast__close { background:none !important;border:none !important;cursor:pointer;font-size:16px;opacity:0.5;padding:4px 6px;color:inherit;flex-shrink:0;border-radius:4px;transition:opacity 0.15s; }
+        .phong-toast__close:hover { opacity:1 !important; background:rgba(0,0,0,0.08) !important; }
         .phong-toast__bar   { position:absolute;bottom:0;left:0;height:3px;border-radius:0 0 12px 12px; }
         .phong-toast.error   .phong-toast__bar { background:#ff4d4f; animation:toastBarError   5s linear forwards; }
         .phong-toast.success .phong-toast__bar { background:#52c41a; animation:toastBarSuccess 3s linear forwards; }
@@ -314,11 +314,11 @@ const AddRoomPage = () => {
       return;
     }
     if (!selected.type.startsWith("image/")) {
-      showToast("error", "Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, ...).");
+      showToast("error", t("addRoom.imageInvalid"));
       return;
     }
     if (selected.size > 5 * 1024 * 1024) {
-      showToast("error", "Kích thước ảnh không được vượt quá 5MB.");
+      showToast("error", t("addRoom.imageSize"));
       return;
     }
     setFile(selected);
@@ -328,24 +328,24 @@ const AddRoomPage = () => {
   /* client-side validation — chặn trước khi gọi API */
   const validate = () => {
     if (!file) {
-      showToast("error", "Vui lòng tải lên ảnh phòng.");
+      showToast("error", t("addRoom.imageRequired"));
       return false;
     }
     if (!roomDetails.roomType.trim()) {
-      showToast("error", "Vui lòng chọn hoặc nhập loại phòng.");
+      showToast("error", t("addRoom.typeRequired2"));
       return false;
     }
     const price = Number(roomDetails.roomPrice);
     if (!roomDetails.roomPrice || isNaN(price) || price <= 0) {
-      showToast("error", "Giá phòng phải là số dương hợp lệ.");
+      showToast("error", t("addRoom.priceInvalid"));
       return false;
     }
     if (price < 20) {
-      showToast("error", "Giá phòng tối thiểu là 20$. Vui lòng nhập lại.");
+      showToast("error", t("addRoom.priceMin"));
       return false;
     }
     if (!roomDetails.roomDescription.trim()) {
-      showToast("error", "Mô tả phòng không được để trống.");
+      showToast("error", t("addRoom.descRequired"));
       return false;
     }
     return true;
@@ -353,7 +353,7 @@ const AddRoomPage = () => {
 
   const addRoom = async () => {
     if (!validate()) return;
-    if (!window.confirm(t("addRoomPage.confirmAddRoom"))) return;
+    if (!window.confirm(t("addRoom.confirmAdd"))) return;
 
     setLoading(true);
     try {
@@ -366,7 +366,7 @@ const AddRoomPage = () => {
       const result = await ApiService.addRoom(formData);
 
       if (result.statusCode === 200) {
-        showToast("success", t("addRoomPage.roomAdded"), 3000);
+        showToast("success", t("addRoom.roomAdded"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
         showToast("error", `Thêm phòng thất bại (mã: ${result.statusCode}).`);
@@ -413,49 +413,17 @@ const AddRoomPage = () => {
       )}
 
       {/* Page header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          marginBottom: 20,
-        }}
-      >
-        <button
-          onClick={() => navigate("/admin/manage-rooms")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 5,
-            padding: "7px 14px",
-            borderRadius: 8,
-            border: "1.5px solid #e2e8f0",
-            background: "#fff",
-            color: "#555",
-            cursor: "pointer",
-            fontSize: "0.83rem",
-            fontWeight: 600,
-            transition: "all 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "#0d9488";
-            e.currentTarget.style.color = "#0d9488";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "#e2e8f0";
-            e.currentTarget.style.color = "#555";
-          }}
-        >
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+        <button onClick={() => navigate("/admin/manage-rooms")}
+          style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 14px",
+            borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff",
+            color: "#555", cursor: "pointer", fontSize: "0.83rem", fontWeight: 600,
+            transition: "all 0.15s" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "#0d9488"; e.currentTarget.style.color = "#0d9488"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.color = "#555"; }}>
           ← {t("addRoom.back", "Quay lại")}
         </button>
-        <h2
-          style={{
-            margin: 0,
-            fontSize: "1.35rem",
-            fontWeight: 700,
-            color: "#1a1a2e",
-          }}
-        >
+        <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "#1a1a2e" }}>
           {t("addRoom.title")} <span style={{ color: "#0d9488" }}></span>
         </h2>
       </div>
@@ -482,34 +450,18 @@ const AddRoomPage = () => {
         >
           <span style={{ fontSize: "1.3rem" }}>➕</span>
           <div>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
-              {t("addRoom.title")}
-            </div>
-            <div
-              style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}
-            >
-              {t("addRoom.subtitle")}
-            </div>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>{t("addRoom.title")}</div>
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}>{t("addRoom.subtitle")}</div>
           </div>
         </div>
 
         {/* Card body */}
         <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
           {/* Left: image upload */}
-          <div
-            style={{
-              borderRight: "1px solid #f0f2f5",
-              padding: 24,
-              background: "#fafbfd",
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-            }}
-          >
-            <span style={labelStyle}>
-              {t("addRoom.imageLabel")}{" "}
-              <span style={{ color: "#e74c3c" }}>*</span>
-            </span>
+          <div style={{ borderRight: "1px solid #f0f2f5", padding: 24,
+            background: "#fafbfd", display: "flex", flexDirection: "column", gap: 14 }}>
+
+            <span style={labelStyle}>{t("addRoom.imageLabel")} <span style={{ color: "#e74c3c" }}>*</span></span>
 
             {/* Preview / drop zone */}
             <div
@@ -575,12 +527,8 @@ const AddRoomPage = () => {
                   style={{ textAlign: "center", color: "#9ca3af", padding: 16 }}
                 >
                   <div style={{ fontSize: "2.2rem", marginBottom: 8 }}>📷</div>
-                  <div style={{ fontSize: "0.85rem", fontWeight: 600 }}>
-                    {t("addRoom.clickToUpload")}
-                  </div>
-                  <div style={{ fontSize: "0.75rem", marginTop: 4 }}>
-                    {t("addRoom.imageHint")}
-                  </div>
+                  <div style={{ fontSize: "0.85rem", fontWeight: 600 }}>{t("addRoom.clickToUpload")}</div>
+                  <div style={{ fontSize: "0.75rem", marginTop: 4 }}>{t("addRoom.imageHint")}</div>
                 </div>
               )}
             </div>
@@ -595,25 +543,15 @@ const AddRoomPage = () => {
             />
 
             {preview && (
-              <button
-                onClick={() => {
+              <button onClick={() => {
                   setFile(null);
                   setPreview(null);
-                }}
-                disabled={loading}
-                style={{
-                  padding: "7px 0",
-                  borderRadius: 8,
-                  border: "1px solid #fecaca",
-                  background: "#fff5f5",
-                  color: "#e74c3c",
-                  cursor: "pointer",
-                  fontSize: "0.8rem",
-                  fontWeight: 600,
-                  width: "100%",
-                }}
-              >
-                ✕ Bỏ ảnh
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }} disabled={loading}
+                style={{ padding: "7px 0", borderRadius: 8, border: "1px solid #fecaca",
+                  background: "#fff5f5", color: "#e74c3c", cursor: "pointer",
+                  fontSize: "0.8rem", fontWeight: 600, width: "100%" }}>
+                ✕  {t("editRoom.removeImage")}
               </button>
             )}
           </div>
@@ -629,7 +567,9 @@ const AddRoomPage = () => {
           >
             {/* Loại phòng */}
             <div>
-              <label style={labelStyle}>{t("addRoom.typeRequired")}</label>
+              <label style={labelStyle}>
+                {t("addRoom.typeRequired")}
+              </label>
               <RoomTypeDropdown
                 roomTypes={roomTypes}
                 value={roomDetails.roomType}
@@ -663,8 +603,7 @@ const AddRoomPage = () => {
             {/* Giá */}
             <div>
               <label style={labelStyle}>
-                {t("addRoom.priceLabel")}{" "}
-                <span style={{ color: "#e74c3c" }}>*</span>
+                {t("addRoom.priceLabel")} <span style={{ color: "#e74c3c" }}>*</span>
               </label>
               <div style={{ position: "relative" }}>
                 <span
@@ -704,8 +643,7 @@ const AddRoomPage = () => {
             {/* Mô tả */}
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>
-                {t("addRoom.descLabel")}{" "}
-                <span style={{ color: "#e74c3c" }}>*</span>
+                {t("addRoom.descLabel")} <span style={{ color: "#e74c3c" }}>*</span>
               </label>
               <textarea
                 name="roomDescription"
@@ -742,18 +680,10 @@ const AddRoomPage = () => {
                 fontWeight: 700,
                 cursor: loading ? "not-allowed" : "pointer",
                 transition: "background 0.15s",
-                boxShadow: "0 2px 8px rgba(13,148,136,0.3)",
-              }}
-              onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.background = "#0a7c73";
-              }}
-              onMouseLeave={(e) => {
-                if (!loading) e.currentTarget.style.background = "#0d9488";
-              }}
-            >
-              {loading
-                ? t("addRoom.submitting")
-                : `➕  ${t("addRoom.submitBtn")}`}
+                boxShadow: "0 2px 8px rgba(13,148,136,0.3)" }}
+              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = "#0a7c73"; }}
+              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = "#0d9488"; }}>
+              {loading ? t("addRoom.submitting") : `➕  ${t("addRoom.submitBtn")}`}
             </button>
           </div>
         </div>
