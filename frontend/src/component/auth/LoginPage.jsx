@@ -32,6 +32,7 @@ function LoginPage() {
       setTimeout(() => setError(""), 4000); // Ẩn lỗi sau 4 giây
       return;
     }
+    
     setLoading(true);
     try {
       const res = await ApiService.loginUser({ email, password });
@@ -42,7 +43,6 @@ function LoginPage() {
         navigate(from, { replace: true });
       }
     } catch (err) {
-
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {

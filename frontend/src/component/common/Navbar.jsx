@@ -96,6 +96,9 @@ function Navbar() {
               ? [{ to: "/find-booking", label: t("menu.booking") }]
               : []),
             { to: "/services", label: t("menu.services") },
+            { to: "/promotions", label: t("menu.offers") },
+            { to: "/gallery", label: t("menu.gallery") },
+            { to: "/contact", label: t("menu.contact") },
           ].map((item) => (
             <NavLink
               key={item.to}

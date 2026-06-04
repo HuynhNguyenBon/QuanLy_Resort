@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 public interface IServiceManagement {
     Response addNewService(String name, BigDecimal price, String description);
+    Response updateService(Long serviceId, String name, BigDecimal price, String description);
     Response getAllServices();
     Response deleteService(Long serviceId);
 }
