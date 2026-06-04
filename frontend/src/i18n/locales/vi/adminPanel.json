@@ -30,7 +30,8 @@
     "addRoom": "Thêm phòng mới",
     "viewBookings": "Xem đặt phòng",
     "manageRooms": "Quản lý phòng",
-    "viewReviews": "Xem đánh giá"
+    "viewReviews": "Xem đánh giá",
+    "walkIn": "Đặt phòng tại quầy"
   },
   "rooms": {
     "title": "Quản lý phòng",
