@@ -1,0 +1,71 @@
+{
+  "headerName": "BBHH Concierge",
+  "headerSub": "Resort Assistant · Always Ready",
+  "placeholder": "Ask BBHH Assistant...",
+  "quickLabel": "Frequently Asked:",
+  "welcome": "Hello! I'm **BBHH Assistant** 🤖\nI can help you with rooms, bookings, spa services, dining and much more.\n\nChoose a topic below or type your question! 😊",
+  "fallback": "Thank you for contacting us! I don't have an answer for that question yet.\n\nPlease contact us directly:\n📞 Hotline: **0123 456 789**\n📧 Email: **info@bbhh-resort.com**",
+  "quickActions": [
+    { "label": "🏨 Book a Room", "query": "I want to book a room" },
+    { "label": "💰 Pricing", "query": "how much does a room cost" },
+    { "label": "🏊 Pool & Spa", "query": "pool and spa" },
+    { "label": "🍽️ Restaurant", "query": "restaurant dining" },
+    { "label": "📍 Location", "query": "where is the resort" },
+    { "label": "🎁 Offers", "query": "promotions and offers" }
+  ],
+  "responses": {
+    "greeting": "Hello! I'm **BBHH Assistant** 🤖\nGreat to meet you! I can help you with rooms, bookings, pricing and resort services. What can I help you with today?",
+    "booking": "To book a room at BBHH Resort, you can:\n\n✅ Book directly in the **Rooms** section on the website\n✅ Call hotline: **0123 456 789** (24/7)\n✅ Email: **booking@bbhh-resort.com**\n\nWe'll need your check-in/check-out dates and number of guests!",
+    "price": "BBHH Resort Room Rates:\n\n🏠 **Standard** — from $80/night\n🏠 **Superior** — from $120/night\n🏠 **Deluxe** — from $180/night\n🌊 **Ocean View Suite** — from $280/night\n👨‍👩‍👧 **Family** — from $220/night\n👑 **Presidential** — from $450/night\n\n💡 Prices may vary by season and promotions. Contact us for the best rate!",
+    "rooms": "BBHH Resort offers a variety of rooms:\n\n🛏️ **Standard** — up to 2 guests\n🛏️ **Superior** — up to 3 guests\n🛏️ **Deluxe** — up to 4 guests\n🌊 **Ocean View Suite** — up to 5 guests\n👨‍👩‍👧 **Family** — up to 6 guests\n👑 **Presidential** — up to 8 guests\n\nAll rooms include free Wi-Fi, air conditioning, minibar and beautiful views!",
+    "pool": "🏊 **BBHH Resort Pool:**\n\n✨ Infinity pool overlooking the ocean (open 6:00–22:00)\n✨ Children's pool (60cm depth)\n✨ Pool Bar serving refreshing drinks\n✨ Free sun loungers & umbrellas\n\n🔒 Pool access for resort guests only.",
+    "spa": "💆 **BBHH Spa & Gym Center:**\n\n🌸 **Spa**: Full body massage, hot stone therapy, skincare\n💪 **Gym**: Modern equipment, open 5:00–23:00\n🧘 **Yoga**: Morning beach classes (7:00–8:00)\n🛁 **Jacuzzi**: Premium relaxation pool\n🔥 **Sauna**: Dry & steam rooms\n\nBook spa appointments at the front desk for exclusive discounts!",
+    "restaurant": "🍽️ **Dining at BBHH Resort:**\n\n☀️ **Breakfast Buffet** (6:30–10:00): 20+ fresh dishes\n🌊 **Seafood Restaurant** (11:00–22:00)\n🍸 **Sky Bar** rooftop (17:00–24:00)\n🍷 **Wine & Dine** — romantic dinner\n\n🎉 Reserve in advance for the best ocean view seats!",
+    "location": "📍 **BBHH Resort**\nAddress: 123 Beach Road, Da Nang, Vietnam\n\n🚗 Distance from Da Nang Airport: **15 minutes** (12km)\n🏖️ Directly on My Khe Beach\n\n🚌 **Free airport transfer** for all booked guests!",
+    "contact": "📞 **Contact BBHH Resort:**\n\n📱 Hotline: **0123 456 789** (24/7)\n📧 Email: **info@bbhh-resort.com**\n💬 Zalo / WhatsApp: **0123 456 789**\n\n⏰ Our team is available 24/7, always ready to help!",
+    "promo": "🎁 **Current Offers at BBHH Resort:**\n\n⭐ Book 30 days early: **15% off**\n⭐ Stay 3+ nights: **10% off**\n⭐ Room + Spa combo: save **20%**\n\n👉 See more in the **Offers** section on the website!",
+    "checkin": "🕐 **Check-in & Check-out Times:**\n\n✅ **Check-in**: from **2:00 PM**\n✅ **Check-out**: before **12:00 PM**\n\n💡 Early check-in & late check-out can be arranged on request. Contact the front desk in advance!",
+    "wifi": "📶 **Wi-Fi at BBHH Resort:**\n\nComplimentary high-speed Wi-Fi throughout the resort:\n✅ In-room, beach, pool area\n✅ Restaurant & Sky Bar\n✅ Lobby & public areas\n\nPassword provided at check-in!",
+    "family": "👨‍👩‍👧 **BBHH Resort is Family-Friendly:**\n\n✅ Spacious Family rooms for up to 6 guests\n✅ Safe children's pool (60cm)\n✅ Indoor play area\n✅ Special kids' menu\n✅ Free for children under 6\n\nContact us for the best room recommendation!",
+    "beach": "🏖️ **BBHH Resort Beach:**\n\n✨ Private beach, 500m long\n✨ White sand, crystal-clear water\n✨ Umbrella, lounger, surfboard rental\n✨ Beach Bar with refreshing drinks\n✨ Lifeguards on duty 24/7\n\n🌅 The sunsets here are absolutely stunning!"
+  },
+  "patterns": {
+    "greeting": ["hello", "hi", "hey", "good morning", "good evening"],
+    "booking": ["book", "booking", "reservation", "reserve", "stay"],
+    "price": ["price", "cost", "rate", "how much", "fee"],
+    "rooms": ["room", "suite", "deluxe", "standard", "accommodation"],
+    "pool": ["pool", "swim", "swimming", "jacuzzi"],
+    "spa": ["spa", "massage", "gym", "fitness", "yoga", "sauna", "relax"],
+    "restaurant": [
+      "restaurant",
+      "food",
+      "eat",
+      "dining",
+      "buffet",
+      "bar",
+      "cocktail"
+    ],
+    "location": ["location", "where", "address", "direction", "map"],
+    "contact": ["contact", "phone", "email", "hotline", "call"],
+    "promo": [
+      "promotion",
+      "offer",
+      "discount",
+      "deal",
+      "promo",
+      "sale",
+      "coupon"
+    ],
+    "checkin": [
+      "check-in",
+      "checkin",
+      "check-out",
+      "checkout",
+      "arrival",
+      "departure"
+    ],
+    "wifi": ["wifi", "wi-fi", "internet", "network", "connection"],
+    "family": ["family", "child", "children", "kid", "baby"],
+    "beach": ["beach", "sea", "ocean", "swimming", "shore"]
+  }
+}

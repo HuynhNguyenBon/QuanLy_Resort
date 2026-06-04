@@ -10,7 +10,7 @@ const LANGS = [
   { code: "ja", name: "日本語", country: "jp" },
 ];
 
-const StaffLayout = () => {
+const AdminLayout = () => {
   const { t, i18n } = useTranslation("adminPanel");
   const navigate = useNavigate();
   const [langOpen, setLangOpen] = useState(false);
@@ -37,10 +37,15 @@ const StaffLayout = () => {
   }, []);
 
   const NAV_ITEMS = [
-    { icon: "🗺️", label: t("nav.floorMap"), path: "/staff", end: true },
-    { icon: "📋", label: t("nav.bookings"), path: "/staff/bookings" },
-    { icon: "👥", label: t("nav.customers"), path: "/staff/customers" },
-    { icon: "💳", label: t("nav.transactions"), path: "/staff/transactions" },
+    { icon: "📊", label: t("nav.overview"), path: "/admin", end: true },
+    { icon: "🛏️", label: t("nav.rooms"), path: "/admin/manage-rooms" },
+    { icon: "📋", label: t("nav.bookings"), path: "/admin/manage-bookings" },
+    { icon: "💳", label: t("nav.transactions"), path: "/admin/transactions" },
+    { icon: "💰", label: t("nav.revenue"), path: "/admin/revenue" },
+    { icon: "👥", label: t("nav.customers"), path: "/admin/manage-users" },
+    { icon: "👨‍💼", label: t("nav.staff"), path: "/admin/manage-staff" },
+    { icon: "🛎️", label: t("nav.services"), path: "/admin/manage-services" },
+    { icon: "⭐", label: t("nav.reviews"), path: "/admin/manage-reviews" },
   ];
 
   const handleLogout = () => {
@@ -56,15 +61,11 @@ const StaffLayout = () => {
             src="/logo.png"
             alt="BBHH Resort"
             style={{ width: 44, height: 44, objectFit: "contain" }}
-            onError={(e) => {
-              e.target.style.display = "none";
-            }}
+            onError={(e) => (e.target.style.display = "none")}
           />
           <div>
             <div className="adm-logo-name">{t("brand")}</div>
-            <div className="adm-logo-sub" style={{ color: "#f59e0b" }}>
-              {t("staffPanel")}
-            </div>
+            <div className="adm-logo-sub">{t("adminPanel")}</div>
           </div>
         </div>
 
@@ -94,9 +95,7 @@ const StaffLayout = () => {
           <div className="adm-topbar-left">
             <span className="adm-topbar-brand">{t("brand")}</span>
             <span className="adm-topbar-sep">›</span>
-            <span className="adm-topbar-subtitle" style={{ color: "#f59e0b" }}>
-              {t("staffPanel")}
-            </span>
+            <span className="adm-topbar-subtitle">{t("managementSystem")}</span>
           </div>
           <div
             className="adm-topbar-right"
@@ -210,6 +209,7 @@ const StaffLayout = () => {
             </div>
           </div>
         </div>
+
         <div className="adm-content">
           <Outlet />
         </div>
@@ -218,4 +218,4 @@ const StaffLayout = () => {
   );
 };
 
-export default StaffLayout;
+export default AdminLayout;

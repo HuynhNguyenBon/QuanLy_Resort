@@ -1,0 +1,86 @@
+{
+  "heroTag": "🏷️ KHUYẾN MÃI",
+  "heroTitle1": "Ưu đãi",
+  "heroAccent": "đặc biệt",
+  "heroTitle2": "từ BBHH Resort",
+  "heroSub": "Tiết kiệm thông minh — tận hưởng trọn vẹn",
+  "bookBtn": "Đặt phòng với ưu đãi này",
+  "conditionsLabel": "Điều kiện áp dụng:",
+  "hintLabel": "💡",
+  "selectDates": "Chọn ngày",
+  "checkIn": "Nhận phòng",
+  "checkOut": "Trả phòng",
+  "applyPromo": "Áp dụng ưu đãi",
+  "cancel": "Hủy",
+  "promos": {
+    "early_bird": {
+      "title": "Đặt sớm 20% OFF",
+      "desc": "Đặt phòng trước 30 ngày để nhận ngay ưu đãi 20% cho mọi loại phòng. Áp dụng toàn bộ mùa.",
+      "conditions": [
+        "Đặt trước ít nhất 30 ngày",
+        "Không hoàn tiền khi hủy",
+        "Áp dụng tất cả loại phòng"
+      ],
+      "hint": "Ngày nhận phòng phải cách hôm nay ít nhất 30 ngày."
+    },
+    "family": {
+      "title": "Gói gia đình 15% OFF",
+      "desc": "Kỳ nghỉ lý tưởng cho cả gia đình! Giảm 15% khi đặt phòng Family hoặc Suite cho 4 người trở lên.",
+      "conditions": [
+        "Tối thiểu 4 khách",
+        "Phòng Family hoặc Suite",
+        "Có thể hủy trước 48h"
+      ],
+      "hint": "Ưu đãi áp dụng cho phòng Family. Trang phòng sẽ lọc sẵn loại phòng phù hợp."
+    },
+    "spa": {
+      "title": "Spa miễn phí",
+      "desc": "Tặng 1 lần spa trị giá $50 khi đặt phòng Deluxe trở lên. Trải nghiệm thư giãn hoàn toàn miễn phí.",
+      "conditions": [
+        "Phòng Deluxe, Suite hoặc Family",
+        "1 lần spa / phòng",
+        "Đặt lịch spa trước 24h"
+      ],
+      "hint": "Chọn phòng Deluxe trở lên để nhận ưu đãi spa miễn phí."
+    },
+    "weekend": {
+      "title": "Gói cuối tuần",
+      "desc": "Check-in thứ 6, check-out chủ nhật — nhận ngay 10% OFF và bữa sáng buffet miễn phí cho 2 người.",
+      "conditions": [
+        "Nhận phòng đúng thứ 6",
+        "Trả phòng đúng chủ nhật",
+        "Đặt trước 7 ngày"
+      ],
+      "hint": "Ngày nhận phòng phải là thứ 6, trả phòng chủ nhật."
+    },
+    "honeymoon": {
+      "title": "Gói tuần trăng mật",
+      "desc": "Ưu đãi đặc biệt cho cặp đôi: 25% OFF + trang trí phòng + champagne + bữa tối lãng mạn.",
+      "conditions": [
+        "Phòng Suite hoặc Deluxe",
+        "Tối thiểu 2 đêm",
+        "Xuất trình giấy đăng ký kết hôn"
+      ],
+      "hint": "Tối thiểu 2 đêm. Trang phòng sẽ lọc sẵn phòng Suite."
+    },
+    "gym": {
+      "title": "Gym & Yoga miễn phí",
+      "desc": "Truy cập không giới hạn phòng tập Gym và lớp Yoga khi lưu trú từ 3 đêm trở lên.",
+      "conditions": [
+        "Lưu trú tối thiểu 3 đêm",
+        "Mọi loại phòng",
+        "Đăng ký tại quầy lễ tân"
+      ],
+      "hint": "Tối thiểu 3 đêm lưu trú để được sử dụng Gym & Yoga miễn phí."
+    }
+  },
+  "validation": {
+    "selectCheckin": "Vui lòng chọn ngày nhận phòng.",
+    "selectCheckout": "Vui lòng chọn ngày trả phòng.",
+    "checkoutAfter": "Ngày trả phòng phải sau ngày nhận phòng.",
+    "minNights": "Ưu đãi này yêu cầu tối thiểu {{n}} đêm.",
+    "minDays": "Cần đặt trước ít nhất {{n}} ngày.",
+    "weekendOnly": "Ngày nhận phòng phải là thứ 6.",
+    "checkoutSunday": "Ngày trả phòng phải là chủ nhật."
+  }
+}

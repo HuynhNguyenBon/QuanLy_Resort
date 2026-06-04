@@ -1,0 +1,53 @@
+{
+  "heroTag": "📞 CONTACT US",
+  "heroTitle1": "We are always",
+  "heroAccent": "ready",
+  "heroTitle2": "to help",
+  "heroSub": "The BBHH Resort team is available 24/7 — contact us anytime",
+  "infoItems": [
+    {
+      "icon": "📍",
+      "label": "Address",
+      "value": "123 Blue Sea Road, District 7",
+      "sub": "Ho Chi Minh City, Vietnam"
+    },
+    {
+      "icon": "📞",
+      "label": "Phone",
+      "value": "+84 (028) 1234 5678",
+      "sub": "Hotline 24/7: 1800 6868"
+    },
+    {
+      "icon": "📧",
+      "label": "Email",
+      "value": "info@bbhhresort.com",
+      "sub": "booking@bbhhresort.com"
+    },
+    {
+      "icon": "🕐",
+      "label": "Working Hours",
+      "value": "Reception: 24/7",
+      "sub": "Office: 8:00 – 17:00"
+    }
+  ],
+  "formTitle": "Send us a message",
+  "successMsg": "Thank you! We will respond within 24 hours.",
+  "nameLabel": "Full Name",
+  "namePlaceholder": "John Smith",
+  "emailLabel": "Email",
+  "phoneLabel": "Phone Number",
+  "phonePlaceholder": "+1 234 567 8900",
+  "subjectLabel": "Subject",
+  "subjectPlaceholder": "Select a subject...",
+  "subjects": [
+    "Booking",
+    "Services",
+    "Promotions & Offers",
+    "Complaint",
+    "Other"
+  ],
+  "messageLabel": "Message",
+  "messagePlaceholder": "Enter your message here...",
+  "submitBtn": "Send Message",
+  "required": "*"
+}

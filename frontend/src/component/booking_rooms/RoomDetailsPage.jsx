@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { getRoomTranslation } from "../../data/roomTranslations";
 import { useParams, useNavigate } from "react-router-dom";
 import ApiService from "../../service/ApiService";
 import DatePicker from "react-datepicker";
@@ -82,11 +83,30 @@ const RoomDetailsPage = () => {
         }
 
         let translatedRoom = { ...room };
+        // 1. DB translation (highest priority)
         if (transRes) {
           if (transRes.roomType) translatedRoom.roomType = transRes.roomType;
           if (transRes.roomDescription)
             translatedRoom.roomDescription = transRes.roomDescription;
           if (transRes.location) translatedRoom.location = transRes.location;
+        }
+        // 2. Static fallback from source code
+        if (!transRes || (!transRes.roomType && !transRes.roomDescription)) {
+          const staticTrans = getRoomTranslation(room.roomType, lang);
+          if (staticTrans) {
+            if (
+              !translatedRoom.roomType ||
+              translatedRoom.roomType === room.roomType
+            )
+              translatedRoom.roomType =
+                staticTrans.roomType || translatedRoom.roomType;
+            if (
+              !translatedRoom.roomDescription ||
+              translatedRoom.roomDescription === room.roomDescription
+            )
+              translatedRoom.roomDescription =
+                staticTrans.roomDescription || translatedRoom.roomDescription;
+          }
         }
 
         setRoomDetails(translatedRoom);

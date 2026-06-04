@@ -15,4 +15,14 @@ public class RoomTranslationService {
         return repo.findByRoomIdAndLanguageCode(roomId, lang)
                 .orElse(null);
     }
+
+    public RoomTranslation saveTranslation(Long roomId, String lang, String roomType, String roomDescription) {
+        RoomTranslation trans = repo.findByRoomIdAndLanguageCode(roomId, lang)
+                .orElse(new RoomTranslation());
+        trans.setRoomId(roomId);
+        trans.setLanguageCode(lang);
+        if (roomType        != null) trans.setRoomType(roomType);
+        if (roomDescription != null) trans.setRoomDescription(roomDescription);
+        return repo.save(trans);
+    }
 }

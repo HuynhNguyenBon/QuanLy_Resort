@@ -13,6 +13,28 @@
   "searchResultTitle": "{{count}}件の",
   "searchResultTitle1": "空室が見つかりました",
   "clearResult": "結果をクリア",
+  "clearResults": "結果をクリア",
+  "weatherLocation": "ホーチミン市",
+  "promoSectionTag": "🏷️ 特別オファー",
+  "promoSectionTitle": "あなたへのプロモーション",
+  "promoSectionSub": "早めの予約でお得に",
+  "promoBookNow": "今すぐ予約",
+  "amenityTag": "🏖️ リゾート施設",
+  "amenityTitle": "完璧な休暇に必要なすべて",
+  "amenities": [
+    { "icon": "🏊", "label": "インフィニティプール", "desc": "6:00–22:00営業" },
+    { "icon": "🍽️", "label": "5つのレストラン", "desc": "多彩なグルメ" },
+    {
+      "icon": "💆",
+      "label": "スパ＆ウェルネス",
+      "desc": "完全リラクゼーション"
+    },
+    { "icon": "🏋️", "label": "ジム＆ヨガ", "desc": "最新設備完備" },
+    { "icon": "🎾", "label": "テニスコート", "desc": "4面の標準コート" },
+    { "icon": "🚗", "label": "空港送迎", "desc": "24時間高級車" },
+    { "icon": "🏖️", "label": "プライベートビーチ", "desc": "500mの海岸線" },
+    { "icon": "👶", "label": "キッズクラブ", "desc": "安全な遊び場" }
+  ],
   "roomsTag": "客室",
   "roomsTitle": "あなたにぴったりの部屋を選ぶ",
   "roomsSubtitle": "スタンダードから高級スイートまで、あらゆるニーズに対応しています。",

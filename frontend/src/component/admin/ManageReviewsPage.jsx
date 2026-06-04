@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 const STORAGE_PREFIX = "bbhh_reviews_";
 
@@ -37,6 +38,7 @@ const Stars = ({ value }) => (
 );
 
 const ManageReviewsPage = () => {
+  const { t } = useTranslation("adminPanel");
   const [groups, setGroups] = useState([]);
   const [search, setSearch] = useState("");
   const [minRating, setMinRating] = useState(0);
@@ -58,7 +60,7 @@ const ManageReviewsPage = () => {
   };
 
   const clearRoom = (roomId) => {
-    if (!window.confirm(`Xoá tất cả đánh giá của phòng #${roomId}?`)) return;
+    if (!window.confirm(`${t("reviews.confirmClear")} #${roomId}?`)) return;
     localStorage.removeItem(STORAGE_PREFIX + roomId);
     refresh();
   };
@@ -108,11 +110,12 @@ const ManageReviewsPage = () => {
               gap: 8,
             }}
           >
-            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>⭐</span> Đánh
-            giá
+            <span style={{ fontSize: "1.3rem", lineHeight: 1 }}>⭐</span>{" "}
+            {t("reviews.title")}
           </h2>
           <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>
-            {totalCount} đánh giá từ {groups.length} phòng
+            {totalCount} {t("reviews.subtitle")} {groups.length}{" "}
+            {t("reviews.subtitleRooms")}
             {totalCount > 0 && (
               <span
                 style={{ marginLeft: 8, color: "#f59e0b", fontWeight: 600 }}
@@ -135,28 +138,28 @@ const ManageReviewsPage = () => {
       >
         {[
           {
-            label: "Tổng đánh giá",
+            label: t("reviews.totalReviews"),
             value: totalCount,
             icon: "💬",
             color: "#6366f1",
             light: "#eef2ff",
           },
           {
-            label: "Số phòng",
+            label: t("reviews.totalRooms"),
             value: groups.length,
             icon: "🛏️",
             color: "#0d9488",
             light: "#f0fdfa",
           },
           {
-            label: "Đánh giá TB",
+            label: t("reviews.avgRating"),
             value: avgRating.toFixed(1) + " ★",
             icon: "⭐",
             color: "#f59e0b",
             light: "#fffbeb",
           },
           {
-            label: "5 sao",
+            label: t("reviews.fiveStars"),
             value: groups.reduce(
               (s, g) => s + g.reviews.filter((r) => r.rating === 5).length,
               0,
@@ -237,7 +240,7 @@ const ManageReviewsPage = () => {
               🔍
             </span>
             <input
-              placeholder="Tìm theo tên, nội dung..."
+              placeholder={t("reviews.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -283,7 +286,7 @@ const ManageReviewsPage = () => {
                   transition: "all 0.15s",
                 }}
               >
-                {r === 0 ? "Tất cả" : `${r}★+`}
+                {r === 0 ? t("reviews.allStars") : `${r}★+`}
               </button>
             ))}
           </div>
@@ -300,7 +303,8 @@ const ManageReviewsPage = () => {
               border: "1px solid #bbf7d0",
             }}
           >
-            {filtered.reduce((s, g) => s + g.reviews.length, 0)} kết quả
+            {filtered.reduce((s, g) => s + g.reviews.length, 0)}{" "}
+            {t("reviews.results")}
           </span>
         </div>
       </div>
@@ -312,9 +316,7 @@ const ManageReviewsPage = () => {
           style={{ padding: 60, textAlign: "center", color: "#aaa" }}
         >
           <div style={{ fontSize: "3rem", marginBottom: 12 }}>💬</div>
-          <div style={{ fontSize: "0.95rem" }}>
-            Chưa có đánh giá nào được lưu trên hệ thống.
-          </div>
+          <div style={{ fontSize: "0.95rem" }}>{t("reviews.noReviews")}</div>
         </div>
       ) : filtered.length === 0 ? (
         <div
@@ -322,7 +324,7 @@ const ManageReviewsPage = () => {
           style={{ padding: 60, textAlign: "center", color: "#aaa" }}
         >
           <div style={{ fontSize: "2rem", marginBottom: 8 }}>🔍</div>
-          <div>Không tìm thấy đánh giá phù hợp.</div>
+          <div>{t("reviews.noResults")}</div>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -363,7 +365,7 @@ const ManageReviewsPage = () => {
                     border: "1px solid #ccfbf1",
                   }}
                 >
-                  {reviews.length} đánh giá
+                  {reviews.length} {t("reviews.results")}
                 </span>
                 <span
                   style={{
@@ -399,7 +401,7 @@ const ManageReviewsPage = () => {
                     e.currentTarget.style.color = "#e74c3c";
                   }}
                 >
-                  🗑 Xoá tất cả
+                  🗑 {t("reviews.clearRoom")}
                 </button>
               </div>
 
