@@ -34,14 +34,14 @@ function RegisterPage() {
       setError("Email không đúng định dạng.");
       return false;
     }
-    
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(password)) {
-      setError("Mật khẩu ít nhất 6 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt."); 
+
+    if (!/^[0-9]{10,11}$/.test(phoneNumber)) {
+      setError("Số điện thoại phải từ 10–11 chữ số."); 
       return false;
     }
     
-    if (!/^[0-9]{10,11}$/.test(phoneNumber)) {
-      setError("Số điện thoại phải từ 10–11 chữ số."); 
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(password)) {
+      setError("Mật khẩu ít nhất 6 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt."); 
       return false;
     }
     
