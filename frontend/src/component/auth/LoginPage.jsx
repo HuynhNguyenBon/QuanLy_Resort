@@ -17,11 +17,22 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // 1. Kiểm tra nếu người dùng bỏ trống trường dữ liệu
     if (!email || !password) {
       setError("Vui lòng điền đầy đủ thông tin.");
       setTimeout(() => setError(""), 4000);
       return;
     }
+
+    // 2. KIỂM TRA ĐỊNH DẠNG EMAIL (THÊM MỚI Ở ĐÂY)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Email không đúng định dạng.");
+      setTimeout(() => setError(""), 4000); // Ẩn lỗi sau 4 giây
+      return;
+    }
+    
     setLoading(true);
     try {
       const res = await ApiService.loginUser({ email, password });
@@ -29,11 +40,14 @@ function LoginPage() {
         localStorage.setItem("token", res.token);
         localStorage.setItem("role", res.role);
         localStorage.setItem("userEmail", res.email || email);
-        const dest = res.role === "ADMIN" ? "/admin" : res.role === "STAFF" ? "/staff" : from;
-        navigate(dest, { replace: true });
+        navigate(from, { replace: true });
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Email hoặc mật khẩu không đúng.");
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Đăng nhập thất bại.");
+      }
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);
@@ -59,10 +73,10 @@ function LoginPage() {
         <div className="auth-form-box">
           <h2 className="auth-form-title">Đăng nhập</h2>
           <p className="auth-form-sub">Nhập thông tin tài khoản của bạn</p>
-
+          
           {error && <div className="auth-error"><span>⚠️</span>{error}</div>}
 
-          <form onSubmit={handleSubmit} autoComplete="off">
+          <form onSubmit={handleSubmit} autoComplete="off" noValidate>
             <div className="auth-field">
               <label>Email</label>
               <input
