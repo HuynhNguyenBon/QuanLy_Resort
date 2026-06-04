@@ -48,7 +48,6 @@ public class Utils {
 
     public static BookingDTO mapBookingEntityToBookingDTO(Booking booking) {
         BookingDTO bookingDTO = new BookingDTO();
-        // Map simple fields
         bookingDTO.setId(booking.getId());
         bookingDTO.setCheckInDate(booking.getCheckInDate());
         bookingDTO.setCheckOutDate(booking.getCheckOutDate());
@@ -56,6 +55,25 @@ public class Utils {
         bookingDTO.setNumOfChildren(booking.getNumOfChildren());
         bookingDTO.setTotalNumOfGuest(booking.getTotalNumOfGuest());
         bookingDTO.setBookingConfirmationCode(booking.getBookingConfirmationCode());
+        bookingDTO.setBookingStatus(booking.getBookingStatus());
+        bookingDTO.setPaymentStatus(booking.getPaymentStatus());
+        bookingDTO.setTotalPrice(booking.getTotalPrice());
+        if (booking.getRoom() != null) {
+            RoomDTO roomDTO = new RoomDTO();
+            roomDTO.setId(booking.getRoom().getId());
+            roomDTO.setRoomType(booking.getRoom().getRoomType());
+            roomDTO.setRoomPrice(booking.getRoom().getRoomPrice());
+            roomDTO.setRoomPhotoUrl(booking.getRoom().getRoomPhotoUrl());
+            bookingDTO.setRoom(roomDTO);
+        }
+        if (booking.getUser() != null) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(booking.getUser().getId());
+            userDTO.setName(booking.getUser().getName());
+            userDTO.setEmail(booking.getUser().getEmail());
+            userDTO.setPhoneNumber(booking.getUser().getPhoneNumber());
+            bookingDTO.setUser(userDTO);
+        }
         return bookingDTO;
     }
 
@@ -85,6 +103,8 @@ public class Utils {
         bookingDTO.setNumOfChildren(booking.getNumOfChildren());
         bookingDTO.setTotalNumOfGuest(booking.getTotalNumOfGuest());
         bookingDTO.setBookingConfirmationCode(booking.getBookingConfirmationCode());
+        bookingDTO.setBookingStatus(booking.getBookingStatus());
+        bookingDTO.setPaymentStatus(booking.getPaymentStatus());
         if (mapUser) {
             bookingDTO.setUser(Utils.mapUserEntityToUserDTO(booking.getUser()));
         }
