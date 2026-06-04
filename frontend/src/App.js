@@ -47,6 +47,7 @@ const RevenuePage            = lazy(() => import('./component/admin/RevenuePage'
 const ManageServicesPage     = lazy(() => import('./component/admin/ManageServicesPage'));
 const ManageStaffPage        = lazy(() => import('./component/admin/ManageStaffPage'));
 const TransactionHistoryPage = lazy(() => import('./component/admin/TransactionHistoryPage'));
+const WalkInBookingPage      = lazy(() => import('./component/admin/WalkInBookingPage'));
 
 const LOADING = <div className="page-loading"><div className="page-loading-spinner" /></div>;
 
@@ -61,6 +62,7 @@ function StaffSite() {
           <Route path="edit-booking/:bookingCode" element={<EditBookingPage />} />
           <Route path="customers" element={<ManageUsersPage />} />
           <Route path="transactions" element={<TransactionHistoryPage />} />
+          <Route path="walk-in" element={<WalkInBookingPage />} />
         </Route>
       </Routes>
     </Suspense>
@@ -85,6 +87,7 @@ function AdminSite() {
           <Route path="manage-services" element={<ManageServicesPage />} />
           <Route path="manage-staff" element={<ManageStaffPage />} />
           <Route path="transactions" element={<TransactionHistoryPage />} />
+          <Route path="walk-in" element={<WalkInBookingPage />} />
         </Route>
       </Routes>
     </Suspense>
