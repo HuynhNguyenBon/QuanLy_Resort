@@ -1,37 +1,74 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiService from "../../service/ApiService";
+import { useTranslation } from "react-i18next";
 import "../../UiverseElements.css";
 
-const ForgotPasswordPage = () => {
-  const [email,   setEmail]   = useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error,   setError]   = useState("");
+const ResetPasswordPage = () => {
+  const { t } = useTranslation("auth");
   const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    email: "",
+    otp: "",
+    newPassword: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) {
-      setError("Vui lòng nhập địa chỉ email."); 
+
+    // 1. Kiểm tra bỏ trống
+    if (!form.email.trim() || !form.otp.trim() || !form.newPassword.trim()) {
+      setError("Vui lòng điền đầy đủ thông tin.");
+      setTimeout(() => setError(""), 4000);
       return;
     }
-    
+
+    // 2. Kiểm tra định dạng Email (Đuôi từ 2 đến 4 ký tự)
     const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
-
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(form.email)) {
       setError("Email không đúng định dạng.");
+      setTimeout(() => setError(""), 4000);
       return;
     }
 
-    setLoading(true);
-    setError("");
+    // 3. ĐÃ THÊM: Kiểm tra độ mạnh mật khẩu (Giống hệt trang Đăng ký)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!passwordRegex.test(form.newPassword)) {
+      setError("Mật khẩu ít nhất 6 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.");
+      setTimeout(() => setError(""), 5000);
+      return;
+    }
+
     try {
-      const res = await ApiService.forgotPassword(email);
-      setSuccess("Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.");
-      setTimeout(() => navigate("/reset-password"), 2500);
+      setLoading(true);
+      setError("");
+
+      const response = await ApiService.resetPassword(
+        form.email,
+        form.otp,
+        form.newPassword
+      );
+
+      setSuccess(response.data?.message || "Đặt lại mật khẩu thành công!");
+      setTimeout(() => navigate("/login"), 2500);
     } catch (err) {
-      setError(err.response?.data?.message || "Không tìm thấy tài khoản với email này.");
+      if (err.response) {
+        setError(err.response.data.message || t("resetPassword.resetFailed"));
+      } else {
+        setError(t("forgotPassword.serverError") || "Đã xảy ra lỗi, vui lòng thử lại.");
+      }
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);
@@ -43,40 +80,67 @@ const ForgotPasswordPage = () => {
       <div className="auth-left">
         <div className="auth-left-content">
           <div className="auth-brand">★ BBHH Resort</div>
-          <h2 className="auth-left-title">Quên mật khẩu?</h2>
-          <p className="auth-left-sub">Đừng lo! Chúng tôi sẽ gửi mã OTP đến email để bạn đặt lại mật khẩu.</p>
+          <h2 className="auth-left-title">Tạo mật khẩu mới</h2>
+          <p className="auth-left-sub">Chỉ còn một bước nữa! Vui lòng nhập mã OTP và thiết lập mật khẩu mới của bạn.</p>
           <div className="auth-features">
-            <div className="auth-feature-item"><span>📧</span> Nhận OTP qua email</div>
-            <div className="auth-feature-item"><span>🔐</span> Đặt lại mật khẩu an toàn</div>
-            <div className="auth-feature-item"><span>⚡</span> Xong trong vài phút</div>
+            <div className="auth-feature-item"><span>🛡️</span> Bảo mật tài khoản cao</div>
+            <div className="auth-feature-item"><span>🚀</span> Hoàn tất nhanh chóng</div>
+            <div className="auth-feature-item"><span>✨</span> Trải nghiệm liền mạch</div>
           </div>
         </div>
       </div>
 
       <div className="auth-right">
         <div className="auth-form-box">
-          <div className="auth-form-icon">🔑</div>
-          <h2 className="auth-form-title">Khôi phục mật khẩu</h2>
-          <p className="auth-form-sub">Nhập email để nhận mã OTP xác nhận</p>
+          <div className="auth-form-icon">🔒</div>
+          <h2 className="auth-form-title">{t("resetPassword.title") || "Đặt lại mật khẩu"}</h2>
+          <p className="auth-form-sub">Nhập thông tin để hoàn tất</p>
 
           {error   && <div className="auth-error">  <span>⚠️</span>{error}</div>}
           {success && <div className="auth-success"><span>✅</span>{success}</div>}
 
-          {/* ĐÃ THÊM THUỘC TÍNH noValidate TẠI ĐÂY */}
           <form onSubmit={handleSubmit} autoComplete="off" noValidate>
+            
             <div className="auth-field">
-              <label>Địa chỉ email</label>
+              <label>Email</label>
               <input
                 type="email"
-                placeholder="ten@gmail.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                autoComplete="email"
+                name="email"
+                placeholder={t("resetPassword.emailPlaceholder") || "example@email.com"}
+                value={form.email}
+                onChange={handleChange}
+                autoComplete="off"
               />
             </div>
 
+            <div className="auth-field">
+              <label>Mã OTP</label>
+              <input
+                type="text"
+                name="otp"
+                placeholder={t("resetPassword.otpPlaceholder") || "Nhập mã OTP (VD: 123456)"}
+                value={form.otp}
+                onChange={handleChange}
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="auth-field">
+              <label>Mật khẩu mới</label>
+              <input
+                type="password"
+                name="newPassword"
+                placeholder="Tối thiểu 6 ký tự"
+                value={form.newPassword}
+                onChange={handleChange}
+                autoComplete="new-password"
+              />
+              {/* ĐÃ THÊM: Gợi ý định dạng mật khẩu bên dưới input */}
+              <p className="auth-hint">Gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@$!%*?&)</p>
+            </div>
+
             <button type="submit" className="auth-submit-btn" disabled={loading}>
-              {loading ? "Đang gửi OTP..." : "Gửi mã OTP"}
+              {loading ? (t("resetPassword.resetting") || "Đang xử lý...") : (t("resetPassword.title") || "Đặt lại mật khẩu")}
             </button>
           </form>
 
@@ -89,4 +153,4 @@ const ForgotPasswordPage = () => {
   );
 };
 
-export default ForgotPasswordPage;
+export default ResetPasswordPage;
