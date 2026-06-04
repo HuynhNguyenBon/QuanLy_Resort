@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 
 const fmtDate = (d) =>
@@ -79,6 +80,7 @@ const Field = ({ label, value, accent }) => (
 );
 
 const EditBookingPage = () => {
+  const { t } = useTranslation("adminPanel");
   const navigate = useNavigate();
   const { bookingCode } = useParams();
   const [booking, setBooking] = useState(null);
@@ -140,7 +142,7 @@ const EditBookingPage = () => {
               color: "#1a1a2e",
             }}
           >
-            Chi tiết đặt phòng{" "}
+            {t("editBooking.title")}{" "}
             <code
               style={{
                 background: "#f0fdfa",
@@ -244,7 +246,7 @@ const EditBookingPage = () => {
                 style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}
               >
                 {fmtDate(booking.checkInDate)} → {fmtDate(booking.checkOutDate)}{" "}
-                · {nights} đêm
+                · {nights} {t("editBooking.stayNights")}
               </div>
             </div>
             <div style={{ marginLeft: "auto", textAlign: "right" }}>
@@ -260,7 +262,7 @@ const EditBookingPage = () => {
               <div
                 style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.78rem" }}
               >
-                Tổng tiền
+                {t("editBooking.totalLabel")}
               </div>
             </div>
           </div>
@@ -354,7 +356,7 @@ const EditBookingPage = () => {
                   gap: 6,
                 }}
               >
-                📅 Chi tiết đặt phòng
+                📅 {t("editBooking.bookingInfo")}
               </div>
               <Field
                 label="Ngày nhận phòng"
@@ -390,7 +392,7 @@ const EditBookingPage = () => {
                   gap: 6,
                 }}
               >
-                👤 Thông tin khách hàng
+                👤 {t("editBooking.guestInfo")}
               </div>
               <Field label="Họ và tên" value={booking.user?.name} />
               <Field label="Email" value={booking.user?.email} />
@@ -433,7 +435,7 @@ const EditBookingPage = () => {
                 e.currentTarget.style.background = "#fff";
               }}
             >
-              Quay lại
+              {t("editBooking.back")}
             </button>
             <button
               onClick={handleCancel}
@@ -461,7 +463,7 @@ const EditBookingPage = () => {
                 e.currentTarget.style.color = "#e74c3c";
               }}
             >
-              {cancelling ? "Đang huỷ..." : "🗑 Huỷ đặt phòng"}
+              {cancelling ? "..." : `🗑 ${t("editBooking.cancelBtn")}`}
             </button>
           </div>
         </div>

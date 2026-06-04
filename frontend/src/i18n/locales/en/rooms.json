@@ -104,6 +104,7 @@
     "errorSelectDates": "Please select check-in and check-out dates.",
     "errorCheckoutAfterCheckin": "Check-out date must be after check-in date.",
     "noRoomsFound": "No rooms available for this period. Please try different dates.",
-    "searchError": "An error occurred while searching. Please try again."
+    "searchError": "An error occurred while searching. Please try again.",
+    "availableBadge": "{{count}} rooms available from {{checkIn}} to {{checkOut}}"
   }
 }

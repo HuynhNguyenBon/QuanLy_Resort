@@ -4,26 +4,8 @@ import { useNavigate } from "react-router-dom";
 import ApiService from "../../service/ApiService";
 import "../../UiverseElements.css";
 
-const STEPS = [
-  {
-    icon: "📧",
-    title: "Kiểm tra email",
-    desc: "Mã xác nhận được gửi vào email khi bạn đặt phòng thành công.",
-  },
-  {
-    icon: "🔑",
-    title: "Nhập mã xác nhận",
-    desc: "Dán hoặc gõ mã vào ô tìm kiếm bên trên (ví dụ: ABC123456).",
-  },
-  {
-    icon: "✅",
-    title: "Xem thông tin",
-    desc: "Hệ thống sẽ hiển thị đầy đủ thông tin đặt phòng của bạn.",
-  },
-];
-
 const FindBookingPage = () => {
-  const { t } = useTranslation("rooms");
+  const { t } = useTranslation("findBooking");
   const navigate = useNavigate();
 
   const [confirmationCode, setConfirmationCode] = useState("");
@@ -45,6 +27,8 @@ const FindBookingPage = () => {
   const [lookupResults, setLookupResults] = useState([]);
   const [lookupError, setLookupError] = useState("");
 
+  const STEPS = t("steps", { returnObjects: true });
+
   const isPending = (booking) => {
     const p = (booking.paymentStatus || "").toString().toUpperCase();
     if (p === "PAID") return false;
@@ -65,12 +49,10 @@ const FindBookingPage = () => {
       if (res.status === "OK") {
         window.location.href = res.paymentUrl;
       } else {
-        setError("Không thể tạo link thanh toán. Vui lòng thử lại.");
+        setError(t("errorPayment"));
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Lỗi thanh toán. Vui lòng thử lại.",
-      );
+      setError(err.response?.data?.message || t("errorPayment"));
     } finally {
       setPayLoading(false);
     }
@@ -90,16 +72,12 @@ const FindBookingPage = () => {
           b.user?.email?.toLowerCase() === lookupEmail.trim().toLowerCase(),
       );
       if (matched.length === 0) {
-        setLookupError(
-          "Không tìm thấy đặt phòng nào với email này. Kiểm tra lại hoặc liên hệ hỗ trợ.",
-        );
+        setLookupError(t("lookupError"));
       } else {
         setLookupResults(matched);
       }
-    } catch (err) {
-      setLookupError(
-        "Không thể tra cứu tự động. Vui lòng liên hệ 0909.448.608 hoặc gửi yêu cầu hỗ trợ bên dưới.",
-      );
+    } catch {
+      setLookupError(t("lookupErrorGeneral"));
     } finally {
       setLookupLoading(false);
     }
@@ -111,13 +89,10 @@ const FindBookingPage = () => {
     setContactSending(true);
     try {
       const subject = encodeURIComponent(
-        `[BBHH Resort] Hỗ trợ tìm đặt phòng - ${contactForm.name}`,
+        `[BBHH Resort] Support - ${contactForm.name}`,
       );
       const body = encodeURIComponent(
-        `Họ tên: ${contactForm.name}\n` +
-          `Email: ${contactForm.email}\n\n` +
-          `Nội dung:\n${contactForm.message}\n\n` +
-          `---\nGửi từ trang Tìm đặt phòng - BBHH Resort`,
+        `Name: ${contactForm.name}\nEmail: ${contactForm.email}\n\n${contactForm.message}`,
       );
       window.location.href = `mailto:support@bbhh.com?subject=${subject}&body=${body}`;
       setContactSuccess(true);
@@ -133,7 +108,7 @@ const FindBookingPage = () => {
 
   const handleSearch = async () => {
     if (!confirmationCode.trim()) {
-      setError("Vui lòng nhập mã xác nhận đặt phòng.");
+      setError(t("errorEmpty"));
       setTimeout(() => setError(""), 4000);
       return;
     }
@@ -153,13 +128,11 @@ const FindBookingPage = () => {
       );
     } catch (err) {
       const status = err.response?.status;
-      if (status === 404) {
-        setError("Không tìm thấy đặt phòng với mã này. Vui lòng kiểm tra lại.");
-      } else {
-        setError(
-          err.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại sau.",
-        );
-      }
+      setError(
+        status === 404
+          ? t("errorNotFound")
+          : err.response?.data?.message || t("errorGeneral"),
+      );
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);
@@ -171,22 +144,20 @@ const FindBookingPage = () => {
       {/* ── HERO ── */}
       <div className="fb-hero">
         <div className="fb-hero-inner">
-          <p className="fb-hero-tag">TRA CỨU ĐẶT PHÒNG</p>
+          <p className="fb-hero-tag">{t("heroTag")}</p>
           <h1 className="fb-hero-h1">
-            Tìm <span className="accent">Đặt Phòng</span> của bạn
+            {t("heroTitle1")} <span className="accent">{t("heroAccent")}</span>{" "}
+            {t("heroTitle2")}
           </h1>
-          <p className="fb-hero-sub">
-            Nhập mã xác nhận để xem toàn bộ thông tin đặt phòng
-          </p>
+          <p className="fb-hero-sub">{t("heroSub")}</p>
 
-          {/* Search box */}
           <div className="fb-search-box">
             <div className="fb-input-wrap">
               <span className="fb-input-icon">🎫</span>
               <input
                 type="text"
                 className="fb-input"
-                placeholder="Nhập mã xác nhận (VD: ABC123456)"
+                placeholder={t("placeholder")}
                 value={confirmationCode}
                 onChange={(e) =>
                   setConfirmationCode(e.target.value.toUpperCase())
@@ -213,7 +184,7 @@ const FindBookingPage = () => {
               onClick={handleSearch}
               disabled={loading}
             >
-              {loading ? "Đang tìm..." : "Tìm đặt phòng"}
+              {loading ? t("searching") : t("searchBtn")}
             </button>
           </div>
 
@@ -226,14 +197,14 @@ const FindBookingPage = () => {
         <div className="fb-result-section" id="fb-result">
           <div className="fb-result-card">
             <div className="fb-result-top">
-              <div className="fb-confirmed-badge">✓ Đặt phòng đã xác nhận</div>
+              <div className="fb-confirmed-badge">✓ {t("confirmedBadge")}</div>
               <span className="fb-result-code">
-                Mã: <strong>{bookingDetails.bookingConfirmationCode}</strong>
+                {t("codeLabel")}:{" "}
+                <strong>{bookingDetails.bookingConfirmationCode}</strong>
               </span>
             </div>
 
             <div className="fb-result-grid">
-              {/* Ảnh */}
               <div className="fb-room-img-wrap">
                 <img
                   src={bookingDetails.room.roomPhotoUrl}
@@ -244,34 +215,33 @@ const FindBookingPage = () => {
                 </span>
               </div>
 
-              {/* Thông tin */}
               <div className="fb-result-info">
                 <div className="fb-info-block">
-                  <h3 className="fb-info-title">📅 Thông tin đặt phòng</h3>
+                  <h3 className="fb-info-title">📅 {t("bookingInfo")}</h3>
                   <div className="fb-field">
-                    <label>Mã xác nhận</label>
+                    <label>{t("confirmCode")}</label>
                     <span style={{ color: "var(--amber)", fontWeight: 700 }}>
                       {bookingDetails.bookingConfirmationCode}
                     </span>
                   </div>
                   <div className="fb-field">
-                    <label>Nhận phòng</label>
+                    <label>{t("checkIn")}</label>
                     <span className="fb-teal">
                       {bookingDetails.checkInDate}
                     </span>
                   </div>
                   <div className="fb-field">
-                    <label>Trả phòng</label>
+                    <label>{t("checkOut")}</label>
                     <span className="fb-teal">
                       {bookingDetails.checkOutDate}
                     </span>
                   </div>
                   <div className="fb-field">
-                    <label>Số khách</label>
+                    <label>{t("guestCount")}</label>
                     <span>
-                      {bookingDetails.numOfAdults} người lớn
+                      {bookingDetails.numOfAdults} {t("adults")}
                       {bookingDetails.numOfChildren > 0
-                        ? ` · ${bookingDetails.numOfChildren} trẻ em`
+                        ? ` · ${bookingDetails.numOfChildren} ${t("children")}`
                         : ""}
                     </span>
                   </div>
@@ -280,27 +250,25 @@ const FindBookingPage = () => {
                 <div className="fb-divider" />
 
                 <div className="fb-info-block">
-                  <h3 className="fb-info-title">👤 Thông tin khách hàng</h3>
+                  <h3 className="fb-info-title">👤 {t("guestInfo")}</h3>
                   <div className="fb-field">
-                    <label>Họ và tên</label>
+                    <label>{t("fullName")}</label>
                     <span>{bookingDetails.user.name}</span>
                   </div>
                   <div className="fb-field">
-                    <label>Email</label>
+                    <label>{t("email")}</label>
                     <span>{bookingDetails.user.email}</span>
                   </div>
                   <div className="fb-field">
-                    <label>Số điện thoại</label>
+                    <label>{t("phone")}</label>
                     <span>{bookingDetails.user.phoneNumber || "—"}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="fb-result-footer">
-              🏨 Cảm ơn bạn đã chọn BBHH Resort. Chúc bạn có một kỳ nghỉ tuyệt
-              vời!
-            </div>
+            <div className="fb-result-footer">🏨 {t("thankYou")}</div>
+
             <div className="fb-result-actions">
               {isPending(bookingDetails) ? (
                 <>
@@ -308,8 +276,8 @@ const FindBookingPage = () => {
                     <div className="fb-pay-banner-info">
                       <span>⏳</span>
                       <div>
-                        <strong>Booking chưa được thanh toán</strong>
-                        <p>Hoàn tất thanh toán để xác nhận chỗ ở của bạn</p>
+                        <strong>{t("unpaidTitle")}</strong>
+                        <p>{t("unpaidDesc")}</p>
                       </div>
                     </div>
                     <button
@@ -317,7 +285,7 @@ const FindBookingPage = () => {
                       onClick={handlePayNow}
                       disabled={payLoading}
                     >
-                      {payLoading ? "Đang xử lý..." : "💳 Thanh toán ngay"}
+                      {payLoading ? t("processing") : `💳 ${t("payNow")}`}
                     </button>
                   </div>
                   <button
@@ -327,7 +295,7 @@ const FindBookingPage = () => {
                       setConfirmationCode("");
                     }}
                   >
-                    🔍 Tra cứu mã khác
+                    🔍 {t("searchOther")}
                   </button>
                 </>
               ) : (
@@ -335,8 +303,8 @@ const FindBookingPage = () => {
                   <div className="fb-confirmed-banner">
                     <span>✅</span>
                     <div>
-                      <strong>Booking đã được xác nhận</strong>
-                      <p>Chúc bạn có kỳ nghỉ tuyệt vời tại BBHH Resort!</p>
+                      <strong>{t("confirmedTitle")}</strong>
+                      <p>{t("confirmedDesc")}</p>
                     </div>
                   </div>
                   <div className="fb-action-row">
@@ -344,7 +312,7 @@ const FindBookingPage = () => {
                       className="fb-action-btn primary"
                       onClick={() => navigate("/profile")}
                     >
-                      👤 Quản lý đặt phòng
+                      👤 {t("manageBooking")}
                     </button>
                     <button
                       className="fb-action-btn ghost"
@@ -353,7 +321,7 @@ const FindBookingPage = () => {
                         setConfirmationCode("");
                       }}
                     >
-                      🔍 Tra cứu mã khác
+                      🔍 {t("searchOther")}
                     </button>
                   </div>
                 </>
@@ -363,13 +331,12 @@ const FindBookingPage = () => {
         </div>
       )}
 
-      {/* ── HƯỚNG DẪN (ẩn khi có kết quả) ── */}
+      {/* ── HƯỚNG DẪN ── */}
       {!bookingDetails && (
         <div className="fb-guide-section">
           <div className="fb-guide-inner">
-            {/* Các bước */}
             <div className="fb-guide-steps">
-              <h2 className="fb-guide-title">Cách tra cứu đặt phòng</h2>
+              <h2 className="fb-guide-title">{t("guideTitle")}</h2>
               <div className="fb-steps-grid">
                 {STEPS.map((s, i) => (
                   <div key={i} className="fb-step-card">
@@ -381,20 +348,17 @@ const FindBookingPage = () => {
                 ))}
               </div>
 
-              {/* Form tra cứu theo email */}
               {showEmailLookup && (
                 <div className="fb-email-lookup">
                   <h4 className="fb-lookup-title">
-                    📧 Tìm mã xác nhận theo email
+                    📧 {t("emailLookupTitle")}
                   </h4>
-                  <p className="fb-lookup-sub">
-                    Nhập email bạn dùng khi đặt phòng để tìm lại mã xác nhận.
-                  </p>
+                  <p className="fb-lookup-sub">{t("emailLookupSub")}</p>
                   <form onSubmit={handleEmailLookup} className="fb-lookup-form">
                     <input
                       type="email"
                       className="fb-lookup-input"
-                      placeholder="email@gmail.com"
+                      placeholder={t("emailPlaceholder")}
                       value={lookupEmail}
                       onChange={(e) => setLookupEmail(e.target.value)}
                       required
@@ -404,18 +368,18 @@ const FindBookingPage = () => {
                       className="fb-lookup-btn"
                       disabled={lookupLoading}
                     >
-                      {lookupLoading ? "Đang tìm..." : "🔍 Tìm kiếm"}
+                      {lookupLoading
+                        ? t("lookupSearching")
+                        : `🔍 ${t("lookupBtn")}`}
                     </button>
                   </form>
-
                   {lookupError && (
                     <p className="fb-lookup-error">⚠️ {lookupError}</p>
                   )}
-
                   {lookupResults.length > 0 && (
                     <div className="fb-lookup-results">
                       <p className="fb-lookup-found">
-                        Tìm thấy {lookupResults.length} đặt phòng:
+                        {t("lookupFound", { count: lookupResults.length })}
                       </p>
                       {lookupResults.map((b) => (
                         <div
@@ -424,13 +388,6 @@ const FindBookingPage = () => {
                           onClick={() => {
                             setConfirmationCode(b.bookingConfirmationCode);
                             setShowEmailLookup(false);
-                            setTimeout(
-                              () =>
-                                document
-                                  .querySelector(".fb-search-btn")
-                                  ?.click(),
-                              100,
-                            );
                           }}
                         >
                           <div className="fb-lookup-item-code">
@@ -448,41 +405,38 @@ const FindBookingPage = () => {
               )}
             </div>
 
-            {/* Cần hỗ trợ */}
             <div className="fb-support-box">
               <div className="fb-support-header">
                 <div className="fb-support-icon">💬</div>
                 <div className="fb-support-title-wrap">
-                  <h3>Không tìm thấy mã xác nhận?</h3>
-                  <p>Kiểm tra hộp thư spam hoặc liên hệ với chúng tôi</p>
+                  <h3>{t("supportTitle")}</h3>
+                  <p>{t("supportDesc")}</p>
                 </div>
                 <a href="tel:0909448608" className="fb-hotline-btn">
-                  📞 0909.448.608
+                  📞 {t("hotline")}
                 </a>
               </div>
 
               <div className="fb-support-divider">
-                <span>hoặc gửi yêu cầu hỗ trợ</span>
+                <span>{t("orSend")}</span>
               </div>
 
               {contactSuccess ? (
                 <div className="fb-support-success">
                   <span>✅</span>
                   <div>
-                    <strong>Đã mở ứng dụng email!</strong>
-                    <p>
-                      Vui lòng nhấn Gửi trong email để hoàn tất yêu cầu hỗ trợ.
-                    </p>
+                    <strong>{t("successEmail")}</strong>
+                    <p>{t("successEmailDesc")}</p>
                   </div>
                 </div>
               ) : (
                 <form onSubmit={handleContact} className="fb-support-form">
                   <div className="fb-support-row">
                     <div className="fb-support-field">
-                      <label>Họ và tên</label>
+                      <label>{t("nameLabel")}</label>
                       <input
                         type="text"
-                        placeholder="Nguyễn Văn A"
+                        placeholder={t("namePlaceholder")}
                         value={contactForm.name}
                         onChange={(e) =>
                           setContactForm((p) => ({
@@ -494,10 +448,10 @@ const FindBookingPage = () => {
                       />
                     </div>
                     <div className="fb-support-field">
-                      <label>Email của bạn</label>
+                      <label>{t("yourEmail")}</label>
                       <input
                         type="email"
-                        placeholder="email@gmail.com"
+                        placeholder={t("emailPlaceholder")}
                         value={contactForm.email}
                         onChange={(e) =>
                           setContactForm((p) => ({
@@ -510,9 +464,9 @@ const FindBookingPage = () => {
                     </div>
                   </div>
                   <div className="fb-support-field">
-                    <label>Mô tả vấn đề</label>
+                    <label>{t("issueDesc")}</label>
                     <textarea
-                      placeholder="VD: Tôi đã đặt phòng ngày 16/05 nhưng không nhận được email xác nhận..."
+                      placeholder={t("issuePlaceholder")}
                       value={contactForm.message}
                       onChange={(e) =>
                         setContactForm((p) => ({
@@ -529,9 +483,7 @@ const FindBookingPage = () => {
                     className="fb-support-submit"
                     disabled={contactSending}
                   >
-                    {contactSending
-                      ? "Đang mở email..."
-                      : "📧 Gửi yêu cầu hỗ trợ"}
+                    {contactSending ? t("sending") : `📧 ${t("sendSupport")}`}
                   </button>
                 </form>
               )}

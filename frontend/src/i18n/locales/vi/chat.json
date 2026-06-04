@@ -1,0 +1,103 @@
+{
+  "headerName": "BBHH Concierge",
+  "headerSub": "Trợ lý Resort · Luôn sẵn sàng",
+  "placeholder": "Hỏi BBHH Assistant...",
+  "quickLabel": "Câu hỏi thường gặp:",
+  "welcome": "Xin chào! Tôi là **BBHH Assistant** 🤖\nTôi có thể giúp bạn tìm hiểu về phòng nghỉ, đặt phòng, dịch vụ spa, nhà hàng và nhiều hơn nữa.\n\nHãy chọn chủ đề bên dưới hoặc gõ câu hỏi của bạn! 😊",
+  "fallback": "Cảm ơn bạn đã liên hệ! Tôi chưa có câu trả lời cho câu hỏi này.\n\nBạn có thể liên hệ trực tiếp:\n📞 Hotline: **0123 456 789**\n📧 Email: **info@bbhh-resort.com**",
+  "quickActions": [
+    { "label": "🏨 Đặt phòng", "query": "tôi muốn đặt phòng" },
+    { "label": "💰 Bảng giá", "query": "giá phòng bao nhiêu" },
+    { "label": "🏊 Hồ bơi & Spa", "query": "hồ bơi và spa" },
+    { "label": "🍽️ Nhà hàng", "query": "nhà hàng ăn uống" },
+    { "label": "📍 Địa chỉ", "query": "địa chỉ resort ở đâu" },
+    { "label": "🎁 Ưu đãi", "query": "ưu đãi khuyến mãi" }
+  ],
+  "responses": {
+    "greeting": "Xin chào! Tôi là **BBHH Assistant** 🤖\nRất vui được gặp bạn! Tôi có thể giúp bạn về phòng nghỉ, đặt phòng, giá cả và các dịch vụ tại resort. Bạn cần hỗ trợ gì hôm nay?",
+    "booking": "Để đặt phòng tại BBHH Resort, bạn có thể:\n\n✅ Đặt trực tiếp tại mục **Phòng** trên website\n✅ Gọi hotline: **0123 456 789** (24/7)\n✅ Email: **booking@bbhh-resort.com**\n\nChúng tôi cần biết ngày check-in, check-out và số lượng khách để hỗ trợ bạn nhé!",
+    "price": "Bảng giá phòng tại BBHH Resort:\n\n🏠 **Standard** — từ $80/đêm\n🏠 **Superior** — từ $120/đêm\n🏠 **Deluxe** — từ $180/đêm\n🌊 **Suite Hướng Biển** — từ $280/đêm\n👨‍👩‍👧 **Family** — từ $220/đêm\n👑 **Presidential** — từ $450/đêm\n\n💡 Giá có thể thay đổi theo mùa và ưu đãi. Liên hệ để được tư vấn giá tốt nhất!",
+    "rooms": "BBHH Resort có đa dạng các loại phòng:\n\n🛏️ **Standard** — tối đa 2 người\n🛏️ **Superior** — tối đa 3 người\n🛏️ **Deluxe** — tối đa 4 người\n🌊 **Suite Hướng Biển** — tối đa 5 người\n👨‍👩‍👧 **Family** — tối đa 6 người\n👑 **Presidential** — tối đa 8 người\n\nMỗi phòng đều có Wi-Fi miễn phí, điều hòa, minibar và view đẹp!",
+    "pool": "🏊 **Hồ bơi tại BBHH Resort:**\n\n✨ Hồ bơi vô cực nhìn ra biển (mở 6:00 – 22:00)\n✨ Hồ bơi trẻ em (độ sâu 60cm)\n✨ Pool Bar phục vụ đồ uống tươi mát\n✨ Ghế nằm & dù che miễn phí\n\n🔒 Hồ bơi chỉ dành cho khách lưu trú tại resort.",
+    "spa": "💆 **Trung tâm Spa & Gym BBHH:**\n\n🌸 **Spa**: Massage toàn thân, liệu pháp đá nóng, chăm sóc da\n💪 **Gym**: Thiết bị hiện đại, mở 5:00 – 23:00\n🧘 **Yoga**: Lớp học buổi sáng tại bãi biển (7:00 – 8:00)\n🛁 **Jacuzzi**: Bể sục thư giãn cao cấp\n🔥 **Sauna**: Phòng xông hơi khô & ướt\n\nĐặt lịch spa qua lễ tân để nhận ưu đãi!",
+    "restaurant": "🍽️ **Ẩm thực tại BBHH Resort:**\n\n☀️ **Buffet sáng** (6:30 – 10:00): 20+ món tươi ngon\n🌊 **Nhà hàng hải sản** (11:00 – 22:00)\n🍸 **Sky Bar** tầng thượng (17:00 – 24:00)\n🍷 **Wine & Dine** — bữa tối lãng mạn\n\n🎉 Đặt bàn trước để có vị trí view biển đẹp nhất!",
+    "location": "📍 **BBHH Resort**\nĐịa chỉ: 123 Đường Biển, TP. Đà Nẵng, Việt Nam\n\n🚗 Cách sân bay Đà Nẵng: **15 phút** (12km)\n🏖️ Ngay mặt tiền bãi biển Mỹ Khê\n\n🚌 **Đưa đón sân bay miễn phí** cho khách đặt phòng!",
+    "contact": "📞 **Liên hệ BBHH Resort:**\n\n📱 Hotline: **0123 456 789** (24/7)\n📧 Email: **info@bbhh-resort.com**\n💬 Zalo / WhatsApp: **0123 456 789**\n\n⏰ Đội ngũ hỗ trợ 24/7, luôn sẵn sàng!",
+    "promo": "🎁 **Ưu đãi hiện có tại BBHH Resort:**\n\n⭐ Đặt sớm 30 ngày: giảm **15%**\n⭐ Lưu trú từ 3 đêm: giảm **10%**\n⭐ Combo phòng + Spa: tiết kiệm **20%**\n\n👉 Xem thêm tại mục **Ưu đãi** trên website!",
+    "checkin": "🕐 **Giờ nhận & trả phòng:**\n\n✅ **Check-in**: từ **14:00**\n✅ **Check-out**: trước **12:00**\n\n💡 Early check-in & Late check-out có thể sắp xếp theo yêu cầu. Liên hệ lễ tân trước nhé!",
+    "wifi": "📶 **Wi-Fi tại BBHH Resort:**\n\nWi-Fi tốc độ cao miễn phí toàn resort:\n✅ Trong phòng, bãi biển, hồ bơi\n✅ Nhà hàng & Sky Bar\n✅ Lobby & khu vực công cộng\n\nMật khẩu được cung cấp khi check-in!",
+    "family": "👨‍👩‍👧 **BBHH Resort thân thiện với gia đình:**\n\n✅ Phòng Family rộng rãi cho tối đa 6 người\n✅ Hồ bơi trẻ em an toàn (60cm)\n✅ Khu vui chơi trong nhà\n✅ Menu đặc biệt cho trẻ em\n✅ Miễn phí cho trẻ dưới 6 tuổi\n\nLiên hệ để được tư vấn phòng phù hợp!",
+    "beach": "🏖️ **Bãi biển BBHH Resort:**\n\n✨ Bãi biển riêng dài 500m\n✨ Cát trắng mịn, nước biển trong xanh\n✨ Cho thuê dù, ghế nằm, lướt sóng\n✨ Bar bãi biển phục vụ đồ uống\n✨ Nhân viên cứu hộ trực 24/7\n\n🌅 Hoàng hôn tại đây cực kỳ đẹp!"
+  },
+  "patterns": {
+    "greeting": ["chào", "hello", "hi", "xin chào", "hey", "alo"],
+    "booking": [
+      "đặt phòng",
+      "book",
+      "booking",
+      "reservation",
+      "đặt lịch",
+      "đặt trước"
+    ],
+    "price": ["giá", "bao nhiêu", "chi phí", "cost", "phí", "tiền", "price"],
+    "rooms": ["phòng", "room", "suite", "deluxe", "standard", "loại phòng"],
+    "pool": ["hồ bơi", "pool", "bơi lội", "swim", "bể bơi"],
+    "spa": [
+      "spa",
+      "massage",
+      "gym",
+      "fitness",
+      "thể dục",
+      "thư giãn",
+      "jacuzzi",
+      "yoga"
+    ],
+    "restaurant": [
+      "nhà hàng",
+      "ăn",
+      "restaurant",
+      "buffet",
+      "food",
+      "ẩm thực",
+      "bar",
+      "cocktail"
+    ],
+    "location": ["ở đâu", "địa chỉ", "location", "where", "vị trí", "tọa lạc"],
+    "contact": [
+      "liên hệ",
+      "contact",
+      "điện thoại",
+      "phone",
+      "email",
+      "hotline"
+    ],
+    "promo": [
+      "ưu đãi",
+      "khuyến mãi",
+      "discount",
+      "promo",
+      "sale",
+      "giảm giá",
+      "voucher"
+    ],
+    "checkin": [
+      "check in",
+      "check-in",
+      "checkin",
+      "nhận phòng",
+      "trả phòng",
+      "checkout"
+    ],
+    "wifi": ["wifi", "wi-fi", "internet", "mạng", "kết nối"],
+    "family": [
+      "trẻ em",
+      "trẻ con",
+      "em bé",
+      "child",
+      "kid",
+      "gia đình",
+      "family"
+    ],
+    "beach": ["bãi biển", "beach", "biển", "tắm biển"]
+  }
+}

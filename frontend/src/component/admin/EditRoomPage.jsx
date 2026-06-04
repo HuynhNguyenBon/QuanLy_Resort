@@ -49,10 +49,14 @@ const Toast = ({ type, message, onClose }) => {
       <div className={`phong-toast ${type}`}>
         <span className="phong-toast__icon">{isError ? "⚠️" : "✅"}</span>
         <div className="phong-toast__body">
-          <div className="phong-toast__title">{isError ? "Lỗi" : "Thành công"}</div>
+          <div className="phong-toast__title">
+            {isError ? "Lỗi" : "Thành công"}
+          </div>
           <div className="phong-toast__msg">{message}</div>
         </div>
-        <button className="phong-toast__close" onClick={onClose}>✕</button>
+        <button className="phong-toast__close" onClick={onClose}>
+          ✕
+        </button>
         <div className="phong-toast__bar" />
       </div>
     </>
@@ -95,12 +99,16 @@ const EditRoomPage = () => {
   /* parse backend / network errors into readable Vietnamese messages */
   const parseError = (err) => {
     if (err.response?.data?.message) return err.response.data.message;
-    if (err.response?.data?.error)   return err.response.data.error;
-    if (err.response?.status === 400) return "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
-    if (err.response?.status === 403) return "Bạn không có quyền thực hiện thao tác này.";
+    if (err.response?.data?.error) return err.response.data.error;
+    if (err.response?.status === 400)
+      return "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+    if (err.response?.status === 403)
+      return "Bạn không có quyền thực hiện thao tác này.";
     if (err.response?.status === 404) return "Không tìm thấy phòng này.";
-    if (err.response?.status === 500) return "Lỗi máy chủ. Vui lòng thử lại sau.";
-    if (err.message === "Network Error") return "Mất kết nối mạng. Vui lòng kiểm tra lại.";
+    if (err.response?.status === 500)
+      return "Lỗi máy chủ. Vui lòng thử lại sau.";
+    if (err.message === "Network Error")
+      return "Mất kết nối mạng. Vui lòng kiểm tra lại.";
     return err.message || "Đã xảy ra lỗi không xác định.";
   };
 
@@ -110,9 +118,9 @@ const EditRoomPage = () => {
       try {
         const response = await ApiService.getRoomById(roomId);
         setRoomDetails({
-          roomPhotoUrl:    response.room.roomPhotoUrl,
-          roomType:        response.room.roomType,
-          roomPrice:       response.room.roomPrice,
+          roomPhotoUrl: response.room.roomPhotoUrl,
+          roomType: response.room.roomType,
+          roomPrice: response.room.roomPrice,
           roomDescription: response.room.roomDescription,
         });
       } catch (err) {
@@ -130,7 +138,11 @@ const EditRoomPage = () => {
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
-    if (!selected) { setFile(null); setPreview(null); return; }
+    if (!selected) {
+      setFile(null);
+      setPreview(null);
+      return;
+    }
     if (!selected.type.startsWith("image/")) {
       showToast("error", t("addRoom.imageInvalid"));
       return;
@@ -170,8 +182,8 @@ const EditRoomPage = () => {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("roomType",        roomDetails.roomType);
-      formData.append("roomPrice",       roomDetails.roomPrice);
+      formData.append("roomType", roomDetails.roomType);
+      formData.append("roomPrice", roomDetails.roomPrice);
       formData.append("roomDescription", roomDetails.roomDescription);
       if (file) formData.append("photo", file);
 
@@ -211,19 +223,36 @@ const EditRoomPage = () => {
   const fileInputRef = React.useRef(null);
 
   const fieldStyle = {
-    width: "100%", padding: "10px 14px", borderRadius: 8,
-    border: "1.5px solid #e8ecef", fontSize: "0.9rem", outline: "none",
-    background: "#fafbfd", boxSizing: "border-box",
-    color: "#1a1a2e", fontFamily: "inherit", transition: "border-color 0.15s, background 0.15s",
+    width: "100%",
+    padding: "10px 14px",
+    borderRadius: 8,
+    border: "1.5px solid #e8ecef",
+    fontSize: "0.9rem",
+    outline: "none",
+    background: "#fafbfd",
+    boxSizing: "border-box",
+    color: "#1a1a2e",
+    fontFamily: "inherit",
+    transition: "border-color 0.15s, background 0.15s",
   };
   const labelStyle = {
-    display: "block", marginBottom: 6, fontWeight: 600,
-    fontSize: "0.8rem", color: "#6b7280", letterSpacing: "0.03em",
+    display: "block",
+    marginBottom: 6,
+    fontWeight: 600,
+    fontSize: "0.8rem",
+    color: "#6b7280",
+    letterSpacing: "0.03em",
   };
 
   return (
     <div className="adm-dashboard">
-      {toast && <Toast type={toast.type} message={toast.message} onClose={dismissToast} />}
+      {toast && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={dismissToast}
+        />
+      )}
 
       {/* Page header */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
@@ -244,12 +273,25 @@ const EditRoomPage = () => {
       </div>
 
       {/* Main card */}
-      <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #e8ecef",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.06)", overflow: "hidden" }}>
-
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          border: "1px solid #e8ecef",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+          overflow: "hidden",
+        }}
+      >
         {/* Card header bar */}
-        <div style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
-          padding: "18px 28px", display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          style={{
+            background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+            padding: "18px 28px",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
           <span style={{ fontSize: "1.3rem" }}>🛏️</span>
           <div>
             <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
@@ -263,22 +305,42 @@ const EditRoomPage = () => {
 
         {/* Card body: image left + form right */}
         <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
-
           {/* Left: image panel */}
-          <div style={{ borderRight: "1px solid #f0f2f5", padding: 24,
-            background: "#fafbfd", display: "flex", flexDirection: "column", gap: 14 }}>
-
+          <div
+            style={{
+              borderRight: "1px solid #f0f2f5",
+              padding: 24,
+              background: "#fafbfd",
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+            }}
+          >
             {/* Image preview */}
-            <div style={{ borderRadius: 12, overflow: "hidden",
-              border: "1px solid #e8ecef", aspectRatio: "4/3",
-              background: "#f0f2f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              {(preview || roomDetails.roomPhotoUrl) ? (
-                <img src={preview || roomDetails.roomPhotoUrl} alt="Preview"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div
+              style={{
+                borderRadius: 12,
+                overflow: "hidden",
+                border: "1px solid #e8ecef",
+                aspectRatio: "4/3",
+                background: "#f0f2f5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {preview || roomDetails.roomPhotoUrl ? (
+                <img
+                  src={preview || roomDetails.roomPhotoUrl}
+                  alt="Preview"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
               ) : (
                 <div style={{ textAlign: "center", color: "#ccc" }}>
                   <div style={{ fontSize: "2rem" }}>🖼️</div>
-                  <div style={{ fontSize: "0.78rem", marginTop: 6 }}>Chưa có ảnh</div>
+                  <div style={{ fontSize: "0.78rem", marginTop: 6 }}>
+                    Chưa có ảnh
+                  </div>
                 </div>
               )}
             </div>
@@ -312,29 +374,72 @@ const EditRoomPage = () => {
           </div>
 
           {/* Right: form */}
-          <div style={{ padding: 28, display: "flex", flexDirection: "column", gap: 20 }}>
-
+          <div
+            style={{
+              padding: 28,
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
+            }}
+          >
             {/* Row 1: loại phòng + giá */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 18,
+              }}
+            >
               <div>
                 <label style={labelStyle}>{t("editRoom.typeLabel")}</label>
                 <input type="text" name="roomType" value={roomDetails.roomType}
                   onChange={handleChange} disabled={loading}
                   placeholder="VD: Deluxe, Suite, King..."
                   style={fieldStyle}
-                  onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
-                  onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#0d9488";
+                    e.target.style.background = "#fff";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#e8ecef";
+                    e.target.style.background = "#fafbfd";
+                  }}
+                />
               </div>
               <div>
                 <label style={labelStyle}>{t("editRoom.priceLabel")}</label>
                 <div style={{ position: "relative" }}>
-                  <span style={{ position: "absolute", left: 13, top: "50%",
-                    transform: "translateY(-50%)", color: "#0d9488", fontWeight: 700, fontSize: "0.88rem" }}>$</span>
-                  <input type="number" name="roomPrice" min="20" value={roomDetails.roomPrice}
-                    onChange={handleChange} disabled={loading} placeholder="20"
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 13,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      color: "#0d9488",
+                      fontWeight: 700,
+                      fontSize: "0.88rem",
+                    }}
+                  >
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    name="roomPrice"
+                    min="20"
+                    value={roomDetails.roomPrice}
+                    onChange={handleChange}
+                    disabled={loading}
+                    placeholder="20"
                     style={{ ...fieldStyle, paddingLeft: 28 }}
-                    onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
-                    onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#0d9488";
+                      e.target.style.background = "#fff";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#e8ecef";
+                      e.target.style.background = "#fafbfd";
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -346,8 +451,15 @@ const EditRoomPage = () => {
                 onChange={handleChange} disabled={loading} rows={7}
                 placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
                 style={{ ...fieldStyle, resize: "vertical", lineHeight: 1.65 }}
-                onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
-                onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#0d9488";
+                  e.target.style.background = "#fff";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e8ecef";
+                  e.target.style.background = "#fafbfd";
+                }}
+              />
             </div>
 
             {/* Divider */}
@@ -378,7 +490,6 @@ const EditRoomPage = () => {
                 🗑  {t("editRoom.deleteBtn")}
               </button>
             </div>
-
           </div>
         </div>
       </div>

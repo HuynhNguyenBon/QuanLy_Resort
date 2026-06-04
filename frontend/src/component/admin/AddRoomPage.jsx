@@ -40,10 +40,14 @@ const Toast = ({ type, message, onClose }) => {
       <div className={`phong-toast ${type}`}>
         <span className="phong-toast__icon">{isError ? "⚠️" : "✅"}</span>
         <div className="phong-toast__body">
-          <div className="phong-toast__title">{isError ? "Lỗi" : "Thành công"}</div>
+          <div className="phong-toast__title">
+            {isError ? "Lỗi" : "Thành công"}
+          </div>
           <div className="phong-toast__msg">{message}</div>
         </div>
-        <button className="phong-toast__close" onClick={onClose}>✕</button>
+        <button className="phong-toast__close" onClick={onClose}>
+          ✕
+        </button>
         <div className="phong-toast__bar" />
       </div>
     </>
@@ -54,12 +58,12 @@ const Toast = ({ type, message, onClose }) => {
 const BACKEND_MSG_MAP = {
   "please provide values for all fields":
     "Vui lòng điền đầy đủ thông tin phòng (ảnh, loại phòng, giá phòng).",
-  "photo":          "Vui lòng tải lên ảnh phòng.",
-  "roomtype":       "Vui lòng chọn hoặc nhập loại phòng.",
-  "roomprice":      "Vui lòng nhập giá phòng hợp lệ.",
+  photo: "Vui lòng tải lên ảnh phòng.",
+  roomtype: "Vui lòng chọn hoặc nhập loại phòng.",
+  roomprice: "Vui lòng nhập giá phòng hợp lệ.",
   "room type already exists": "Loại phòng này đã tồn tại trong hệ thống.",
-  "unauthorized":   "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
-  "forbidden":      "Bạn không có quyền thực hiện thao tác này.",
+  unauthorized: "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
+  forbidden: "Bạn không có quyền thực hiện thao tác này.",
   "internal server error": "Lỗi máy chủ. Vui lòng thử lại sau.",
 };
 
@@ -73,15 +77,15 @@ const translateBackendMsg = (msg) => {
 };
 
 const parseError = (err) => {
-  const raw =
-    err.response?.data?.message ||
-    err.response?.data?.error ||
-    null;
+  const raw = err.response?.data?.message || err.response?.data?.error || null;
   if (raw) return translateBackendMsg(raw);
-  if (err.response?.status === 400) return "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
-  if (err.response?.status === 403) return "Bạn không có quyền thực hiện thao tác này.";
+  if (err.response?.status === 400)
+    return "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+  if (err.response?.status === 403)
+    return "Bạn không có quyền thực hiện thao tác này.";
   if (err.response?.status === 500) return "Lỗi máy chủ. Vui lòng thử lại sau.";
-  if (err.message === "Network Error") return "Mất kết nối mạng. Vui lòng kiểm tra lại.";
+  if (err.message === "Network Error")
+    return "Mất kết nối mạng. Vui lòng kiểm tra lại.";
   return err.message || "Đã xảy ra lỗi không xác định.";
 };
 
@@ -91,55 +95,119 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const displayLabel = isNew ? "✏️ Nhập loại phòng mới..." : (value || "— Chọn loại phòng —");
+  const displayLabel = isNew
+    ? "✏️ Nhập loại phòng mới..."
+    : value || "— Chọn loại phòng —";
   const hasValue = !isNew && !!value;
 
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      <button type="button" disabled={disabled}
-        onClick={() => !disabled && setOpen(o => !o)}
-        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-          gap: 8, padding: "10px 14px", borderRadius: 8,
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => !disabled && setOpen((o) => !o)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          padding: "10px 14px",
+          borderRadius: 8,
           border: `1.5px solid ${open ? "#0d9488" : "#e8ecef"}`,
           background: open ? "#fff" : "#fafbfd",
           color: hasValue || isNew ? "#1a1a2e" : "#9ca3af",
           cursor: disabled ? "not-allowed" : "pointer",
-          fontSize: "0.9rem", outline: "none", textAlign: "left",
-          transition: "all 0.15s", fontFamily: "inherit" }}>
+          fontSize: "0.9rem",
+          outline: "none",
+          textAlign: "left",
+          transition: "all 0.15s",
+          fontFamily: "inherit",
+        }}
+      >
         <span>{displayLabel}</span>
-        <span style={{ fontSize: "0.7rem", color: "#9ca3af",
-          transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>▼</span>
+        <span
+          style={{
+            fontSize: "0.7rem",
+            color: "#9ca3af",
+            transform: open ? "rotate(180deg)" : "none",
+            transition: "transform 0.2s",
+            flexShrink: 0,
+          }}
+        >
+          ▼
+        </span>
       </button>
 
       {open && (
-        <div style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0,
-          background: "#fff", borderRadius: 10, border: "1.5px solid #e2e8f0",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 999,
-          overflow: "hidden", maxHeight: 260, overflowY: "auto" }}>
-
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 6px)",
+            left: 0,
+            right: 0,
+            background: "#fff",
+            borderRadius: 10,
+            border: "1.5px solid #e2e8f0",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            zIndex: 999,
+            overflow: "hidden",
+            maxHeight: 260,
+            overflowY: "auto",
+          }}
+        >
           {/* Placeholder */}
-          <div style={{ padding: "10px 16px", fontSize: "0.82rem", color: "#b0b7c3",
-            borderBottom: "1px solid #f0f2f5", cursor: "default" }}>
+          <div
+            style={{
+              padding: "10px 16px",
+              fontSize: "0.82rem",
+              color: "#b0b7c3",
+              borderBottom: "1px solid #f0f2f5",
+              cursor: "default",
+            }}
+          >
             — Chọn loại phòng —
           </div>
 
           {/* Existing types */}
-          {roomTypes.map(type => {
+          {roomTypes.map((type) => {
             const active = !isNew && value === type;
             return (
-              <div key={type}
-                onClick={() => { onChange(type, false); setOpen(false); }}
-                style={{ padding: "10px 16px", cursor: "pointer", fontSize: "0.88rem",
+              <div
+                key={type}
+                onClick={() => {
+                  onChange(type, false);
+                  setOpen(false);
+                }}
+                style={{
+                  padding: "10px 16px",
+                  cursor: "pointer",
+                  fontSize: "0.88rem",
                   color: active ? "#fff" : "#1a1a2e",
                   background: active ? "#0d9488" : "transparent",
-                  fontWeight: active ? 600 : 400, transition: "background 0.12s, color 0.12s" }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "#f0fdfa"; e.currentTarget.style.color = "#0d9488"; }}}
-                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1a1a2e"; }}}>
+                  fontWeight: active ? 600 : 400,
+                  transition: "background 0.12s, color 0.12s",
+                }}
+                onMouseEnter={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = "#f0fdfa";
+                    e.currentTarget.style.color = "#0d9488";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "#1a1a2e";
+                  }
+                }}
+              >
                 {type}
               </div>
             );
@@ -147,15 +215,34 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
 
           {/* New type option */}
           <div
-            onClick={() => { onChange("", true); setOpen(false); }}
-            style={{ padding: "10px 16px", cursor: "pointer", fontSize: "0.88rem",
+            onClick={() => {
+              onChange("", true);
+              setOpen(false);
+            }}
+            style={{
+              padding: "10px 16px",
+              cursor: "pointer",
+              fontSize: "0.88rem",
               color: isNew ? "#fff" : "#f59e0b",
               background: isNew ? "#f59e0b" : "transparent",
-              fontWeight: 600, borderTop: "1px solid #f0f2f5",
-              transition: "background 0.12s, color 0.12s" }}
-            onMouseEnter={e => { if (!isNew) { e.currentTarget.style.background = "#fffbeb"; e.currentTarget.style.color = "#d97706"; }}}
-            onMouseLeave={e => { if (!isNew) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#f59e0b"; }}}>
-            ✏️  Nhập loại phòng mới...
+              fontWeight: 600,
+              borderTop: "1px solid #f0f2f5",
+              transition: "background 0.12s, color 0.12s",
+            }}
+            onMouseEnter={(e) => {
+              if (!isNew) {
+                e.currentTarget.style.background = "#fffbeb";
+                e.currentTarget.style.color = "#d97706";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isNew) {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "#f59e0b";
+              }
+            }}
+          >
+            ✏️ Nhập loại phòng mới...
           </div>
         </div>
       )}
@@ -221,7 +308,11 @@ const AddRoomPage = () => {
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
-    if (!selected) { setFile(null); setPreview(null); return; }
+    if (!selected) {
+      setFile(null);
+      setPreview(null);
+      return;
+    }
     if (!selected.type.startsWith("image/")) {
       showToast("error", t("addRoom.imageInvalid"));
       return;
@@ -267,8 +358,8 @@ const AddRoomPage = () => {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("roomType",        roomDetails.roomType);
-      formData.append("roomPrice",       roomDetails.roomPrice);
+      formData.append("roomType", roomDetails.roomType);
+      formData.append("roomPrice", roomDetails.roomPrice);
       formData.append("roomDescription", roomDetails.roomDescription);
       if (file) formData.append("photo", file);
 
@@ -290,19 +381,36 @@ const AddRoomPage = () => {
   const fileInputRef = React.useRef(null);
 
   const fieldStyle = {
-    width: "100%", padding: "10px 14px", borderRadius: 8,
-    border: "1.5px solid #e8ecef", fontSize: "0.9rem", outline: "none",
-    background: "#fafbfd", boxSizing: "border-box",
-    color: "#1a1a2e", fontFamily: "inherit", transition: "border-color 0.15s, background 0.15s",
+    width: "100%",
+    padding: "10px 14px",
+    borderRadius: 8,
+    border: "1.5px solid #e8ecef",
+    fontSize: "0.9rem",
+    outline: "none",
+    background: "#fafbfd",
+    boxSizing: "border-box",
+    color: "#1a1a2e",
+    fontFamily: "inherit",
+    transition: "border-color 0.15s, background 0.15s",
   };
   const labelStyle = {
-    display: "block", marginBottom: 6, fontWeight: 600,
-    fontSize: "0.8rem", color: "#6b7280", letterSpacing: "0.03em",
+    display: "block",
+    marginBottom: 6,
+    fontWeight: 600,
+    fontSize: "0.8rem",
+    color: "#6b7280",
+    letterSpacing: "0.03em",
   };
 
   return (
     <div className="adm-dashboard">
-      {toast && <Toast type={toast.type} message={toast.message} onClose={dismissToast} />}
+      {toast && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={dismissToast}
+        />
+      )}
 
       {/* Page header */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
@@ -321,12 +429,25 @@ const AddRoomPage = () => {
       </div>
 
       {/* Main card */}
-      <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #e8ecef",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.06)", overflow: "hidden" }}>
-
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          border: "1px solid #e8ecef",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+          overflow: "hidden",
+        }}
+      >
         {/* Card header */}
-        <div style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
-          padding: "18px 28px", display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          style={{
+            background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+            padding: "18px 28px",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
           <span style={{ fontSize: "1.3rem" }}>➕</span>
           <div>
             <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>{t("addRoom.title")}</div>
@@ -336,7 +457,6 @@ const AddRoomPage = () => {
 
         {/* Card body */}
         <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
-
           {/* Left: image upload */}
           <div style={{ borderRight: "1px solid #f0f2f5", padding: 24,
             background: "#fafbfd", display: "flex", flexDirection: "column", gap: 14 }}>
@@ -346,27 +466,66 @@ const AddRoomPage = () => {
             {/* Preview / drop zone */}
             <div
               onClick={() => !loading && fileInputRef.current?.click()}
-              style={{ borderRadius: 12, border: `2px dashed ${preview ? "#0d9488" : "#d1d5db"}`,
+              style={{
+                borderRadius: 12,
+                border: `2px dashed ${preview ? "#0d9488" : "#d1d5db"}`,
                 background: preview ? "transparent" : "#f0f2f5",
-                aspectRatio: "4/3", display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: loading ? "not-allowed" : "pointer", overflow: "hidden",
-                transition: "border-color 0.15s", position: "relative" }}
-              onMouseEnter={e => { if (!preview) e.currentTarget.style.borderColor = "#0d9488"; }}
-              onMouseLeave={e => { if (!preview) e.currentTarget.style.borderColor = "#d1d5db"; }}>
+                aspectRatio: "4/3",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: loading ? "not-allowed" : "pointer",
+                overflow: "hidden",
+                transition: "border-color 0.15s",
+                position: "relative",
+              }}
+              onMouseEnter={(e) => {
+                if (!preview) e.currentTarget.style.borderColor = "#0d9488";
+              }}
+              onMouseLeave={(e) => {
+                if (!preview) e.currentTarget.style.borderColor = "#d1d5db";
+              }}
+            >
               {preview ? (
                 <>
-                  <img src={preview} alt="Preview"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    opacity: 0, transition: "opacity 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                    onMouseLeave={e => e.currentTarget.style.opacity = 0}>
-                    <span style={{ color: "#fff", fontSize: "0.85rem", fontWeight: 600 }}>Đổi ảnh</span>
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "rgba(0,0,0,0.35)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      opacity: 0,
+                      transition: "opacity 0.15s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+                    onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
+                  >
+                    <span
+                      style={{
+                        color: "#fff",
+                        fontSize: "0.85rem",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Đổi ảnh
+                    </span>
                   </div>
                 </>
               ) : (
-                <div style={{ textAlign: "center", color: "#9ca3af", padding: 16 }}>
+                <div
+                  style={{ textAlign: "center", color: "#9ca3af", padding: 16 }}
+                >
                   <div style={{ fontSize: "2.2rem", marginBottom: 8 }}>📷</div>
                   <div style={{ fontSize: "0.85rem", fontWeight: 600 }}>{t("addRoom.clickToUpload")}</div>
                   <div style={{ fontSize: "0.75rem", marginTop: 4 }}>{t("addRoom.imageHint")}</div>
@@ -374,8 +533,14 @@ const AddRoomPage = () => {
               )}
             </div>
 
-            <input ref={fileInputRef} type="file" accept="image/*"
-              onChange={handleFileChange} disabled={loading} style={{ display: "none" }} />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              disabled={loading}
+              style={{ display: "none" }}
+            />
 
             {preview && (
               <button onClick={() => {
@@ -392,8 +557,14 @@ const AddRoomPage = () => {
           </div>
 
           {/* Right: form */}
-          <div style={{ padding: 28, display: "flex", flexDirection: "column", gap: 20 }}>
-
+          <div
+            style={{
+              padding: 28,
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
+            }}
+          >
             {/* Loại phòng */}
             <div>
               <label style={labelStyle}>
@@ -408,14 +579,24 @@ const AddRoomPage = () => {
               />
 
               {newRoomType && (
-                <input type="text" name="roomType"
+                <input
+                  type="text"
+                  name="roomType"
                   placeholder="Nhập tên loại phòng mới..."
                   value={roomDetails.roomType}
-                  onChange={handleChange} disabled={loading}
+                  onChange={handleChange}
+                  disabled={loading}
                   style={{ ...fieldStyle, marginTop: 10 }}
-                  onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
-                  onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }}
-                  autoFocus />
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#0d9488";
+                    e.target.style.background = "#fff";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#e8ecef";
+                    e.target.style.background = "#fafbfd";
+                  }}
+                  autoFocus
+                />
               )}
             </div>
 
@@ -425,14 +606,37 @@ const AddRoomPage = () => {
                 {t("addRoom.priceLabel")} <span style={{ color: "#e74c3c" }}>*</span>
               </label>
               <div style={{ position: "relative" }}>
-                <span style={{ position: "absolute", left: 13, top: "50%",
-                  transform: "translateY(-50%)", color: "#0d9488", fontWeight: 700, fontSize: "0.88rem" }}>$</span>
-                <input type="number" name="roomPrice" min="20"
-                  value={roomDetails.roomPrice} onChange={handleChange}
-                  disabled={loading} placeholder="Tối thiểu 20"
+                <span
+                  style={{
+                    position: "absolute",
+                    left: 13,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "#0d9488",
+                    fontWeight: 700,
+                    fontSize: "0.88rem",
+                  }}
+                >
+                  $
+                </span>
+                <input
+                  type="number"
+                  name="roomPrice"
+                  min="20"
+                  value={roomDetails.roomPrice}
+                  onChange={handleChange}
+                  disabled={loading}
+                  placeholder="Tối thiểu 20"
                   style={{ ...fieldStyle, paddingLeft: 28 }}
-                  onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
-                  onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#0d9488";
+                    e.target.style.background = "#fff";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#e8ecef";
+                    e.target.style.background = "#fafbfd";
+                  }}
+                />
               </div>
             </div>
 
@@ -441,22 +645,39 @@ const AddRoomPage = () => {
               <label style={labelStyle}>
                 {t("addRoom.descLabel")} <span style={{ color: "#e74c3c" }}>*</span>
               </label>
-              <textarea name="roomDescription" rows={7}
-                value={roomDetails.roomDescription} onChange={handleChange}
+              <textarea
+                name="roomDescription"
+                rows={7}
+                value={roomDetails.roomDescription}
+                onChange={handleChange}
                 disabled={loading}
                 placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
                 style={{ ...fieldStyle, resize: "vertical", lineHeight: 1.65 }}
-                onFocus={e => { e.target.style.borderColor = "#0d9488"; e.target.style.background = "#fff"; }}
-                onBlur={e => { e.target.style.borderColor = "#e8ecef"; e.target.style.background = "#fafbfd"; }} />
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#0d9488";
+                  e.target.style.background = "#fff";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e8ecef";
+                  e.target.style.background = "#fafbfd";
+                }}
+              />
             </div>
 
             <div style={{ borderTop: "1px solid #f0f2f5" }} />
 
             {/* Submit */}
-            <button onClick={addRoom} disabled={loading}
-              style={{ padding: "13px 0", borderRadius: 10, border: "none",
-                background: loading ? "#99d6d0" : "#0d9488", color: "#fff",
-                fontSize: "0.95rem", fontWeight: 700,
+            <button
+              onClick={addRoom}
+              disabled={loading}
+              style={{
+                padding: "13px 0",
+                borderRadius: 10,
+                border: "none",
+                background: loading ? "#99d6d0" : "#0d9488",
+                color: "#fff",
+                fontSize: "0.95rem",
+                fontWeight: 700,
                 cursor: loading ? "not-allowed" : "pointer",
                 transition: "background 0.15s",
                 boxShadow: "0 2px 8px rgba(13,148,136,0.3)" }}
@@ -464,7 +685,6 @@ const AddRoomPage = () => {
               onMouseLeave={e => { if (!loading) e.currentTarget.style.background = "#0d9488"; }}>
               {loading ? t("addRoom.submitting") : `➕  ${t("addRoom.submitBtn")}`}
             </button>
-
           </div>
         </div>
       </div>

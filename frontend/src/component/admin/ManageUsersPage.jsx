@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 import Pagination from "../common/Pagination";
-const ROLES_DISPLAY = { ADMIN: { label: "Admin", bg: "#fef3c7", color: "#d97706", border: "#fde68a" }, STAFF: { label: "Nhân viên", bg: "#ede9fe", color: "#7c3aed", border: "#c4b5fd" }, USER: { label: "Khách hàng", bg: "#f0fdf4", color: "#15803d", border: "#bbf7d0" } };
+const ROLES_DISPLAY = { ADMIN: { bg: "#fef3c7", color: "#d97706", border: "#fde68a" }, STAFF: { bg: "#ede9fe", color: "#7c3aed", border: "#c4b5fd" }, USER: { bg: "#f0fdf4", color: "#15803d", border: "#bbf7d0" } };
 
 const USERS_PER_PAGE = 10;
 
 const ManageUsersPage = () => {
+  const { t } = useTranslation("adminPanel");
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,7 +38,7 @@ const ManageUsersPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Xác nhận xoá tài khoản này?")) return;
+    if (!window.confirm(t("users.confirmDelete"))) return;
     setDeletingId(id);
     try {
       await ApiService.deleteUser(id);
@@ -68,8 +70,8 @@ const ManageUsersPage = () => {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: 700, color: "#1a1a2e" }}>👥 Khách hàng</h2>
-          <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>{users.filter(u => !["ADMIN","STAFF"].includes((u.role||"").toUpperCase())).length} tài khoản trong hệ thống</p>
+          <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: 700, color: "#1a1a2e" }}>👥 {t("users.title")}</h2>
+          <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>{users.filter(u => !["ADMIN","STAFF"].includes((u.role||"").toUpperCase())).length} {t("users.subtitle")}</p>
         </div>
       </div>
 
@@ -88,7 +90,7 @@ const ManageUsersPage = () => {
           <div style={{ position: "relative", minWidth: 260 }}>
             <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)",
               color: "#aab4be", fontSize: "0.9rem", pointerEvents: "none" }}>🔍</span>
-            <input placeholder="Tìm theo tên, email..."
+            <input placeholder={t("users.searchPlaceholder")}
               value={search}
               onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
               style={{ width: "100%", padding: "9px 14px 9px 36px", borderRadius: 10,
@@ -100,7 +102,7 @@ const ManageUsersPage = () => {
           <span style={{ marginLeft: "auto", background: "#f0fdf4", color: "#0d9488",
             fontSize: "0.8rem", fontWeight: 600, padding: "6px 12px", borderRadius: 20,
             border: "1px solid #bbf7d0" }}>
-            {filtered.length} khách hàng
+            {filtered.length} {t("users.results")}
           </span>
         </div>
       </div>
@@ -110,7 +112,7 @@ const ManageUsersPage = () => {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem" }}>
           <thead>
             <tr style={{ background: "#f7f9fc", borderBottom: "2px solid #e8ecef" }}>
-              {["Khách hàng", "Email", "Vai trò", "Số đặt phòng", ...(ApiService.isAdmin() ? ["Thao tác"] : [])].map(h => (
+              {[t("users.cols.customer"), t("users.cols.email"), t("users.cols.role"), t("users.cols.bookings"), ...(ApiService.isAdmin() ? [t("users.cols.actions")] : [])].map(h => (
                 <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontWeight: 700,
                   color: "#555", fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                   {h}
@@ -121,7 +123,7 @@ const ManageUsersPage = () => {
           <tbody>
             {paginated.length === 0 ? (
               <tr><td colSpan={5} style={{ padding: 40, textAlign: "center", color: "#aaa" }}>
-                Không tìm thấy khách hàng nào.
+                {t("users.noUsers")}
               </td></tr>
             ) : paginated.map((user, idx) => (
               <tr key={user.id}
@@ -145,12 +147,16 @@ const ManageUsersPage = () => {
                 <td style={{ padding: "12px 16px", color: "#555" }}>{user.email}</td>
 
                 <td style={{ padding: "12px 16px" }}>
-                  {(() => { const rd = ROLES_DISPLAY[user.role] || ROLES_DISPLAY.USER; return (
-                    <span style={{ padding: "4px 10px", borderRadius: 20, fontSize: "0.78rem", fontWeight: 600,
-                      background: rd.bg, color: rd.color, border: `1px solid ${rd.border}` }}>
-                      {rd.label}
-                    </span>
-                  ); })()}
+                  {(() => {
+                    const rd = ROLES_DISPLAY[user.role] || ROLES_DISPLAY.USER;
+                    const roleKey = user.role === "ADMIN" ? "roleAdmin" : user.role === "STAFF" ? "roleStaff" : "roleUser";
+                    return (
+                      <span style={{ padding: "4px 10px", borderRadius: 20, fontSize: "0.78rem", fontWeight: 600,
+                        background: rd.bg, color: rd.color, border: `1px solid ${rd.border}` }}>
+                        {t(`users.${roleKey}`)}
+                      </span>
+                    );
+                  })()}
                 </td>
 
                 <td style={{ padding: "12px 16px", color: "#0d9488", fontWeight: 700 }}>
@@ -168,7 +174,7 @@ const ManageUsersPage = () => {
                               background: "#ede9fe", color: "#7c3aed", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}
                             onMouseEnter={e => { e.currentTarget.style.background = "#7c3aed"; e.currentTarget.style.color = "#fff"; }}
                             onMouseLeave={e => { e.currentTarget.style.background = "#ede9fe"; e.currentTarget.style.color = "#7c3aed"; }}>
-                            👤 Hạ xuống
+                            👤 {t("users.demoteUser")}
                           </button>
                         ) : (
                           <button onClick={() => handleSetRole(user, "STAFF")}
@@ -176,7 +182,7 @@ const ManageUsersPage = () => {
                               background: "transparent", color: "#7c3aed", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}
                             onMouseEnter={e => { e.currentTarget.style.background = "#7c3aed"; e.currentTarget.style.color = "#fff"; }}
                             onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#7c3aed"; }}>
-                            👨‍💼 Nhân viên
+                            👨‍💼 {t("users.promoteStaff")}
                           </button>
                         )}
                         <button onClick={() => handleDelete(user.id)} disabled={deletingId === user.id}
@@ -186,7 +192,7 @@ const ManageUsersPage = () => {
                             opacity: deletingId === user.id ? 0.6 : 1 }}
                           onMouseEnter={e => { if (deletingId !== user.id) { e.target.style.background = "#e74c3c"; e.target.style.color = "#fff"; }}}
                           onMouseLeave={e => { e.target.style.background = "#fff5f5"; e.target.style.color = "#e74c3c"; }}>
-                          {deletingId === user.id ? "..." : "🗑 Xoá"}
+                          {deletingId === user.id ? "..." : `🗑 ${t("users.delete")}`}
                         </button>
                       </>
                     )}
