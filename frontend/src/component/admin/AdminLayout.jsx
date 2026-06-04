@@ -33,6 +33,7 @@ const AdminLayout = () => {
     { icon: "📊", label: t("nav.overview"),    path: "/admin",                   end: true },
     { icon: "🛏️", label: t("nav.rooms"),        path: "/admin/manage-rooms" },
     { icon: "📋", label: t("nav.bookings"),     path: "/admin/manage-bookings" },
+    { icon: "🏷️", label: "Đặt tại quầy",       path: "/admin/walk-in" },
     { icon: "💳", label: t("nav.transactions"), path: "/admin/transactions" },
     { icon: "💰", label: t("nav.revenue"),      path: "/admin/revenue" },
     { icon: "👥", label: t("nav.customers"),    path: "/admin/manage-users" },
