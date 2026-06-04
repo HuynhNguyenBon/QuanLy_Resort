@@ -1,0 +1,16 @@
+{
+  "reviewsTitle": "お客様のレビュー",
+  "writeReview": "✍️ レビューを書く",
+  "cancel": "キャンセル",
+  "reviewRoom": "{{roomType}}のレビュー",
+  "yourName": "お名前",
+  "namePlaceholder": "例：山田太郎",
+  "rating": "評価",
+  "comment": "コメント",
+  "commentPlaceholder": "BBHHリゾートでの体験を共有してください...",
+  "submit": "レビュー送信",
+  "noReviews": "まだレビューがありません。最初の投稿者になりましょう！",
+  "yourNameError": "お名前を入力してください。",
+  "commentError": "コメントを入力してください。",
+  "avgLabel": "件のレビュー"
+}

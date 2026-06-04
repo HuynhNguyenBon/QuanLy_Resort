@@ -82,6 +82,11 @@ import enAdminPanel from "./i18n/locales/en/adminPanel.json";
 import viAdminPanel from "./i18n/locales/vi/adminPanel.json";
 import jaAdminPanel from "./i18n/locales/ja/adminPanel.json";
 
+// REVIEWS
+import enReviews from "./i18n/locales/en/reviews.json";
+import viReviews from "./i18n/locales/vi/reviews.json";
+import jaReviews from "./i18n/locales/ja/reviews.json";
+
 i18n
   .use(LanguageDetector) // Tự động nhận diện ngôn ngữ máy tính khách
   .use(initReactI18next)
@@ -104,6 +109,7 @@ i18n
         gallery: enGallery,
         chat: enChat,
         adminPanel: enAdminPanel,
+        reviews: enReviews,
       },
       vi: {
         navbar: viNavbar,
@@ -122,6 +128,7 @@ i18n
         gallery: viGallery,
         chat: viChat,
         adminPanel: viAdminPanel,
+        reviews: viReviews,
       },
       ja: {
         navbar: jaNavbar,
@@ -140,6 +147,7 @@ i18n
         gallery: jaGallery,
         chat: jaChat,
         adminPanel: jaAdminPanel,
+        reviews: jaReviews,
       },
     },
     fallbackLng: "en",
@@ -160,6 +168,7 @@ i18n
       "gallery",
       "chat",
       "adminPanel",
+      "reviews",
     ],
     defaultNS: "translation",
     interpolation: {
