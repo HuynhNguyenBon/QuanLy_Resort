@@ -47,6 +47,11 @@ import enPayment from "./i18n/locales/en/payment.json";
 import viPayment from "./i18n/locales/vi/payment.json";
 import jaPayment from "./i18n/locales/ja/payment.json";
 
+//SERVICES
+import enServices from "./i18n/locales/en/services.json";
+import viServices from "./i18n/locales/vi/services.json";
+import jaServices from "./i18n/locales/ja/services.json";
+
 i18n
   .use(LanguageDetector) // Tự động nhận diện ngôn ngữ máy tính khách
   .use(initReactI18next)
@@ -62,6 +67,7 @@ i18n
         rooms: enRooms,
         common: enCommon,
         payment: enPayment,
+        services: enServices,
       },
       vi: {
         navbar: viNavbar,
@@ -73,6 +79,7 @@ i18n
         rooms: viRooms,
         common: viCommon,
         payment: viPayment,
+        services: viServices,
       },
       ja: {
         navbar: jaNavbar,
@@ -84,6 +91,7 @@ i18n
         rooms: jaRooms,
         common: jaCommon,
         payment: jaPayment,
+        services: jaServices,
       },
     },
     fallbackLng: "en",
@@ -97,6 +105,7 @@ i18n
       "rooms",
       "common",
       "payment",
+      "services",
     ],
     defaultNS: "translation",
     interpolation: {

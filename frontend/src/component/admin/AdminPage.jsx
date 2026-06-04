@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 
 const ROOMS_PER_FLOOR = 5;
@@ -189,7 +188,6 @@ const AdminPage = () => {
                   width: 30, height: 30, borderRadius: "50%", cursor: "pointer", fontSize: "0.9rem",
                   display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
             </div>
-
             {/* Body */}
             <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 14 }}>
               {roomPopup.booking ? (
@@ -243,6 +241,7 @@ const AdminPage = () => {
       )}
     </div>
   );
+
 };
 
 export default AdminPage;

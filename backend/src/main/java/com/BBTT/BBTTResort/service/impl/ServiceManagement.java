@@ -28,10 +28,15 @@ public class ServiceManagement implements IServiceManagement {
         } catch (Exception e) { response.setStatusCode(500); }
         return response;
     }
-    // Các hàm add/delete
-    @Override public Response addNewService(String n, BigDecimal p, String d) {
+    @Override
+    public Response addNewService(String name, BigDecimal price, String description) {
         Response response = new Response();
         try {
+            Service service = new Service();
+            service.setName(name);
+            service.setPrice(price);
+            service.setDescription(description);
+            serviceRepo.save(service);
             response.setStatusCode(200);
             response.setMessage("Service added successfully!");
         } catch (Exception e) {
@@ -40,6 +45,30 @@ public class ServiceManagement implements IServiceManagement {
         }
         return response;
     }
+
+    @Override
+    public Response updateService(Long serviceId, String name, BigDecimal price, String description) {
+        Response response = new Response();
+        try {
+            Service service = serviceRepo.findById(serviceId).orElse(null);
+            if (service == null) {
+                response.setStatusCode(404);
+                response.setMessage("Service not found with ID: " + serviceId);
+                return response;
+            }
+            service.setName(name);
+            service.setPrice(price);
+            service.setDescription(description);
+            serviceRepo.save(service);
+            response.setStatusCode(200);
+            response.setMessage("Service updated successfully!");
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Service update error: " + e.getMessage());
+        }
+        return response;
+    }
+
     @Override public Response deleteService(Long serviceId) {
         Response response = new Response();
         try {

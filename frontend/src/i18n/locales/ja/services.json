@@ -1,0 +1,175 @@
+{
+  "servicePage": {
+    "heroTag": "サービス＆設備",
+    "heroTitle1": "最高級の",
+    "heroAccent": "体験",
+    "heroTitle2": "をBBHHリゾートで",
+    "heroSub": "お気に入りのサービスを予約に追加してください",
+
+    "loading": "サービスを読み込み中...",
+
+    "from": "料金",
+    "added": "✓ 追加済み！",
+    "selectedRemove": "✓ 選択済み・削除",
+    "addToBooking": "+ 予約に追加",
+
+    "ctaTitle": "体験の準備はできましたか？",
+    "ctaSub": "今すぐ予約して、5つ星サービスをお楽しみください。",
+
+    "bookNow": "今すぐ予約",
+    "findBooking": "予約確認",
+
+    "selectedServices": "選択済みサービス",
+    "serviceFee": "サービス料金",
+
+    "clearAll": "すべて削除",
+    "chooseRoom": "部屋を選択",
+
+    "services": {
+      "Luxury Mini Bar": {
+        "name": "高級ミニバー",
+        "description": "ワイン、カクテル、フレッシュジュース、高級スナック付きのプレミアムドリンクパッケージ。"
+      },
+      "Gourmet Breakfast": {
+        "name": "グルメ朝食",
+        "description": "40種類以上の料理を楽しめる国際ビュッフェ朝食。"
+      },
+      "Spa & Wellness Center": {
+        "name": "スパ＆ウェルネス",
+        "description": "心と体を癒す高級ウェルネストリートメント。"
+      },
+      "Spa & Massage": {
+        "name": "スパ＆マッサージ",
+        "description": "天然アロマオイルを使用した60分間のリラックスマッサージ。"
+      },
+      "Laundry & Dry Cleaning": {
+        "name": "ランドリー＆クリーニング",
+        "description": "24時間以内に仕上がるプロフェッショナルランドリーサービス。"
+      },
+      "Room Service 24/7": {
+        "name": "24時間ルームサービス",
+        "description": "いつでも客室でお食事とドリンクをお楽しみいただけます。"
+      },
+      "Private Pool Access": {
+        "name": "プライベートプール",
+        "description": "屋上インフィニティプールを2時間貸切利用。"
+      },
+      "Infinity Swimming Pool": {
+        "name": "インフィニティプール",
+        "description": "豪華なインフィニティプールをご体験ください。"
+      },
+      "Fitness & Yoga Class": {
+        "name": "フィットネス＆ヨガ",
+        "description": "サンライズヨガやプライベートフィットネストレーニング。"
+      },
+      "Modern Fitness Center": {
+        "name": "最新フィットネスセンター",
+        "description": "最新設備を備えた高級ジム。"
+      },
+      "Airport Transfer": {
+        "name": "空港送迎",
+        "description": "24時間対応の高級空港送迎サービス。"
+      },
+      "Beach BBQ Dinner": {
+        "name": "ビーチBBQディナー",
+        "description": "ワインとライブ音楽付きのプライベートビーチBBQディナー。"
+      },
+      "Room Decoration": {
+        "name": "客室デコレーション",
+        "description": "誕生日や記念日向けの特別な客室装飾。"
+      },
+      "Tour & Sightseeing": {
+        "name": "観光ツアー",
+        "description": "地元ガイドによる観光ツアー。"
+      },
+      "Bicycle Rental": {
+        "name": "自転車レンタル",
+        "description": "自転車でリゾート周辺を探索できます。"
+      },
+      "Cocktail & Drinks Package": {
+        "name": "カクテル＆ドリンクパッケージ",
+        "description": "プールバーで楽しむ特製カクテル。"
+      },
+      "Babysitting Service": {
+        "name": "ベビーシッターサービス",
+        "description": "プロによる安心安全なベビーシッターサービス。"
+      },
+      "Water Sports Package": {
+        "name": "ウォータースポーツパッケージ",
+        "description": "カヤック、パドルボード、シュノーケリング体験。"
+      },
+      "Photography Session": {
+        "name": "フォトセッション",
+        "description": "リゾート内の美しいスポットでのプロ写真撮影。"
+      },
+      "Sunset Cruise": {
+        "name": "サンセットクルーズ",
+        "description": "カクテル付き豪華サンセットクルーズ。"
+      },
+      "Cooking Class": {
+        "name": "料理教室",
+        "description": "リゾートシェフと一緒に地元料理を学びます。"
+      },
+      "Flower Arrangement": {
+        "name": "フラワーアレンジメント",
+        "description": "90分間のアートフラワーアレンジメント体験。"
+      },
+      "Pet Care Service": {
+        "name": "ペットケアサービス",
+        "description": "安心で丁寧なペットケアサービス。"
+      },
+      "Golf Cart Rental": {
+        "name": "ゴルフカートレンタル",
+        "description": "電動ゴルフカートでリゾートを探索。"
+      },
+      "Karaoke Room": {
+        "name": "カラオケルーム",
+        "description": "高品質音響システム付きプライベートカラオケルーム。"
+      },
+      "In-Room Movie Night": {
+        "name": "客室映画ナイト",
+        "description": "ポップコーン、ドリンク、ブランケット付き映画パッケージ。"
+      },
+      "Airport Shuttle Service": {
+        "name": "空港送迎サービス",
+        "description": "24時間対応の専用車による空港送迎サービス。6時間前までにご予約ください。"
+      },
+      "Private Beach Bonfire": {
+        "name": "プライベートビーチ焚き火",
+        "description": "2〜6名様向けのプライベートビーチ焚き火パーティー。シーフードBBQ、アコースティック音楽、カクテル付き。"
+      },
+      "Private Romantic Dinner": {
+        "name": "プライベートロマンティックディナー",
+        "description": "ビーチまたはリゾートガーデンでの親密なキャンドルライトディナー。生花、5コースメニュー、ワイン付き。"
+      },
+      "Yacht Charter": {
+        "name": "ヨットチャーター",
+        "description": "3時間の湾内探索プライベートヨットレンタル。最大8名、キャプテンとプレミアム飲料付き。"
+      },
+      "Sunrise Yoga on Beach": {
+        "name": "ビーチ日の出ヨガ",
+        "description": "毎朝6:00〜7:00のビーチヨガセッション。マットとタオルを提供します。"
+      },
+      "Honeymoon Package": {
+        "name": "ハネムーンパッケージ",
+        "description": "特別なハネムーン設定：フローラルルームデコレーション、シャンパン、ケーキ、花びらバス、プライベートディナー。"
+      },
+      "Kids Club & Activities": {
+        "name": "キッズクラブ＆アクティビティ",
+        "description": "絵画、工芸、ミニプール付きの終日キッズクラブ。3〜12歳のお子様向け。"
+      },
+      "Wine & Cocktail Tasting": {
+        "name": "ワイン＆カクテルテイスティング",
+        "description": "スカイバーでのワインと手作りカクテル90分テイスティングセッション。専門バーテンダーが案内。"
+      },
+      "Traditional Herbal Spa": {
+        "name": "伝統ハーブスパ",
+        "description": "90分間の伝統ハーブスパトリートメント：ハーブバス、ミネラルマッドマスク、スカルプマッサージ。"
+      },
+      "Stargazing Night Experience": {
+        "name": "星空観察ナイト体験",
+        "description": "プロ用望遠鏡でのプライベートビーチ星空観察。2名様向けワインとプレミアムスナック付き。"
+      }
+    }
+  }
+}

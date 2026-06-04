@@ -1,0 +1,175 @@
+{
+  "servicePage": {
+    "heroTag": "DỊCH VỤ & TIỆN NGHI",
+    "heroTitle1": "Trải nghiệm",
+    "heroAccent": "đẳng cấp",
+    "heroTitle2": "tại BBHH Resort",
+    "heroSub": "Chọn các dịch vụ yêu thích để thêm vào đặt phòng của bạn",
+
+    "loading": "Đang tải dịch vụ...",
+
+    "from": "Từ",
+    "added": "✓ Đã thêm!",
+    "selectedRemove": "✓ Đã chọn · Xóa",
+    "addToBooking": "+ Thêm vào đặt phòng",
+
+    "ctaTitle": "Sẵn sàng trải nghiệm?",
+    "ctaSub": "Đặt phòng ngay hôm nay và tận hưởng toàn bộ dịch vụ 5 sao.",
+
+    "bookNow": "Đặt phòng ngay",
+    "findBooking": "Tra cứu đặt phòng",
+
+    "selectedServices": "dịch vụ đã chọn",
+    "serviceFee": "phí dịch vụ",
+
+    "clearAll": "Xóa tất cả",
+    "chooseRoom": "Chọn phòng",
+
+    "services": {
+      "Luxury Mini Bar": {
+        "name": "Mini Bar Cao Cấp",
+        "description": "Gói đồ uống: rượu vang, cocktail, nước trái cây tươi và đồ ăn nhẹ cao cấp."
+      },
+      "Gourmet Breakfast": {
+        "name": "Bữa Sáng Thượng Hạng",
+        "description": "Buffet sáng quốc tế hơn 40 món, nguyên liệu tươi mỗi ngày. Phục vụ từ 6:30–10:30."
+      },
+      "Spa & Wellness Center": {
+        "name": "Spa & Chăm Sóc Sức Khỏe",
+        "description": "Liệu trình thư giãn cao cấp giúp phục hồi năng lượng toàn diện."
+      },
+      "Spa & Massage": {
+        "name": "Spa & Massage",
+        "description": "Liệu trình massage thư giãn 60 phút với tinh dầu thiên nhiên."
+      },
+      "Laundry & Dry Cleaning": {
+        "name": "Giặt Ủi & Giặt Khô",
+        "description": "Giặt ủi chuyên nghiệp, trả trong 24 giờ."
+      },
+      "Room Service 24/7": {
+        "name": "Dịch Vụ Phòng 24/7",
+        "description": "Phục vụ ăn uống tận phòng bất kỳ lúc nào."
+      },
+      "Private Pool Access": {
+        "name": "Hồ Bơi Riêng",
+        "description": "Thuê riêng hồ bơi vô cực tầng thượng 2 giờ."
+      },
+      "Infinity Swimming Pool": {
+        "name": "Hồ Bơi Vô Cực",
+        "description": "Trải nghiệm hồ bơi vô cực sang trọng."
+      },
+      "Fitness & Yoga Class": {
+        "name": "Lớp Gym & Yoga",
+        "description": "Lớp yoga bình minh hoặc PT gym riêng."
+      },
+      "Modern Fitness Center": {
+        "name": "Trung Tâm Thể Hình",
+        "description": "Phòng gym hiện đại với đầy đủ thiết bị."
+      },
+      "Airport Transfer": {
+        "name": "Đưa Đón Sân Bay",
+        "description": "Đưa đón sân bay bằng xe sang, phục vụ 24/7."
+      },
+      "Beach BBQ Dinner": {
+        "name": "Tiệc BBQ Bãi Biển",
+        "description": "Bữa tối nướng trên bãi biển riêng cho 2 người."
+      },
+      "Room Decoration": {
+        "name": "Trang Trí Phòng",
+        "description": "Trang trí phòng theo chủ đề sinh nhật, kỷ niệm, lãng mạn."
+      },
+      "Tour & Sightseeing": {
+        "name": "Tour Tham Quan",
+        "description": "Tour tham quan địa phương cùng hướng dẫn viên."
+      },
+      "Bicycle Rental": {
+        "name": "Thuê Xe Đạp",
+        "description": "Thuê xe đạp khám phá khuôn viên resort."
+      },
+      "Cocktail & Drinks Package": {
+        "name": "Gói Cocktail & Đồ Uống",
+        "description": "Thưởng thức cocktail thủ công tại pool bar."
+      },
+      "Babysitting Service": {
+        "name": "Dịch Vụ Trông Trẻ",
+        "description": "Dịch vụ trông trẻ chuyên nghiệp theo giờ."
+      },
+      "Water Sports Package": {
+        "name": "Gói Thể Thao Nước",
+        "description": "Kayak, paddleboard, snorkeling cùng hướng dẫn viên."
+      },
+      "Photography Session": {
+        "name": "Chụp Ảnh Chuyên Nghiệp",
+        "description": "Chụp ảnh kỷ niệm tại các điểm đẹp của resort."
+      },
+      "Sunset Cruise": {
+        "name": "Du Thuyền Hoàng Hôn",
+        "description": "Ngắm hoàng hôn trên du thuyền kèm cocktail."
+      },
+      "Cooking Class": {
+        "name": "Lớp Học Nấu Ăn",
+        "description": "Học nấu ẩm thực địa phương cùng đầu bếp resort."
+      },
+      "Flower Arrangement": {
+        "name": "Workshop Cắm Hoa",
+        "description": "Workshop cắm hoa nghệ thuật 90 phút."
+      },
+      "Pet Care Service": {
+        "name": "Chăm Sóc Thú Cưng",
+        "description": "Chăm sóc thú cưng an toàn và chu đáo."
+      },
+      "Golf Cart Rental": {
+        "name": "Thuê Xe Golf",
+        "description": "Thuê xe golf điện khám phá resort."
+      },
+      "Karaoke Room": {
+        "name": "Phòng Karaoke",
+        "description": "Phòng karaoke riêng tư với âm thanh cao cấp."
+      },
+      "In-Room Movie Night": {
+        "name": "Đêm Phim Trong Phòng",
+        "description": "Gói xem phim với popcorn và đồ uống."
+      },
+      "Airport Shuttle Service": {
+        "name": "Đưa Đón Sân Bay",
+        "description": "Đưa đón sân bay bằng xe sang, đúng giờ, phục vụ 24/7. Đặt trước ít nhất 6 giờ."
+      },
+      "Private Beach Bonfire": {
+        "name": "Tiệc Lửa Trại Bãi Biển",
+        "description": "Tiệc lửa trại riêng tư trên bãi biển cho 2–6 người. Kèm BBQ hải sản, nhạc acoustic và cocktail."
+      },
+      "Private Romantic Dinner": {
+        "name": "Bữa Tối Lãng Mạn Riêng Tư",
+        "description": "Bữa tối lãng mạn riêng tư tại bãi biển hoặc vườn resort. Nến, hoa tươi, thực đơn 5 món và rượu vang."
+      },
+      "Yacht Charter": {
+        "name": "Thuê Du Thuyền Riêng",
+        "description": "Thuê du thuyền riêng khám phá vịnh 3 giờ. Dành cho tối đa 8 người, kèm thuyền trưởng và đồ uống cao cấp."
+      },
+      "Sunrise Yoga on Beach": {
+        "name": "Yoga Bình Minh Bãi Biển",
+        "description": "Lớp yoga bình minh trên bãi biển mỗi sáng 6:00–7:00. Thảm và khăn được cung cấp."
+      },
+      "Honeymoon Package": {
+        "name": "Gói Trăng Mật Đặc Biệt",
+        "description": "Gói trăng mật đặc biệt: trang trí phòng hoa tươi, champagne, bánh, bồn tắm cánh hoa và bữa tối riêng tư."
+      },
+      "Kids Club & Activities": {
+        "name": "Câu Lạc Bộ Thiếu Nhi",
+        "description": "Câu lạc bộ thiếu nhi trọn ngày với hoạt động vẽ tranh, làm đồ thủ công, bể bơi mini. Cho trẻ 3–12 tuổi."
+      },
+      "Wine & Cocktail Tasting": {
+        "name": "Thưởng Thức Rượu & Cocktail",
+        "description": "Buổi thưởng rượu vang và cocktail thủ công 90 phút tại sky bar. Chuyên gia pha chế hướng dẫn."
+      },
+      "Traditional Herbal Spa": {
+        "name": "Spa Thảo Dược Truyền Thống",
+        "description": "Liệu trình spa thảo dược truyền thống 90 phút: tắm thảo dược, đắp mặt nạ bùn khoáng và massage đầu."
+      },
+      "Stargazing Night Experience": {
+        "name": "Ngắm Sao Đêm Biển",
+        "description": "Ngắm sao trên bãi biển riêng tư với kính thiên văn chuyên nghiệp, rượu vang và đồ ăn nhẹ cao cấp cho 2 người."
+      }
+    }
+  }
+}

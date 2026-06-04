@@ -20,24 +20,40 @@ function RegisterPage() {
 
   const validate = () => {
     const { name, email, password, phoneNumber } = formData;
+  
     if (!name || !email || !password || !phoneNumber) {
-      setError("Vui lòng điền đầy đủ thông tin."); return false;
+      setError("Vui lòng điền đầy đủ thông tin."); 
+      return false;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Email không hợp lệ."); return false;
+    
+    if (!/^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(email)) {
+      setError("Email không đúng định dạng."); 
+      return false;
     }
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(password)) {
-      setError("Mật khẩu ít nhất 6 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt."); return false;
+    if (email.includes("..")) {
+      setError("Email không đúng định dạng.");
+      return false;
     }
+
     if (!/^[0-9]{10,11}$/.test(phoneNumber)) {
-      setError("Số điện thoại phải từ 10–11 chữ số."); return false;
+      setError("Số điện thoại phải từ 10–11 chữ số."); 
+      return false;
     }
+    
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(password)) {
+      setError("Mật khẩu ít nhất 6 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt."); 
+      return false;
+    }
+    
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) { setTimeout(() => setError(""), 5000); return; }
+    if (!validate()) { 
+      setTimeout(() => setError(""), 5000); 
+      return; 
+    }
     setLoading(true);
     try {
       const res = await ApiService.registerUser(formData);
@@ -74,22 +90,27 @@ function RegisterPage() {
           <h2 className="auth-form-title">Tạo tài khoản</h2>
           <p className="auth-form-sub">Điền thông tin để bắt đầu</p>
 
-          {error   && <div className="auth-error">  <span>⚠️</span>{error}</div>}
+          {/* Khối hiển thị thông báo lỗi / thành công dạng hộp */}
+          {error   && <div className="auth-error"> <span>⚠️</span>{error}</div>}
           {success && <div className="auth-success"><span>✅</span>{success}</div>}
 
-          <form onSubmit={handleSubmit} autoComplete="off">
+          {/* ĐÃ THÊM THUỘC TÍNH noValidate TẠI ĐÂY */}
+          <form onSubmit={handleSubmit} autoComplete="off" noValidate>
             <div className="auth-field">
               <label>Họ và tên</label>
               <input type="text" name="name" placeholder="Nguyễn Văn A" value={formData.name} onChange={handleChange} />
             </div>
+            
             <div className="auth-field">
               <label>Email</label>
               <input type="email" name="email" placeholder="ten@gmail.com" value={formData.email} onChange={handleChange} />
             </div>
+            
             <div className="auth-field">
               <label>Số điện thoại</label>
               <input type="text" name="phoneNumber" placeholder="0909xxxxxx" value={formData.phoneNumber} onChange={handleChange} maxLength={11} />
             </div>
+            
             <div className="auth-field">
               <label>Mật khẩu</label>
               <div className="auth-input-wrap">

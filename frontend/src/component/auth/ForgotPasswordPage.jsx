@@ -13,8 +13,17 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim()) {
-      setError("Vui lòng nhập địa chỉ email."); return;
+      setError("Vui lòng nhập địa chỉ email."); 
+      return;
     }
+    
+    const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Email không đúng định dạng.");
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
@@ -53,7 +62,8 @@ const ForgotPasswordPage = () => {
           {error   && <div className="auth-error">  <span>⚠️</span>{error}</div>}
           {success && <div className="auth-success"><span>✅</span>{success}</div>}
 
-          <form onSubmit={handleSubmit} autoComplete="off">
+          {/* ĐÃ THÊM THUỘC TÍNH noValidate TẠI ĐÂY */}
+          <form onSubmit={handleSubmit} autoComplete="off" noValidate>
             <div className="auth-field">
               <label>Địa chỉ email</label>
               <input
