@@ -14,8 +14,7 @@
     "staff": "Staff",
     "services": "Services",
     "reviews": "Reviews",
-    "floorMap": "Floor Map",
-    "walkIn": "Walk-in Booking"
+    "floorMap": "Floor Map"
   },
   "overview": {
     "greeting": "Welcome",
@@ -105,7 +104,17 @@
     "priceLabel": "Price / night",
     "descLabel": "Room Description",
     "submitBtn": "Add Room",
-    "submitting": "Adding room..."
+    "submitting": "Adding room...",
+    "confirmAdd": "Confirm adding this room?",
+    "roomAdded": "Room added successfully!",
+    "addFail": "Failed to add room",
+    "imageRequired": "Please upload a room image.",
+    "typeRequired2": "Please select or enter a room type.",
+    "priceInvalid": "Price must be a valid positive number.",
+    "priceMin": "Minimum price is $20.",
+    "descRequired": "Room description is required.",
+    "imageInvalid": "Please select a valid image file (JPG, PNG, ...).",
+    "imageSize": "Image size must not exceed 5MB."
   },
   "editRoom": {
     "title": "Edit Room",
@@ -122,7 +131,7 @@
     "updating": "Processing...",
     "deleteBtn": "Delete Room",
     "confirmDelete": "Confirm delete this room?",
-    "updateSuccess": "Updated successfully.",
+    "updateSuccess": "Room updated successfully.",
     "deleteSuccess": "Room deleted successfully."
   },
   "users": {

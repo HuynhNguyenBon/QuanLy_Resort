@@ -105,7 +105,17 @@
     "priceLabel": "料金 / 泊",
     "descLabel": "客室説明",
     "submitBtn": "客室を追加",
-    "submitting": "追加中..."
+    "submitting": "追加中...",
+    "confirmAdd": "この客室を追加しますか？",
+    "roomAdded": "客室を追加しました！",
+    "addFail": "客室の追加に失敗しました",
+    "imageRequired": "客室画像をアップロードしてください。",
+    "typeRequired2": "客室タイプを選択または入力してください。",
+    "priceInvalid": "料金は有効な正の数値にしてください。",
+    "priceMin": "最低料金は$20です。",
+    "descRequired": "客室説明は必須です。",
+    "imageInvalid": "有効な画像ファイル（JPG、PNG...）を選択してください。",
+    "imageSize": "画像サイズは5MB以下にしてください。"
   },
   "editRoom": {
     "title": "客室を編集",
@@ -122,7 +132,7 @@
     "updating": "処理中...",
     "deleteBtn": "客室を削除",
     "confirmDelete": "この客室を削除しますか？",
-    "updateSuccess": "更新しました。",
+    "updateSuccess": "客室を更新しました。",
     "deleteSuccess": "客室を削除しました。"
   },
   "users": {

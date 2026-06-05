@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const STORAGE_KEY = (id) => `bbhh_reviews_${id}`;
 
@@ -29,6 +30,7 @@ const StarDisplay = ({ value }) => (
 );
 
 const RoomReviews = ({ roomId, roomType }) => {
+  const { t, i18n } = useTranslation("reviews");
   const [reviews, setReviews] = useState([]);
   const [form, setForm] = useState({ name: "", rating: 5, comment: "" });
   const [showForm, setShowForm] = useState(false);
@@ -52,11 +54,11 @@ const RoomReviews = ({ roomId, roomType }) => {
   const submit = (e) => {
     e.preventDefault();
     if (!form.name.trim()) {
-      setErr("Vui lòng nhập tên của bạn.");
+      setErr(t("yourNameError"));
       return;
     }
     if (!form.comment.trim()) {
-      setErr("Vui lòng nhập nhận xét.");
+      setErr(t("commentError"));
       return;
     }
     const review = {
@@ -76,44 +78,46 @@ const RoomReviews = ({ roomId, roomType }) => {
     <div className="rv-wrap">
       <div className="rv-header">
         <div>
-          <h3 className="rv-title">Đánh giá của khách</h3>
+          <h3 className="rv-title">{t("reviewsTitle")}</h3>
           {avgRating && (
             <div className="rv-avg">
               <span className="rv-avg-num">{avgRating}</span>
               <StarDisplay value={Math.round(avgRating)} />
-              <span className="rv-avg-count">({reviews.length} đánh giá)</span>
+              <span className="rv-avg-count">
+                ({reviews.length} {t("avgLabel")})
+              </span>
             </div>
           )}
         </div>
         <button className="rv-write-btn" onClick={() => setShowForm((p) => !p)}>
-          {showForm ? "Huỷ" : "✍️ Viết đánh giá"}
+          {showForm ? t("cancel") : t("writeReview")}
         </button>
       </div>
 
       {showForm && (
         <form className="rv-form" onSubmit={submit}>
-          <h4 className="rv-form-title">Đánh giá phòng {roomType}</h4>
+          <h4 className="rv-form-title">{t("reviewRoom", { roomType })}</h4>
           <div className="rv-form-row">
-            <label>Tên của bạn</label>
+            <label>{t("yourName")}</label>
             <input
               type="text"
-              placeholder="VD: Nguyễn Văn A"
+              placeholder={t("namePlaceholder")}
               value={form.name}
               onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
               maxLength={60}
             />
           </div>
           <div className="rv-form-row">
-            <label>Xếp hạng</label>
+            <label>{t("rating")}</label>
             <StarInput
               value={form.rating}
               onChange={(r) => setForm((p) => ({ ...p, rating: r }))}
             />
           </div>
           <div className="rv-form-row">
-            <label>Nhận xét</label>
+            <label>{t("comment")}</label>
             <textarea
-              placeholder="Chia sẻ trải nghiệm của bạn tại BBHH Resort..."
+              placeholder={t("commentPlaceholder")}
               value={form.comment}
               onChange={(e) =>
                 setForm((p) => ({ ...p, comment: e.target.value }))
@@ -124,7 +128,7 @@ const RoomReviews = ({ roomId, roomType }) => {
           </div>
           {err && <p className="rv-err">{err}</p>}
           <button type="submit" className="rv-submit-btn">
-            Gửi đánh giá
+            {t("submit")}
           </button>
         </form>
       )}
@@ -132,7 +136,7 @@ const RoomReviews = ({ roomId, roomType }) => {
       {reviews.length === 0 ? (
         <div className="rv-empty">
           <div className="rv-empty-icon">💬</div>
-          <p>Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ!</p>
+          <p>{t("noReviews")}</p>
         </div>
       ) : (
         <div className="rv-list">

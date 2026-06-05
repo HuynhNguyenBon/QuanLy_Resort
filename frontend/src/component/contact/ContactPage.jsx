@@ -1,38 +1,48 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "../../UiverseElements.css";
 
 const ContactPage = () => {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const { t } = useTranslation("contact");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
   const [sent, setSent] = useState(false);
 
-  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = (e) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setSent(true);
     setTimeout(() => setSent(false), 4000);
     setForm({ name: "", email: "", phone: "", subject: "", message: "" });
   };
 
+  const infoItems = t("infoItems", { returnObjects: true });
+  const subjects = t("subjects", { returnObjects: true });
+
   return (
     <div className="contact-page">
       <div className="contact-hero">
         <div className="contact-hero-inner">
-          <p className="contact-hero-tag">📞 LIÊN HỆ</p>
-          <h1 className="contact-hero-h1">Chúng tôi luôn <span className="accent">sẵn sàng</span> hỗ trợ</h1>
-          <p className="contact-hero-sub">Đội ngũ BBHH Resort phục vụ 24/7, hãy liên hệ bất cứ lúc nào</p>
+          <p className="contact-hero-tag">{t("heroTag")}</p>
+          <h1 className="contact-hero-h1">
+            {t("heroTitle1")} <span className="accent">{t("heroAccent")}</span>{" "}
+            <span style={{ whiteSpace: "nowrap" }}>{t("heroTitle2")}</span>
+          </h1>
+          <p className="contact-hero-sub">{t("heroSub")}</p>
         </div>
       </div>
 
       <div className="contact-body">
         <div className="contact-inner">
           <div className="contact-info-grid">
-            {[
-              { icon: "📍", label: "Địa chỉ", value: "123 Đường Biển Xanh, Quận 7", sub: "TP. Hồ Chí Minh, Việt Nam" },
-              { icon: "📞", label: "Điện thoại", value: "+84 (028) 1234 5678", sub: "Hotline 24/7: 1800 6868" },
-              { icon: "📧", label: "Email", value: "info@bbhhresort.com", sub: "booking@bbhhresort.com" },
-              { icon: "🕐", label: "Giờ làm việc", value: "Lễ tân: 24/7", sub: "Văn phòng: 8:00 – 17:00" },
-            ].map((item, i) => (
+            {infoItems.map((item, i) => (
               <div key={i} className="contact-info-card">
                 <span className="contact-info-icon">{item.icon}</span>
                 <div>
@@ -45,53 +55,80 @@ const ContactPage = () => {
           </div>
 
           <div className="contact-form-card">
-            <h2 className="contact-form-title">Gửi tin nhắn cho chúng tôi</h2>
+            <h2 className="contact-form-title">{t("formTitle")}</h2>
             {sent && (
-              <div className="contact-success">
-                ✅ Cảm ơn! Chúng tôi sẽ phản hồi trong vòng 24 giờ.
-              </div>
+              <div className="contact-success">✅ {t("successMsg")}</div>
             )}
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="contact-form-row">
                 <div className="contact-field">
-                  <label>Họ và tên *</label>
-                  <input name="name" value={form.name} onChange={handleChange} placeholder="Nguyễn Văn A" required />
+                  <label>
+                    {t("nameLabel")} {t("required")}
+                  </label>
+                  <input
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder={t("namePlaceholder")}
+                    required
+                  />
                 </div>
                 <div className="contact-field">
-                  <label>Email *</label>
-                  <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="email@example.com" required />
+                  <label>
+                    {t("emailLabel")} {t("required")}
+                  </label>
+                  <input
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="email@example.com"
+                    required
+                  />
                 </div>
               </div>
               <div className="contact-form-row">
                 <div className="contact-field">
-                  <label>Số điện thoại</label>
-                  <input name="phone" value={form.phone} onChange={handleChange} placeholder="0912 345 678" />
+                  <label>{t("phoneLabel")}</label>
+                  <input
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder={t("phonePlaceholder")}
+                  />
                 </div>
                 <div className="contact-field">
-                  <label>Chủ đề *</label>
-                  <select name="subject" value={form.subject} onChange={handleChange} required>
-                    <option value="">Chọn chủ đề...</option>
-                    <option>Đặt phòng</option>
-                    <option>Dịch vụ</option>
-                    <option>Ưu đãi & Khuyến mãi</option>
-                    <option>Khiếu nại</option>
-                    <option>Khác</option>
+                  <label>
+                    {t("subjectLabel")} {t("required")}
+                  </label>
+                  <select
+                    name="subject"
+                    value={form.subject}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">{t("subjectPlaceholder")}</option>
+                    {subjects.map((s, i) => (
+                      <option key={i}>{s}</option>
+                    ))}
                   </select>
                 </div>
               </div>
               <div className="contact-field">
-                <label>Nội dung *</label>
+                <label>
+                  {t("messageLabel")} {t("required")}
+                </label>
                 <textarea
                   name="message"
                   value={form.message}
                   onChange={handleChange}
                   rows={5}
-                  placeholder="Nhập nội dung tin nhắn..."
+                  placeholder={t("messagePlaceholder")}
                   required
                 />
               </div>
               <button type="submit" className="contact-submit-btn">
-                📨 Gửi tin nhắn
+                📨 {t("submitBtn")}
               </button>
             </form>
           </div>

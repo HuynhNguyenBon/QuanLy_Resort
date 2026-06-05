@@ -1,0 +1,16 @@
+{
+  "reviewsTitle": "Đánh giá của khách",
+  "writeReview": "✍️ Viết đánh giá",
+  "cancel": "Huỷ",
+  "reviewRoom": "Đánh giá phòng {{roomType}}",
+  "yourName": "Tên của bạn",
+  "namePlaceholder": "VD: Nguyễn Văn A",
+  "rating": "Xếp hạng",
+  "comment": "Nhận xét",
+  "commentPlaceholder": "Chia sẻ trải nghiệm của bạn tại BBHH Resort...",
+  "submit": "Gửi đánh giá",
+  "noReviews": "Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ!",
+  "yourNameError": "Vui lòng nhập tên của bạn.",
+  "commentError": "Vui lòng nhập nhận xét.",
+  "avgLabel": "đánh giá"
+}
