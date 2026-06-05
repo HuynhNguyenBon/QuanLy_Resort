@@ -14,7 +14,8 @@
     "staff": "Staff",
     "services": "Services",
     "reviews": "Reviews",
-    "floorMap": "Floor Map"
+    "floorMap": "Floor Map",
+    "walkIn": "Walk-in Booking"
   },
   "overview": {
     "greeting": "Welcome",
