@@ -89,7 +89,20 @@
     "totalLabel": "Total",
     "cancelBtn": "Cancel Booking",
     "confirmCancel": "Confirm cancel this booking?",
-    "cancelSuccess": "Booking cancelled successfully."
+    "cancelSuccess": "Booking cancelled successfully.",
+    "checkIn": "Check-in Date",
+    "checkOut": "Check-out Date",
+    "adults": "Adults",
+    "children": "Children",
+    "totalGuests": "Total Guests",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "perNight": "/night",
+    "statusPaid": "Paid",
+    "statusConfirmed": "Confirmed",
+    "statusCancelled": "Cancelled",
+    "statusPending": "Pending"
   },
   "addRoom": {
     "title": "Add New Room",

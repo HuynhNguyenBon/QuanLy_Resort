@@ -14,8 +14,7 @@
     "staff": "Nhân viên",
     "services": "Dịch vụ",
     "reviews": "Đánh giá",
-    "floorMap": "Sơ đồ phòng",
-    "walkIn": "Đặt phòng tại quầy"
+    "floorMap": "Sơ đồ phòng"
   },
   "overview": {
     "greeting": "Xin chào",
@@ -90,7 +89,20 @@
     "totalLabel": "Tổng tiền",
     "cancelBtn": "Huỷ đặt phòng",
     "confirmCancel": "Xác nhận huỷ đặt phòng này?",
-    "cancelSuccess": "Đã huỷ đặt phòng thành công."
+    "cancelSuccess": "Đã huỷ đặt phòng thành công.",
+    "checkIn": "Ngày nhận phòng",
+    "checkOut": "Ngày trả phòng",
+    "adults": "Người lớn",
+    "children": "Trẻ em",
+    "totalGuests": "Tổng số khách",
+    "fullName": "Họ và tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "perNight": "/đêm",
+    "statusPaid": "Đã thanh toán",
+    "statusConfirmed": "Đã xác nhận",
+    "statusCancelled": "Đã huỷ",
+    "statusPending": "Chờ thanh toán"
   },
   "addRoom": {
     "title": "Thêm phòng mới",
