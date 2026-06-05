@@ -314,11 +314,11 @@ const AddRoomPage = () => {
       return;
     }
     if (!selected.type.startsWith("image/")) {
-      showToast("error", "Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, ...).");
+      showToast("error", t("addRoom.imageInvalid"));
       return;
     }
     if (selected.size > 5 * 1024 * 1024) {
-      showToast("error", "Kích thước ảnh không được vượt quá 5MB.");
+      showToast("error", t("addRoom.imageSize"));
       return;
     }
     setFile(selected);
@@ -328,24 +328,24 @@ const AddRoomPage = () => {
   /* client-side validation — chặn trước khi gọi API */
   const validate = () => {
     if (!file) {
-      showToast("error", "Vui lòng tải lên ảnh phòng.");
+      showToast("error", t("addRoom.imageRequired"));
       return false;
     }
     if (!roomDetails.roomType.trim()) {
-      showToast("error", "Vui lòng chọn hoặc nhập loại phòng.");
+      showToast("error", t("addRoom.typeRequired2"));
       return false;
     }
     const price = Number(roomDetails.roomPrice);
     if (!roomDetails.roomPrice || isNaN(price) || price <= 0) {
-      showToast("error", "Giá phòng phải là số dương hợp lệ.");
+      showToast("error", t("addRoom.priceInvalid"));
       return false;
     }
     if (price < 20) {
-      showToast("error", "Giá phòng tối thiểu là 20$. Vui lòng nhập lại.");
+      showToast("error", t("addRoom.priceMin"));
       return false;
     }
     if (!roomDetails.roomDescription.trim()) {
-      showToast("error", "Mô tả phòng không được để trống.");
+      showToast("error", t("addRoom.descRequired"));
       return false;
     }
     return true;
@@ -369,7 +369,10 @@ const AddRoomPage = () => {
         showToast("success", t("addRoomPage.roomAdded"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
-        showToast("error", `Thêm phòng thất bại (mã: ${result.statusCode}).`);
+        showToast(
+          "error",
+          t("addRoom.add_failed", { code: result.statusCode }),
+        );
       }
     } catch (err) {
       showToast("error", parseError(err));
@@ -642,7 +645,7 @@ const AddRoomPage = () => {
                 <input
                   type="text"
                   name="roomType"
-                  placeholder="Nhập tên loại phòng mới..."
+                  placeholder={t("addRoom.namePlaceholder")}
                   value={roomDetails.roomType}
                   onChange={handleChange}
                   disabled={loading}
@@ -687,7 +690,7 @@ const AddRoomPage = () => {
                   value={roomDetails.roomPrice}
                   onChange={handleChange}
                   disabled={loading}
-                  placeholder="Tối thiểu 20"
+                  placeholder={t("addRoom.pricePlaceholder")}
                   style={{ ...fieldStyle, paddingLeft: 28 }}
                   onFocus={(e) => {
                     e.target.style.borderColor = "#0d9488";
@@ -713,7 +716,7 @@ const AddRoomPage = () => {
                 value={roomDetails.roomDescription}
                 onChange={handleChange}
                 disabled={loading}
-                placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
+                placeholder={t("addRoom.descPlaceholder")}
                 style={{ ...fieldStyle, resize: "vertical", lineHeight: 1.65 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = "#0d9488";

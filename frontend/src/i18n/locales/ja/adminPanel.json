@@ -128,7 +128,11 @@
     "priceMin": "最低料金は$20です。",
     "descRequired": "客室説明は必須です。",
     "imageInvalid": "有効な画像ファイル（JPG、PNG...）を選択してください。",
-    "imageSize": "画像サイズは5MB以下にしてください。"
+    "imageSize": "画像サイズは5MB以下にしてください。",
+    "addfailed": "客室の追加に失敗しました（コード：{{code}}）。",
+    "namePlaceholder": "新しい客室タイプを入力...",
+    "pricePlaceholder": "最低20",
+    "descPlaceholder": "部屋の詳細な説明、設備、眺望など..."
   },
   "editRoom": {
     "title": "客室を編集",
@@ -186,23 +190,53 @@
       "actions": "操作"
     },
     "edit": "編集",
+    "yesAccount": "アカウントあり",
+    "createAccount": "アカウントを作成",
     "delete": "削除",
     "confirmDelete": "このスタッフを削除しますか？",
     "deleteSuccess": "スタッフを削除しました。",
     "noStaff": "スタッフがいません。",
+    "email_required": "メールアドレスは必須です。",
+    "password_required": "パスワードは必須です。",
+    "password_min": "パスワードは6文字以上にしてください。",
+    "password_match": "パスワード確認が一致しません。",
+    "register_success": "{{name}}のアカウントを作成しました。メール：{{email}}",
     "addModal": {
       "title": "スタッフを追加",
       "editTitle": "スタッフを編集",
       "nameLabel": "氏名",
+      "namePlaceholder": "例：山田太郎",
       "roleLabel": "役職",
+      "choiceRole": "— 役職を選択 —",
       "phoneLabel": "電話番号",
+      "phonePlaceholder": "例：0901234567",
       "emailLabel": "メール",
+      "emailPlaceholder": "例：john.smith@example.com",
       "startDateLabel": "入社日",
       "noteLabel": "メモ",
+      "notePlaceholder": "シフト、担当エリアなど...",
       "saveBtn": "スタッフを追加",
       "updateBtn": "変更を保存",
       "cancelBtn": "キャンセル",
-      "saving": "保存中..."
+      "saving": "保存中...",
+      "createStaff": "スタッフアカウントを作成",
+      "create_note": "{{name}}のアカウントを作成します。従業員はこのメールアドレスとパスワードでスタッフページにログインします。",
+      "email2": "ログインメール *",
+      "password": "パスワード *",
+      "confirm_password": "パスワード確認 *",
+      "password_hint": "6文字以上",
+      "reenter_password": "もう一度パスワードを入力",
+      "error_prefix": "警告"
+    },
+    "roles": {
+      "receptionist": "レセプショニスト",
+      "manager": "マネージャー",
+      "housekeeping": "ハウスキーピング",
+      "security": "セキュリティ",
+      "kitchen": "キッチン",
+      "maintenance": "メンテナンス",
+      "spa": "スパ",
+      "other": "その他"
     }
   },
   "services": {

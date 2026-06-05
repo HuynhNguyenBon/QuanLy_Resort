@@ -128,7 +128,11 @@
     "priceMin": "Giá phòng tối thiểu là 20$.",
     "descRequired": "Mô tả phòng không được để trống.",
     "imageInvalid": "Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, ...).",
-    "imageSize": "Kích thước ảnh không được vượt quá 5MB."
+    "imageSize": "Kích thước ảnh không được vượt quá 5MB.",
+    "addfailed": "Thêm phòng thất bại (mã: {{code}}).",
+    "namePlaceholder": "Nhập tên loại phòng mới...",
+    "pricePlaceholder": "Tối thiểu 20",
+    "descPlaceholder": "Mô tả chi tiết về phòng, tiện nghi, view..."
   },
   "editRoom": {
     "title": "Chỉnh sửa phòng",
@@ -189,23 +193,53 @@
       "actions": "Thao tác"
     },
     "edit": "Sửa",
+    "yesAccount": "Đã có tài khoản",
+    "createAccount": "Tạo TK",
     "delete": "Xoá",
     "confirmDelete": "Xác nhận xoá nhân viên này?",
     "deleteSuccess": "Đã xoá nhân viên.",
     "noStaff": "Chưa có nhân viên nào.",
+    "email_required": "Email không được để trống.",
+    "password_required": "Mật khẩu không được để trống.",
+    "password_min": "Mật khẩu phải có ít nhất 6 ký tự.",
+    "password_match": "Mật khẩu xác nhận không khớp.",
+    "register_success": "Đã tạo tài khoản cho {{name}}. Email: {{email}}",
     "addModal": {
       "title": "Thêm nhân viên",
       "editTitle": "Chỉnh sửa nhân viên",
       "nameLabel": "Họ và tên",
+      "namePlaceholder": "VD: Nguyễn Văn A",
       "roleLabel": "Chức vụ",
+      "choiceRole": "— Chọn chức vụ —",
       "phoneLabel": "Số điện thoại",
+      "phonePlaceholder": "VD: 0901234567",
       "emailLabel": "Email",
+      "emailPlaceholder": "VD: email@gmail.com",
       "startDateLabel": "Ngày vào làm",
       "noteLabel": "Ghi chú",
+      "notePlaceholder": "Ca làm việc, khu vực phụ trách...",
       "saveBtn": "Thêm nhân viên",
       "updateBtn": "Lưu thay đổi",
       "cancelBtn": "Huỷ",
-      "saving": "Đang lưu..."
+      "saving": "Đang lưu...",
+      "createStaff": "Tạo tài khoản nhân viên",
+      "create_note": "Tạo tài khoản đăng nhập hệ thống cho {{name}}. Nhân viên dùng email + mật khẩu để đăng nhập vào trang nhân viên.",
+      "email2": "Email đăng nhập *",
+      "password": "Mật khẩu *",
+      "confirm_password": "Xác nhận mật khẩu *",
+      "password_hint": "Tối thiểu 6 ký tự",
+      "reenter_password": "Nhập lại mật khẩu",
+      "error_prefix": "Cảnh báo"
+    },
+    "roles": {
+      "receptionist": "Lễ tân",
+      "manager": "Quản lý",
+      "housekeeping": "Buồng phòng",
+      "security": "Bảo vệ",
+      "kitchen": "Bếp",
+      "maintenance": "Kỹ thuật",
+      "spa": "Spa",
+      "other": "Khác"
     }
   },
   "services": {
