@@ -14,8 +14,7 @@
     "staff": "スタッフ",
     "services": "サービス",
     "reviews": "レビュー",
-    "floorMap": "フロアマップ",
-    "walkIn": "フロント予約"
+    "floorMap": "フロアマップ"
   },
   "overview": {
     "greeting": "ようこそ",
@@ -90,7 +89,20 @@
     "totalLabel": "合計金額",
     "cancelBtn": "予約をキャンセル",
     "confirmCancel": "この予約をキャンセルしますか？",
-    "cancelSuccess": "予約をキャンセルしました。"
+    "cancelSuccess": "予約をキャンセルしました。",
+    "checkIn": "チェックイン日",
+    "checkOut": "チェックアウト日",
+    "adults": "大人",
+    "children": "子供",
+    "totalGuests": "合計人数",
+    "fullName": "氏名",
+    "email": "メールアドレス",
+    "phone": "電話番号",
+    "perNight": "/泊",
+    "statusPaid": "支払い済み",
+    "statusConfirmed": "確認済み",
+    "statusCancelled": "キャンセル済み",
+    "statusPending": "支払い待ち"
   },
   "addRoom": {
     "title": "新しい客室を追加",

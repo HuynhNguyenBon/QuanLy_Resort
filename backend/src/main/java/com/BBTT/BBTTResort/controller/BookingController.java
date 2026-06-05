@@ -79,7 +79,7 @@ public class BookingController {
     }
 
     @PutMapping("/update/{bookingId}")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER') or hasAuthority('STAFF')")
     public ResponseEntity<Response> updateBooking(
             @PathVariable Long bookingId,
             @RequestBody Booking updateRequest) {

@@ -23,6 +23,19 @@
     "book": "Xem / Đặt ngay"
   },
 
+  "compare": {
+    "label": "SO SÁNH",
+    "addRoom": "+ Thêm phòng",
+    "compareNow": "So sánh ngay",
+    "clearAll": "Xoá tất cả",
+    "modalTitle": "So sánh phòng",
+    "criteria": "Tiêu chí",
+    "roomType": "Loại phòng",
+    "pricePerNight": "Giá / đêm ($)",
+    "description": "Mô tả",
+    "amenities": "Tiện nghi",
+    "bookNow": "Đặt phòng →"
+  },
   "search": {
     "checkIn": "Ngày nhận phòng",
     "checkOut": "Ngày trả phòng",

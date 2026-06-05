@@ -25,6 +25,19 @@
     "book": "詳細 / 予約"
   },
 
+  "compare": {
+    "label": "比較",
+    "addRoom": "+ 客室を追加",
+    "compareNow": "今すぐ比較",
+    "clearAll": "すべて削除",
+    "modalTitle": "客室を比較",
+    "criteria": "比較項目",
+    "roomType": "客室タイプ",
+    "pricePerNight": "料金 / 泊 ($)",
+    "description": "説明",
+    "amenities": "設備",
+    "bookNow": "今すぐ予約 →"
+  },
   "search": {
     "checkIn": "チェックイン日",
     "checkOut": "チェックアウト日",
