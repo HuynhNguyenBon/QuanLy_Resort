@@ -2,10 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { getRoomTranslation } from "../../data/roomTranslations";
+
+const EXCHANGE_RATES = { vi: 25000, ja: 155, en: 1 };
+const formatPrice = (amountUSD, lang) => {
+  const code = (lang || "en").split("-")[0];
+  if (code === "vi")
+    return `${Math.round(amountUSD * EXCHANGE_RATES.vi).toLocaleString("vi-VN")} VNĐ`;
+  if (code === "ja")
+    return `¥${Math.round(amountUSD * EXCHANGE_RATES.ja).toLocaleString("ja-JP")}`;
+  return `$${amountUSD}`;
+};
 
 const EditBookingPage = () => {
   const { t, i18n } = useTranslation("adminPanel");
   const navigate = useNavigate();
+  const lang = i18n.language.split("-")[0];
   const { bookingCode } = useParams();
   const [booking, setBooking] = useState(null);
   const [error, setError] = useState("");
@@ -106,8 +118,10 @@ const EditBookingPage = () => {
       const res = await ApiService.cancelBooking(booking.id);
       if (res.statusCode === 200) {
         setSuccess(t("editBooking.cancelSuccess"));
-        const base = ApiService.isAdmin() ? "/admin" : "/staff";
-        setTimeout(() => navigate(`${base}/bookings`), 2500);
+        const dest = ApiService.isAdmin()
+          ? "/admin/manage-bookings"
+          : "/staff/bookings";
+        setTimeout(() => navigate(dest), 2500);
       }
     } catch (e) {
       setError(e.response?.data?.message || e.message);
@@ -128,10 +142,7 @@ const EditBookingPage = () => {
       )
     : 0;
 
-  const handleBack = () => {
-    const base = ApiService.isAdmin() ? "/admin" : "/staff";
-    navigate(`${base}/bookings`);
-  };
+  const handleBack = () => navigate(-1);
 
   return (
     <div className="adm-dashboard">
@@ -251,7 +262,10 @@ const EditBookingPage = () => {
             <span style={{ fontSize: "1.3rem" }}>📋</span>
             <div>
               <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
-                {booking.room?.roomType || t("editBooking.title")}
+                {(booking.room?.roomType
+                  ? getRoomTranslation(booking.room.roomType, lang)?.roomType ||
+                    booking.room.roomType
+                  : null) || t("editBooking.title")}
               </div>
               <div
                 style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}
@@ -265,9 +279,9 @@ const EditBookingPage = () => {
                 style={{ color: "#fff", fontWeight: 800, fontSize: "1.4rem" }}
               >
                 {booking.totalPrice != null
-                  ? `$${booking.totalPrice}`
+                  ? formatPrice(booking.totalPrice, lang)
                   : booking.room?.roomPrice
-                    ? `$${booking.room.roomPrice * nights}`
+                    ? formatPrice(booking.room.roomPrice * nights, lang)
                     : "—"}
               </div>
               <div
@@ -337,10 +351,15 @@ const EditBookingPage = () => {
                     marginBottom: 4,
                   }}
                 >
-                  {booking.room?.roomType || "—"}
+                  {booking.room?.roomType
+                    ? getRoomTranslation(booking.room.roomType, lang)
+                        ?.roomType || booking.room.roomType
+                    : "—"}
                 </div>
                 <div style={{ color: "#0d9488", fontWeight: 700 }}>
-                  ${booking.room?.roomPrice}
+                  {booking.room?.roomPrice != null
+                    ? formatPrice(booking.room.roomPrice, lang)
+                    : "—"}
                   <span
                     style={{
                       color: "#94a3b8",

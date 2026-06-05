@@ -2,8 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 import Pagination from "../common/Pagination";
+import { getRoomTranslation } from "../../data/roomTranslations";
 
 const PER_PAGE = 15;
+const EXCHANGE_RATES = { vi: 25000, ja: 155, en: 1 };
+const formatPrice = (amountUSD, lang) => {
+  const code = (lang || "en").split("-")[0];
+  if (code === "vi")
+    return `${Math.round(amountUSD * EXCHANGE_RATES.vi).toLocaleString("vi-VN")} VNĐ`;
+  if (code === "ja")
+    return `¥${Math.round(amountUSD * EXCHANGE_RATES.ja).toLocaleString("ja-JP")}`;
+  return `$${Number(amountUSD).toLocaleString()}`;
+};
 const fmtDate = (d) =>
   d
     ? new Date(d).toLocaleDateString(undefined, {
@@ -12,8 +22,6 @@ const fmtDate = (d) =>
         year: "numeric",
       })
     : "—";
-const fmtMoney = (v) =>
-  v != null && v > 0 ? `$${Number(v).toLocaleString()}` : "—";
 
 const isPaid = (b) => {
   const p = (b.paymentStatus || "").toUpperCase();
@@ -37,7 +45,8 @@ const getAmount = (b) => {
 };
 
 const TransactionHistoryPage = () => {
-  const { t } = useTranslation("adminPanel");
+  const { t, i18n } = useTranslation("adminPanel");
+  const lang = i18n.language.split("-")[0];
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -175,14 +184,14 @@ const TransactionHistoryPage = () => {
         {[
           {
             label: t("transactions.totalRevenue"),
-            value: `$${Number(totalRevenue).toLocaleString()}`,
+            value: formatPrice(totalRevenue, lang),
             icon: "💰",
             color: "#0d9488",
             light: "#f0fdfa",
           },
           {
             label: t("transactions.pendingAmount"),
-            value: `$${Number(pendingAmount).toLocaleString()}`,
+            value: formatPrice(pendingAmount, lang),
             icon: "⏳",
             color: "#f59e0b",
             light: "#fffbeb",
@@ -361,7 +370,7 @@ const TransactionHistoryPage = () => {
       <div className="adm-section" style={{ padding: 0, overflow: "hidden" }}>
         {loading ? (
           <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>
-            Đang tải...
+            {t("revenue.loading")}
           </div>
         ) : (
           <table
@@ -477,7 +486,10 @@ const TransactionHistoryPage = () => {
                       )}
                     </td>
                     <td style={{ padding: "12px 16px", color: "#475569" }}>
-                      {b.room?.roomType || "—"}
+                      {b.room?.roomType
+                        ? getRoomTranslation(b.room.roomType, lang)?.roomType ||
+                          b.room.roomType
+                        : "—"}
                     </td>
                     <td
                       style={{
@@ -505,7 +517,7 @@ const TransactionHistoryPage = () => {
                           fontSize: "0.9rem",
                         }}
                       >
-                        {fmtMoney(b._amount)}
+                        {b._amount > 0 ? formatPrice(b._amount, lang) : "—"}
                       </span>
                     </td>
                     <td style={{ padding: "12px 16px" }}>

@@ -100,10 +100,20 @@
     "email": "Email",
     "phone": "Phone",
     "perNight": "/night",
+    "statusBooked": "Booked",
     "statusPaid": "Paid",
     "statusConfirmed": "Confirmed",
     "statusCancelled": "Cancelled",
-    "statusPending": "Pending"
+    "statusPending": "Pending",
+    "statusCheckedIn": "Checked In",
+    "statusCheckedOut": "Checked Out",
+    "maxAdults": "Max {{count}} adults",
+    "maxChildren": "Max {{count}} children",
+    "errMinAdults": "At least 1 adult required.",
+    "errMaxAdults": "Max {{count}} adults for {{type}} room.",
+    "errMaxChildren": "Max {{count}} children for {{type}} room.",
+    "errMaxTotal": "Max {{count}} total guests for {{type}} room.",
+    "errSave": "Save failed"
   },
   "addRoom": {
     "title": "Add New Room",
@@ -132,7 +142,8 @@
     "addfailed": "Failed to add room (code: {{code}}).",
     "namePlaceholder": "Enter new room type...",
     "pricePlaceholder": "Minimum 20",
-    "descPlaceholder": "Detailed description about the room, amenities, view..."
+    "descPlaceholder": "Detailed description about the room, amenities, view...",
+    "back": "Go back"
   },
   "editRoom": {
     "title": "Edit Room",
@@ -172,6 +183,10 @@
     "delete": "Delete",
     "confirmDelete": "Confirm delete this account?",
     "deleteSuccess": "Account deleted successfully.",
+    "deleteFail": "Delete failed",
+    "confirmSetRole": "Change {{name}} to {{role}}?",
+    "setRoleSuccess": "Changed {{name}} to {{role}}.",
+    "setRoleError": "Error",
     "noUsers": "No customers found."
   },
   "staff": {
@@ -201,6 +216,9 @@
     "password_min": "Password must be at least 6 characters.",
     "password_match": "Passwords do not match.",
     "register_success": "Created account for {{name}}. Email: {{email}}",
+    "field_required": "{{field}} is required.",
+    "phone_required": "Phone number is required.",
+    "create_failed": "Failed to create account.",
     "addModal": {
       "title": "Add Staff Member",
       "editTitle": "Edit Staff Member",
@@ -252,6 +270,15 @@
     "delete": "Delete",
     "confirmDelete": "Confirm delete this service?",
     "deleteSuccess": "Service deleted.",
+    "hideSuccess": "Service hidden from list.",
+    "saveSuccess": "Service saved to system.",
+    "addSuccess": "Service added successfully.",
+    "updateSuccess": "Service updated.",
+    "deleteFail": "Delete failed",
+    "errUnknown": "Unknown error",
+    "errPrefix": "Error",
+    "nameRequired": "Service name is required.",
+    "descRequired": "Description is required.",
     "noServices": "No services yet.",
     "addModal": {
       "addTitle": "Add New Service",

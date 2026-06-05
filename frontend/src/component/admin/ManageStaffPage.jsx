@@ -14,6 +14,19 @@ const ROLES = [
   "spa",
   "other",
 ];
+const ROLE_LEGACY_MAP = {
+  "Quản lý": "manager",
+  "Lễ tân": "receptionist",
+  "Buồng phòng": "housekeeping",
+  "Bảo vệ": "security",
+  Bếp: "kitchen",
+  "Kỹ thuật": "maintenance",
+  Spa: "spa",
+  "Nhân viên": "other",
+  Khác: "other",
+};
+const resolveRoleKey = (role) =>
+  ROLES.includes(role) ? role : ROLE_LEGACY_MAP[role] || null;
 const EMPTY = {
   name: "",
   role: "",
@@ -84,7 +97,7 @@ const ManageStaffPage = () => {
               name: u.name,
               email: u.email,
               phone: m.phone || u.phoneNumber || "",
-              role: m.role || "Nhân viên",
+              role: m.role || "other",
               startDate: m.startDate || "",
               note: m.note || "",
               hasAccount: true,
@@ -125,15 +138,21 @@ const ManageStaffPage = () => {
   const handleSave = () => {
     const { name, role, phone } = modal.data;
     if (!name.trim()) {
-      setModalErr(`${t("staff.addModal.nameLabel")} không được để trống.`);
+      setModalErr(
+        t("staff.field_required", { field: t("staff.addModal.nameLabel") }),
+      );
       return;
     }
     if (!role) {
-      setModalErr(`${t("staff.addModal.roleLabel")} không được để trống.`);
+      setModalErr(
+        t("staff.field_required", { field: t("staff.addModal.roleLabel") }),
+      );
       return;
     }
     if (!phone.trim()) {
-      setModalErr(`${t("staff.addModal.phoneLabel")} không được để trống.`);
+      setModalErr(
+        t("staff.field_required", { field: t("staff.addModal.phoneLabel") }),
+      );
       return;
     }
     setSaving(true);
@@ -189,15 +208,20 @@ const ManageStaffPage = () => {
       staffId: s.id,
       name: s.name,
       email: s.email || "",
+      phone: s.phone || "",
       password: "",
       confirmPassword: "",
     });
   };
 
   const handleCreateAccount = async () => {
-    const { name, email, password, confirmPassword } = accountModal;
+    const { name, email, password, confirmPassword, phone } = accountModal;
     if (!email.trim()) {
       setAccountErr(t("staff.email_required"));
+      return;
+    }
+    if (!phone.trim()) {
+      setAccountErr(t("staff.phone_required"));
       return;
     }
     if (!password) {
@@ -214,7 +238,12 @@ const ManageStaffPage = () => {
     }
     setAccountSaving(true);
     try {
-      await ApiService.registerUser({ name, email: email.trim(), password });
+      await ApiService.registerUser({
+        name,
+        email: email.trim(),
+        password,
+        phoneNumber: phone.trim(),
+      });
       showMsg(
         t("staff.register_success", {
           name,
@@ -232,7 +261,7 @@ const ManageStaffPage = () => {
       reloadStaff();
     } catch (e) {
       setAccountErr(
-        e.response?.data?.message || e.message || "Tạo tài khoản thất bại.",
+        e.response?.data?.message || e.message || t("staff.create_failed"),
       );
     } finally {
       setAccountSaving(false);
@@ -525,7 +554,10 @@ const ManageStaffPage = () => {
                         border: "1px solid #ccfbf1",
                       }}
                     >
-                      {s.role}
+                      {(() => {
+                        const k = resolveRoleKey(s.role);
+                        return k ? t(`staff.roles.${k}`) : s.role;
+                      })()}
                     </span>
                   </td>
                   <td style={{ padding: "14px 16px", color: "#475569" }}>
@@ -977,6 +1009,22 @@ const ManageStaffPage = () => {
                     setAccountModal((m) => ({ ...m, email: e.target.value }))
                   }
                   placeholder="nhanvien@bbhh.com"
+                  style={fieldStyle}
+                  onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
+                  onBlur={(e) => (e.target.style.borderColor = "#e8ecef")}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>
+                  {t("staff.addModal.phoneLabel")} *
+                </label>
+                <input
+                  type="tel"
+                  value={accountModal.phone}
+                  onChange={(e) =>
+                    setAccountModal((m) => ({ ...m, phone: e.target.value }))
+                  }
+                  placeholder={t("staff.addModal.phonePlaceholder")}
                   style={fieldStyle}
                   onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
                   onBlur={(e) => (e.target.style.borderColor = "#e8ecef")}

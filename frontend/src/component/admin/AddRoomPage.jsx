@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { getRoomTranslation } from "../../data/roomTranslations";
 
 /* ─── Toast Component (dùng chung style với EditRoomPage) ──────────────── */
 const Toast = ({ type, message, onClose }) => {
@@ -31,8 +32,8 @@ const Toast = ({ type, message, onClose }) => {
         .phong-toast__body  { flex:1; }
         .phong-toast__title { font-weight:600; font-size:14px; margin-bottom:2px; }
         .phong-toast__msg   { font-size:13px; opacity:0.85; }
-        .phong-toast__close { background:none;border:none;cursor:pointer;font-size:16px;opacity:0.5;padding:0;color:inherit;flex-shrink:0; }
-        .phong-toast__close:hover { opacity:1; }
+        .phong-toast__close { background:none !important;border:none !important;cursor:pointer;font-size:16px;opacity:0.5;padding:4px 6px;color:inherit;flex-shrink:0;border-radius:4px;transition:opacity 0.15s; }
+        .phong-toast__close:hover { opacity:1 !important; background:rgba(0,0,0,0.08) !important; }
         .phong-toast__bar   { position:absolute;bottom:0;left:0;height:3px;border-radius:0 0 12px 12px; }
         .phong-toast.error   .phong-toast__bar { background:#ff4d4f; animation:toastBarError   5s linear forwards; }
         .phong-toast.success .phong-toast__bar { background:#52c41a; animation:toastBarSuccess 3s linear forwards; }
@@ -90,7 +91,15 @@ const parseError = (err) => {
 };
 
 /* ─── Custom room-type dropdown ────────────────────────────────────────── */
-const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
+const RoomTypeDropdown = ({
+  roomTypes,
+  value,
+  isNew,
+  onChange,
+  disabled,
+  t,
+  lang,
+}) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -103,8 +112,10 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
   }, []);
 
   const displayLabel = isNew
-    ? "✏️ Nhập loại phòng mới..."
-    : value || "— Chọn loại phòng —";
+    ? "✏️ " + t("addRoom.newType")
+    : value
+      ? getRoomTranslation(value, lang)?.roomType || value
+      : t("addRoom.allTypes");
   const hasValue = !isNew && !!value;
 
   return (
@@ -173,7 +184,7 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
               cursor: "default",
             }}
           >
-            — Chọn loại phòng —
+            {t("addRoom.allTypes")}
           </div>
 
           {/* Existing types */}
@@ -208,7 +219,7 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
                   }
                 }}
               >
-                {type}
+                {getRoomTranslation(type, lang)?.roomType || type}
               </div>
             );
           })}
@@ -242,7 +253,8 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
               }
             }}
           >
-            ✏️ Nhập loại phòng mới...
+            {"✏️ "}
+            {t("addRoom.newType")}
           </div>
         </div>
       )}
@@ -252,8 +264,9 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
 
 /* ─── AddRoomPage ──────────────────────────────────────────────────────── */
 const AddRoomPage = () => {
-  const { t } = useTranslation("adminPanel");
+  const { t, i18n } = useTranslation("adminPanel");
   const navigate = useNavigate();
+  const lang = i18n.language.split("-")[0];
 
   const [roomDetails, setRoomDetails] = useState({
     roomPhotoUrl: "",
@@ -353,7 +366,7 @@ const AddRoomPage = () => {
 
   const addRoom = async () => {
     if (!validate()) return;
-    if (!window.confirm(t("addRoomPage.confirmAddRoom"))) return;
+    if (!window.confirm(t("addRoom.confirmAdd"))) return;
 
     setLoading(true);
     try {
@@ -366,7 +379,7 @@ const AddRoomPage = () => {
       const result = await ApiService.addRoom(formData);
 
       if (result.statusCode === 200) {
-        showToast("success", t("addRoomPage.roomAdded"), 3000);
+        showToast("success", t("addRoom.roomAdded"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
         showToast(
@@ -602,6 +615,7 @@ const AddRoomPage = () => {
                 onClick={() => {
                   setFile(null);
                   setPreview(null);
+                  if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
                 disabled={loading}
                 style={{
@@ -616,7 +630,7 @@ const AddRoomPage = () => {
                   width: "100%",
                 }}
               >
-                ✕ Bỏ ảnh
+                ✕ {t("editRoom.removeImage")}
               </button>
             )}
           </div>
@@ -639,6 +653,8 @@ const AddRoomPage = () => {
                 isNew={newRoomType}
                 onChange={handleRoomTypeChange}
                 disabled={loading}
+                t={t}
+                lang={lang}
               />
 
               {newRoomType && (
