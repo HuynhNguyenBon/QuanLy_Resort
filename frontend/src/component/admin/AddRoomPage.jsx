@@ -369,7 +369,10 @@ const AddRoomPage = () => {
         showToast("success", t("addRoom.roomAdded"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
-        showToast("error", `Thêm phòng thất bại (mã: ${result.statusCode}).`);
+        showToast(
+          "error",
+          t("addRoom.add_failed", { code: result.statusCode }),
+        );
       }
     } catch (err) {
       showToast("error", parseError(err));
@@ -582,7 +585,7 @@ const AddRoomPage = () => {
                 <input
                   type="text"
                   name="roomType"
-                  placeholder="Nhập tên loại phòng mới..."
+                  placeholder={t("addRoom.namePlaceholder")}
                   value={roomDetails.roomType}
                   onChange={handleChange}
                   disabled={loading}
@@ -626,7 +629,7 @@ const AddRoomPage = () => {
                   value={roomDetails.roomPrice}
                   onChange={handleChange}
                   disabled={loading}
-                  placeholder="Tối thiểu 20"
+                  placeholder={t("addRoom.pricePlaceholder")}
                   style={{ ...fieldStyle, paddingLeft: 28 }}
                   onFocus={(e) => {
                     e.target.style.borderColor = "#0d9488";
@@ -651,7 +654,7 @@ const AddRoomPage = () => {
                 value={roomDetails.roomDescription}
                 onChange={handleChange}
                 disabled={loading}
-                placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
+                placeholder={t("addRoom.descPlaceholder")}
                 style={{ ...fieldStyle, resize: "vertical", lineHeight: 1.65 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = "#0d9488";
