@@ -134,7 +134,11 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
 
 .bbhh-nav-btn-login {
   background: transparent;
-  padding: 8px 18px;
+  width: 110px !important;
+  box-sizing: border-box !important;
+  padding: 8px 0 !important;
+  text-align: center !important;
+  white-space: nowrap;
   border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 600;
@@ -156,7 +160,11 @@ button:focus-visible { outline: none; box-shadow: none; background-color: inheri
   background: var(--amber) !important;
   color: #fff !important;
   border: none;
-  padding: 8px 20px;
+  width: 110px !important;
+  box-sizing: border-box !important;
+  padding: 8px 0 !important;
+  text-align: center !important;
+  white-space: nowrap;
   border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 700;
