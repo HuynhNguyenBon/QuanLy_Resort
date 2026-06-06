@@ -130,6 +130,8 @@
     "submitBtn": "Add Room",
     "submitting": "Adding room...",
     "confirmAdd": "Confirm adding this room?",
+    "successTitle": "Success",
+    "errorTitle": "Error",
     "roomAdded": "Room added successfully!",
     "addFail": "Failed to add room",
     "imageRequired": "Please upload a room image.",
