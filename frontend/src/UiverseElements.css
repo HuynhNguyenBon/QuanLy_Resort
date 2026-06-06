@@ -5847,4 +5847,287 @@ button[type="submit"]:hover { background: var(--teal-dark); }
 }
 .mr-delete-btn:hover { background: #e74c3c; color: #fff; }
 .bbhh-compare-toggle:hover { border-color: #0d9488 !important; color: #0d9488 !important; }
+
+
+/* ================================================================
+   MOBILE NAVBAR — HAMBURGER + DRAWER
+================================================================ */
+
+/* Hamburger button — hidden on desktop */
+.bbhh-nav-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px 8px;
+  margin-left: auto;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+.bbhh-nav-hamburger:hover { opacity: 0.75; }
+.nav-solid .bbhh-nav-hamburger       { color: var(--text-main); }
+.nav-transparent .bbhh-nav-hamburger { color: #fff; }
+
+/* Show hamburger + hide desktop elements on mobile */
+@media (max-width: 768px) {
+  .bbhh-nav-links { display: none !important; }
+  .bbhh-nav-right { display: none !important; }
+  .bbhh-nav-hamburger { display: flex; }
+  .bbhh-nav { padding: 0 5%; }
+}
+
+/* Overlay */
+.bbhh-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1100;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Drawer */
+.bbhh-mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(300px, 88vw);
+  background: #FDFAF7;
+  z-index: 1101;
+  box-shadow: -6px 0 32px rgba(0, 0, 0, 0.22);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.25s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* Drawer header */
+.bbhh-mobile-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--navy);
+}
+.bbhh-mobile-drawer-logo {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+}
+.bbhh-mobile-drawer-close {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bbhh-mobile-drawer-close:hover { background: rgba(255,255,255,0.3); }
+
+/* Nav links in drawer */
+.bbhh-mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+}
+.bbhh-mobile-nav-link {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-sub);
+  text-decoration: none;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+}
+.bbhh-mobile-nav-link:hover { color: var(--text-main); background: var(--bg-page); }
+.bbhh-mobile-nav-link.active {
+  color: var(--amber);
+  background: var(--amber-light);
+  font-weight: 600;
+}
+
+/* Divider */
+.bbhh-mobile-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 12px;
+}
+
+/* Auth section */
+.bbhh-mobile-auth {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bbhh-mobile-user-info { padding: 4px 4px 2px; }
+.bbhh-mobile-user-role {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.bbhh-mobile-btn-login {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+.bbhh-mobile-btn-login:hover { border-color: var(--teal); color: var(--teal); }
+.bbhh-mobile-btn-register {
+  width: 100%;
+  padding: 12px;
+  background: var(--amber);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: background 0.2s;
+}
+.bbhh-mobile-btn-register:hover { background: #FBBF24; }
+.bbhh-mobile-btn-logout {
+  width: 100%;
+  padding: 12px;
+  background: #FEF2F2;
+  border: 1.5px solid #FCA5A5;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--red);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: background 0.2s;
+}
+.bbhh-mobile-btn-logout:hover { background: #FEE2E2; }
+
+/* Language section in drawer */
+.bbhh-mobile-lang-section { padding: 10px 12px 20px; }
+.bbhh-mobile-lang-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 4px 8px;
+}
+.bbhh-mobile-lang-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background 0.15s;
+}
+.bbhh-mobile-lang-item:hover { background: var(--bg-page); }
+.bbhh-mobile-lang-item.selected {
+  background: var(--amber-light);
+  font-weight: 600;
+  color: #92400E;
+}
+.bbhh-mobile-lang-item img { border-radius: 2px; object-fit: cover; flex-shrink: 0; }
+.bbhh-mobile-lang-check { margin-left: auto; color: var(--amber); font-weight: 700; }
+
+
+/* ================================================================
+   GLOBAL MOBILE IMPROVEMENTS
+================================================================ */
+
+/* Prevent horizontal scroll */
+@media (max-width: 768px) {
+  html, body { overflow-x: hidden; max-width: 100vw; }
+
+  /* Homepage hero */
+  .hp-hero-content { bottom: 12%; }
+  .hp-hero-h1 { font-size: clamp(28px, 7vw, 44px); }
+  .hp-hero-sub { font-size: 14px; }
+  .hp-section { padding: 48px 5%; }
+
+  /* Room type cards wrap nicely */
+  .hp-room-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Service cards single column on narrow */
+  .hp-svc-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Testimonials single col */
+  .hp-testi-grid { grid-template-columns: 1fr; }
+
+  /* Profile page */
+  .pf-page { padding: 24px 4%; }
+  .pf-stats { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Edit profile padding */
+  .ep-page { padding: 24px 4% 40px; }
+  .ep-form { padding: 20px 20px 0; }
+  .ep-header { padding: 24px 20px 20px; }
+
+  /* Contact body */
+  .contact-body { padding: 32px 4%; }
+  .contact-form-card { padding: 24px 18px; }
+
+  /* Auth pages */
+  .auth-card, .login-card, .register-card { margin: 16px; }
+
+  /* Room details */
+  .bbhh-details-grid { grid-template-columns: 1fr !important; padding: 16px !important; }
+  .room-reservation-summary { flex-direction: column !important; }
+
+  /* Find booking */
+  .fb-hero { padding: 40px 5% 36px; }
+
+  /* Promo modal */
+  .promo-modal-row { grid-template-columns: 1fr !important; }
+
+  /* Gallery */
+  .gallery-hero { padding: 70px 5% 50px; }
+
+  /* All Rooms hero */
+  .ar-hero { padding: 28px 4% 20px; }
+}
+
+@media (max-width: 480px) {
+  /* Very small phones */
+  .hp-room-grid { grid-template-columns: 1fr 1fr; }
+  .hp-svc-grid  { grid-template-columns: 1fr; }
+  .hp-amenity-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Booking form stacks */
+  .bbhh-date-selection,
+  .bbhh-guest-selection { grid-template-columns: 1fr !important; }
+
+  /* Wider padding for very small screens */
+  .hp-section { padding: 40px 4%; }
+  .contact-hero { padding: 56px 5% 40px; }
+
+  /* Summary cards */
+  .summary-details { grid-template-columns: 1fr !important; }
+}
 .bbhh-compare-toggle.active { background: #0d9488 !important; color: #fff !important; border-color: #0d9488 !important; }

@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import emailjs from "@emailjs/browser";
 import "../../UiverseElements.css";
+
+const EMAILJS_SERVICE_ID  = "service_55u0drh";
+const EMAILJS_TEMPLATE_ID = "template_nwk4x1q";
+const EMAILJS_PUBLIC_KEY  = "u9FREOE48_gIQzEQO";
 
 const ContactPage = () => {
   const { t } = useTranslation("contact");
@@ -12,15 +17,37 @@ const ContactPage = () => {
     message: "",
   });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+    setSending(true);
+    setError("");
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: form.name,
+          from_email: form.email,
+          phone: form.phone,
+          subject: form.subject,
+          message: form.message,
+        },
+        EMAILJS_PUBLIC_KEY,
+      );
+      setSent(true);
+      setTimeout(() => setSent(false), 4000);
+      setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch (err) {
+      setError("Gửi thất bại. Vui lòng thử lại sau.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const infoItems = t("infoItems", { returnObjects: true });
@@ -58,6 +85,9 @@ const ContactPage = () => {
             <h2 className="contact-form-title">{t("formTitle")}</h2>
             {sent && (
               <div className="contact-success">✅ {t("successMsg")}</div>
+            )}
+            {error && (
+              <div className="contact-success" style={{ background: "#fee2e2", color: "#dc2626" }}>⚠️ {error}</div>
             )}
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="contact-form-row">
@@ -127,8 +157,8 @@ const ContactPage = () => {
                   required
                 />
               </div>
-              <button type="submit" className="contact-submit-btn">
-                📨 {t("submitBtn")}
+              <button type="submit" className="contact-submit-btn" disabled={sending}>
+                {sending ? "⏳ Đang gửi..." : `📨 ${t("submitBtn")}`}
               </button>
             </form>
           </div>
