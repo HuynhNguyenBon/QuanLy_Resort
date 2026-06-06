@@ -100,10 +100,20 @@
     "email": "Email",
     "phone": "Số điện thoại",
     "perNight": "/đêm",
+    "statusBooked": "Đã đặt",
     "statusPaid": "Đã thanh toán",
     "statusConfirmed": "Đã xác nhận",
     "statusCancelled": "Đã huỷ",
-    "statusPending": "Chờ thanh toán"
+    "statusPending": "Chờ thanh toán",
+    "statusCheckedIn": "Đã nhận phòng",
+    "statusCheckedOut": "Đã trả phòng",
+    "maxAdults": "Tối đa {{count}} người lớn",
+    "maxChildren": "Tối đa {{count}} trẻ em",
+    "errMinAdults": "Phải có ít nhất 1 người lớn.",
+    "errMaxAdults": "Tối đa {{count}} người lớn cho phòng {{type}}.",
+    "errMaxChildren": "Tối đa {{count}} trẻ em cho phòng {{type}}.",
+    "errMaxTotal": "Tổng tối đa {{count}} khách cho phòng {{type}}.",
+    "errSave": "Lưu thất bại"
   },
   "addRoom": {
     "title": "Thêm phòng mới",
@@ -132,7 +142,8 @@
     "addfailed": "Thêm phòng thất bại (mã: {{code}}).",
     "namePlaceholder": "Nhập tên loại phòng mới...",
     "pricePlaceholder": "Tối thiểu 20",
-    "descPlaceholder": "Mô tả chi tiết về phòng, tiện nghi, view..."
+    "descPlaceholder": "Mô tả chi tiết về phòng, tiện nghi, view...",
+    "back": "Quay lại"
   },
   "editRoom": {
     "title": "Chỉnh sửa phòng",
@@ -175,6 +186,10 @@
     "delete": "Xoá",
     "confirmDelete": "Xác nhận xoá tài khoản này?",
     "deleteSuccess": "Đã xoá tài khoản thành công.",
+    "deleteFail": "Xoá thất bại",
+    "confirmSetRole": "Đổi {{name}} thành {{role}}?",
+    "setRoleSuccess": "Đã đổi {{name}} thành {{role}}.",
+    "setRoleError": "Lỗi",
     "noUsers": "Không tìm thấy khách hàng nào."
   },
   "staff": {
@@ -204,6 +219,9 @@
     "password_min": "Mật khẩu phải có ít nhất 6 ký tự.",
     "password_match": "Mật khẩu xác nhận không khớp.",
     "register_success": "Đã tạo tài khoản cho {{name}}. Email: {{email}}",
+    "field_required": "{{field}} không được để trống.",
+    "phone_required": "Số điện thoại không được để trống.",
+    "create_failed": "Tạo tài khoản thất bại.",
     "addModal": {
       "title": "Thêm nhân viên",
       "editTitle": "Chỉnh sửa nhân viên",
@@ -255,6 +273,15 @@
     "delete": "Xoá",
     "confirmDelete": "Xác nhận xoá dịch vụ này?",
     "deleteSuccess": "Đã xoá dịch vụ.",
+    "hideSuccess": "Đã ẩn dịch vụ khỏi danh sách.",
+    "saveSuccess": "Đã lưu dịch vụ vào hệ thống.",
+    "addSuccess": "Đã thêm dịch vụ thành công.",
+    "updateSuccess": "Đã cập nhật dịch vụ.",
+    "deleteFail": "Xoá thất bại",
+    "errUnknown": "Lỗi không xác định",
+    "errPrefix": "Lỗi",
+    "nameRequired": "Tên dịch vụ không được để trống.",
+    "descRequired": "Mô tả không được để trống.",
     "noServices": "Chưa có dịch vụ nào.",
     "addModal": {
       "addTitle": "Thêm dịch vụ mới",

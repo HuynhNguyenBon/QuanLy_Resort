@@ -5,8 +5,31 @@ import ApiService from "../../service/ApiService";
 
 const ROOMS_PER_FLOOR = 5;
 
-const todayDate = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
-const isCancelled = (b) => { const s = (b.bookingStatus||b.status||"").toLowerCase(); return s==="cancelled"||s==="canceled"; };
+const ROOM_LIMITS = {
+  Standard: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+  Superior: { maxAdults: 2, maxChildren: 2, maxTotal: 3 },
+  Deluxe: { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
+  Suite: { maxAdults: 4, maxChildren: 3, maxTotal: 5 },
+  Family: { maxAdults: 4, maxChildren: 4, maxTotal: 6 },
+  King: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+  Queen: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+  Studio: { maxAdults: 2, maxChildren: 1, maxTotal: 2 },
+  Executive: { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
+  Presidential: { maxAdults: 6, maxChildren: 4, maxTotal: 8 },
+  Precidential: { maxAdults: 6, maxChildren: 4, maxTotal: 8 },
+  Bali: { maxAdults: 3, maxChildren: 2, maxTotal: 4 },
+};
+const DEFAULT_LIMIT = { maxAdults: 2, maxChildren: 2, maxTotal: 3 };
+
+const todayDate = () => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+const isCancelled = (b) => {
+  const s = (b.bookingStatus || b.status || "").toLowerCase();
+  return s === "cancelled" || s === "canceled";
+};
 const isActiveBooking = (b) => {
   if (isCancelled(b)) return false;
   const today = todayDate();
@@ -22,20 +45,27 @@ const getActiveGuest = (room, bookings) => {
   const b = getActiveBooking(room, bookings);
   return b?.user?.name || null;
 };
-const fmtDate = (d) => d ? new Date(d).toLocaleDateString(undefined, { day: "2-digit", month: "2-digit", year: "numeric" }) : "—";
-const toInputDate = (d) => d ? new Date(d).toISOString().split("T")[0] : "";
+const fmtDate = (d) =>
+  d
+    ? new Date(d).toLocaleDateString(undefined, {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : "—";
+const toInputDate = (d) => (d ? new Date(d).toISOString().split("T")[0] : "");
 
 const AdminPage = () => {
   const { t, i18n } = useTranslation("adminPanel");
   const navigate = useNavigate();
-  const [adminName,   setAdminName]   = useState("");
-  const [rooms,       setRooms]       = useState([]);
-  const [bookings,    setBookings]    = useState([]);
-  const [loading,     setLoading]     = useState(true);
-  const [roomPopup,   setRoomPopup]   = useState(null);
-  const [editForm,    setEditForm]    = useState({});
-  const [saving,      setSaving]      = useState(false);
-  const [saveMsg,     setSaveMsg]     = useState("");
+  const [adminName, setAdminName] = useState("");
+  const [rooms, setRooms] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [roomPopup, setRoomPopup] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,40 +114,92 @@ const AdminPage = () => {
   const startEdit = () => {
     const b = roomPopup.booking;
     setEditForm({
-      checkInDate:    toInputDate(b.checkInDate),
-      checkOutDate:   toInputDate(b.checkOutDate),
-      numOfAdults:    b.numOfAdults   ?? b.totalNumOfGuest ?? 1,
-      numOfChildren:  b.numOfChildren ?? 0,
-      bookingStatus:  b.bookingStatus || b.status || "BOOKED",
+      checkInDate: toInputDate(b.checkInDate),
+      checkOutDate: toInputDate(b.checkOutDate),
+      numOfAdults: b.numOfAdults ?? b.totalNumOfGuest ?? 1,
+      numOfChildren: b.numOfChildren ?? 0,
+      bookingStatus: b.bookingStatus || b.status || "BOOKED",
     });
     setSaveMsg("");
-    setRoomPopup(p => ({ ...p, editMode: true }));
+    setRoomPopup((p) => ({ ...p, editMode: true }));
   };
 
   const saveEdit = async () => {
     setSaving(true);
     setSaveMsg("");
     try {
-      const adults   = Number(editForm.numOfAdults)   || 0;
+      const adults = Number(editForm.numOfAdults) || 0;
       const children = Number(editForm.numOfChildren) || 0;
-      const payload  = {
+      const roomType =
+        roomPopup?.room?.roomType || roomPopup?.booking?.room?.roomType || "";
+      const limit = ROOM_LIMITS[roomType] || DEFAULT_LIMIT;
+      if (adults < 1) {
+        setSaveMsg("❌ " + t("editBooking.errMinAdults"));
+        setSaving(false);
+        return;
+      }
+      if (adults > limit.maxAdults) {
+        setSaveMsg(
+          "❌ " +
+            t("editBooking.errMaxAdults", {
+              count: limit.maxAdults,
+              type: roomType,
+            }),
+        );
+        setSaving(false);
+        return;
+      }
+      if (children > limit.maxChildren) {
+        setSaveMsg(
+          "❌ " +
+            t("editBooking.errMaxChildren", {
+              count: limit.maxChildren,
+              type: roomType,
+            }),
+        );
+        setSaving(false);
+        return;
+      }
+      if (adults + children > limit.maxTotal) {
+        setSaveMsg(
+          "❌ " +
+            t("editBooking.errMaxTotal", {
+              count: limit.maxTotal,
+              type: roomType,
+            }),
+        );
+        setSaving(false);
+        return;
+      }
+      const payload = {
         ...editForm,
-        numOfAdults:    adults,
-        numOfChildren:  children,
+        numOfAdults: adults,
+        numOfChildren: children,
         totalNumOfGuest: adults + children,
       };
       await ApiService.updateBooking(roomPopup.booking.id, payload);
       const res = await ApiService.getAllBookings();
       setBookings(res.bookingList || []);
       setSaveMsg("✅ Đã lưu thành công");
-      setRoomPopup(p => ({ ...p, editMode: false,
-        booking: { ...p.booking, ...editForm,
-          totalNumOfGuest: Number(editForm.numOfAdults) + Number(editForm.numOfChildren) }
+      setRoomPopup((p) => ({
+        ...p,
+        editMode: false,
+        booking: {
+          ...p.booking,
+          ...editForm,
+          totalNumOfGuest:
+            Number(editForm.numOfAdults) + Number(editForm.numOfChildren),
+        },
       }));
     } catch (err) {
-      console.error("updateBooking error:", err?.response?.data || err?.message || err);
+      console.error(
+        "updateBooking error:",
+        err?.response?.data || err?.message || err,
+      );
       const detail = err?.response?.data?.message || err?.message || "";
-      setSaveMsg(`❌ Lưu thất bại${detail ? ": " + detail : ", thử lại."}`);
+      setSaveMsg(
+        "❌ " + t("editBooking.errSave") + (detail ? ": " + detail : "."),
+      );
     } finally {
       setSaving(false);
     }
@@ -173,9 +255,13 @@ const AdminPage = () => {
                     return (
                       <div key={room.id}
                         className={`adm-room-cell${occupied ? " occupied" : " available"}`}
-                        onClick={() => occupied
-                          ? setRoomPopup({ room, booking })
-                          : ApiService.isAdmin() && navigate(`/admin/edit-room/${room.id}`)}>
+                        onClick={() =>
+                          occupied
+                            ? setRoomPopup({ room, booking })
+                            : ApiService.isAdmin() &&
+                              navigate(`/admin/edit-room/${room.id}`)
+                        }
+                      >
                         <div className="adm-room-id">#{room.id}</div>
                         <div className="adm-room-type">{room.roomType}</div>
                         {occupied && guest && <div className="adm-room-guest">{guest}</div>}
@@ -213,42 +299,100 @@ const AdminPage = () => {
 
       {/* Popup thông tin khách */}
       {roomPopup && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1000,
-          display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
-          onClick={() => setRoomPopup(null)}>
-          <div style={{ background: "#fff", borderRadius: 16, width: "100%",
-            maxWidth: roomPopup.detailMode ? 520 : 420,
-            boxShadow: "0 20px 60px rgba(0,0,0,0.2)", overflow: "hidden",
-            transition: "max-width 0.2s" }}
-            onClick={e => e.stopPropagation()}>
-
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+          }}
+          onClick={() => setRoomPopup(null)}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              width: "100%",
+              maxWidth: roomPopup.detailMode ? 520 : 420,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+              overflow: "hidden",
+              transition: "max-width 0.2s",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Header */}
-            <div style={{ background: roomPopup.detailMode
-                ? "linear-gradient(135deg, #0d9488, #0f766e)"
-                : "linear-gradient(135deg, #e74c3c, #c0392b)",
-              padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div
+              style={{
+                background: roomPopup.detailMode
+                  ? "linear-gradient(135deg, #0d9488, #0f766e)"
+                  : "linear-gradient(135deg, #e74c3c, #c0392b)",
+                padding: "18px 24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 {roomPopup.detailMode && (
-                  <button onClick={() => setRoomPopup(p => ({ ...p, detailMode: false }))}
-                    style={{ background: "rgba(255,255,255,0.2)", border: "none", color: "#fff",
-                      width: 28, height: 28, borderRadius: "50%", cursor: "pointer", fontSize: "0.85rem",
-                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <button
+                    onClick={() =>
+                      setRoomPopup((p) => ({ ...p, detailMode: false }))
+                    }
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      border: "none",
+                      color: "#fff",
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      fontSize: "0.85rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
                     ←
                   </button>
                 )}
                 <div style={{ color: "#fff" }}>
                   <div style={{ fontWeight: 700, fontSize: "1rem" }}>
-                    🛏️ Phòng #{roomPopup.room.id} — {roomPopup.room.roomType}
+                    🛏️ {t("transactions.cols.room")} #{roomPopup.room.id} —{" "}
+                    {roomPopup.room.roomType}
                   </div>
-                  <div style={{ fontSize: "0.8rem", opacity: 0.85, marginTop: 2 }}>
-                    {roomPopup.detailMode ? `📋 ${t("editBooking.title")}` : `🔴 ${t("overview.occupied_label")}`}
+                  <div
+                    style={{ fontSize: "0.8rem", opacity: 0.85, marginTop: 2 }}
+                  >
+                    {roomPopup.detailMode
+                      ? `📋 ${t("editBooking.title")}`
+                      : `🔴 ${t("overview.occupied_label")}`}
                   </div>
                 </div>
               </div>
-              <button onClick={() => setRoomPopup(null)}
-                style={{ background: "rgba(255,255,255,0.25)", border: "none", color: "#fff",
-                  width: 30, height: 30, borderRadius: "50%", cursor: "pointer", fontSize: "0.9rem",
-                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>✕</button>
+              <button
+                onClick={() => setRoomPopup(null)}
+                style={{
+                  background: "rgba(255,255,255,0.25)",
+                  border: "none",
+                  color: "#fff",
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  fontSize: "0.9rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                ✕
+              </button>
             </div>
 
             {/* Body — chế độ chi tiết */}
@@ -256,31 +400,91 @@ const AdminPage = () => {
               <div style={{ maxHeight: "70vh", overflowY: "auto" }}>
                 {/* Ảnh phòng */}
                 {roomPopup.room.roomPhotoUrl && (
-                  <div style={{ position: "relative", height: 200, overflow: "hidden" }}>
-                    <img src={roomPopup.room.roomPhotoUrl} alt={roomPopup.room.roomType}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <div style={{ position: "absolute", inset: 0,
-                      background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)" }} />
-                    <span style={{ position: "absolute", bottom: 12, left: 16,
-                      background: "rgba(13,148,136,0.9)", color: "#fff",
-                      fontSize: "0.75rem", fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: 200,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <img
+                      src={roomPopup.room.roomPhotoUrl}
+                      alt={roomPopup.room.roomType}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)",
+                      }}
+                    />
+                    <span
+                      style={{
+                        position: "absolute",
+                        bottom: 12,
+                        left: 16,
+                        background: "rgba(13,148,136,0.9)",
+                        color: "#fff",
+                        fontSize: "0.75rem",
+                        fontWeight: 700,
+                        padding: "3px 10px",
+                        borderRadius: 20,
+                      }}
+                    >
                       {roomPopup.room.roomType}
                     </span>
                   </div>
                 )}
 
                 {/* Thông tin booking */}
-                <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 0 }}>
+                <div
+                  style={{
+                    padding: "20px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 0,
+                  }}
+                >
                   {/* Mã xác nhận nổi bật */}
                   {roomPopup.booking && (
-                    <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 10,
-                      padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
+                    <div
+                      style={{
+                        background: "#f0fdf4",
+                        border: "1px solid #86efac",
+                        borderRadius: 10,
+                        padding: "12px 16px",
+                        marginBottom: 16,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                      }}
+                    >
                       <span style={{ fontSize: "1.2rem" }}>🎫</span>
                       <div>
-                        <div style={{ fontSize: "0.7rem", color: "#6b7280", fontWeight: 700, textTransform: "uppercase" }}>
+                        <div
+                          style={{
+                            fontSize: "0.7rem",
+                            color: "#6b7280",
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                          }}
+                        >
                           {t("bookings.cols.code")}
                         </div>
-                        <div style={{ fontWeight: 800, color: "#0d9488", fontSize: "1rem", letterSpacing: 1 }}>
+                        <div
+                          style={{
+                            fontWeight: 800,
+                            color: "#0d9488",
+                            fontSize: "1rem",
+                            letterSpacing: 1,
+                          }}
+                        >
                           {roomPopup.booking.bookingConfirmationCode}
                         </div>
                       </div>
@@ -288,58 +492,244 @@ const AdminPage = () => {
                   )}
 
                   {/* 2 cột thông tin / form sửa */}
-                  {roomPopup.booking && (
-                    roomPopup.editMode ? (
+                  {roomPopup.booking &&
+                    (roomPopup.editMode ? (
                       /* ── EDIT FORM ── */
-                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 12,
+                        }}
+                      >
                         {saveMsg && (
-                          <div style={{ padding: "8px 12px", borderRadius: 8, fontSize: "0.85rem", fontWeight: 600,
-                            background: saveMsg.startsWith("✅") ? "#f0fdf4" : "#fef2f2",
-                            color: saveMsg.startsWith("✅") ? "#166534" : "#991b1b",
-                            border: `1px solid ${saveMsg.startsWith("✅") ? "#86efac" : "#fca5a5"}` }}>
+                          <div
+                            style={{
+                              padding: "8px 12px",
+                              borderRadius: 8,
+                              fontSize: "0.85rem",
+                              fontWeight: 600,
+                              background: saveMsg.startsWith("✅")
+                                ? "#f0fdf4"
+                                : "#fef2f2",
+                              color: saveMsg.startsWith("✅")
+                                ? "#166534"
+                                : "#991b1b",
+                              border: `1px solid ${saveMsg.startsWith("✅") ? "#86efac" : "#fca5a5"}`,
+                            }}
+                          >
                             {saveMsg}
                           </div>
                         )}
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                          {[
-                            { key: "checkInDate",  label: "📅 " + t("bookings.cols.checkin"),  type: "date" },
-                            { key: "checkOutDate", label: "📅 " + t("bookings.cols.checkout"), type: "date" },
-                            { key: "numOfAdults",  label: "🧑 Người lớn",  type: "number", min: 1 },
-                            { key: "numOfChildren",label: "👶 Trẻ em",     type: "number", min: 0 },
-                          ].map(({ key, label, type, min }) => (
-                            <div key={key}>
-                              <div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700,
-                                textTransform: "uppercase", marginBottom: 4 }}>{label}</div>
-                              <input type={type} min={min} value={editForm[key] ?? ""}
-                                onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))}
-                                style={{ width: "100%", padding: "8px 10px", borderRadius: 8,
-                                  border: "1.5px solid #e2e8f0", fontSize: "0.88rem",
-                                  fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                        {(() => {
+                          const roomType =
+                            roomPopup?.room?.roomType ||
+                            roomPopup?.booking?.room?.roomType ||
+                            "";
+                          const limit = ROOM_LIMITS[roomType] || DEFAULT_LIMIT;
+                          return (
+                            <div
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns: "1fr 1fr",
+                                gap: 10,
+                              }}
+                            >
+                              {[
+                                {
+                                  key: "checkInDate",
+                                  label: "📅 " + t("bookings.cols.checkin"),
+                                  type: "date",
+                                  min: undefined,
+                                  max: undefined,
+                                  hint: null,
+                                },
+                                {
+                                  key: "checkOutDate",
+                                  label: "📅 " + t("bookings.cols.checkout"),
+                                  type: "date",
+                                  min: undefined,
+                                  max: undefined,
+                                  hint: null,
+                                },
+                                {
+                                  key: "numOfAdults",
+                                  label: "🧑 " + t("editBooking.adults"),
+                                  type: "number",
+                                  min: 1,
+                                  max: limit.maxAdults,
+                                  hint: t("editBooking.maxAdults", {
+                                    count: limit.maxAdults,
+                                  }),
+                                },
+                                {
+                                  key: "numOfChildren",
+                                  label: "👶 " + t("editBooking.children"),
+                                  type: "number",
+                                  min: 0,
+                                  max: limit.maxChildren,
+                                  hint: t("editBooking.maxChildren", {
+                                    count: limit.maxChildren,
+                                  }),
+                                },
+                              ].map(({ key, label, type, min, max, hint }) => (
+                                <div key={key}>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 6,
+                                      marginBottom: 4,
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontSize: "0.68rem",
+                                        color: "#94a3b8",
+                                        fontWeight: 700,
+                                        textTransform: "uppercase",
+                                      }}
+                                    >
+                                      {label}
+                                    </span>
+                                    {hint && (
+                                      <span
+                                        style={{
+                                          fontSize: "0.65rem",
+                                          background: "#f0fdf4",
+                                          color: "#0d9488",
+                                          border: "1px solid #bbf7d0",
+                                          borderRadius: 10,
+                                          padding: "1px 7px",
+                                          fontWeight: 600,
+                                        }}
+                                      >
+                                        {hint}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <input
+                                    type={type}
+                                    min={min}
+                                    max={max}
+                                    value={editForm[key] ?? ""}
+                                    onChange={(e) =>
+                                      setEditForm((f) => ({
+                                        ...f,
+                                        [key]: e.target.value,
+                                      }))
+                                    }
+                                    style={{
+                                      width: "100%",
+                                      padding: "8px 10px",
+                                      borderRadius: 8,
+                                      border: "1.5px solid #e2e8f0",
+                                      fontSize: "0.88rem",
+                                      fontFamily: "inherit",
+                                      outline: "none",
+                                      boxSizing: "border-box",
+                                    }}
+                                  />
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
+                          );
+                        })()}
                         <div>
-                          <div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700,
-                            textTransform: "uppercase", marginBottom: 4 }}>📊 {t("bookings.cols.status")}</div>
-                          <select value={editForm.bookingStatus ?? ""}
-                            onChange={e => setEditForm(f => ({ ...f, bookingStatus: e.target.value }))}
-                            style={{ width: "100%", padding: "8px 10px", borderRadius: 8,
-                              border: "1.5px solid #e2e8f0", fontSize: "0.88rem",
-                              fontFamily: "inherit", outline: "none", background: "#fff" }}>
-                            {["BOOKED","CONFIRMED","CHECKED_IN","CHECKED_OUT","CANCELLED"].map(s => (
-                              <option key={s} value={s}>{s}</option>
+                          <div
+                            style={{
+                              fontSize: "0.68rem",
+                              color: "#94a3b8",
+                              fontWeight: 700,
+                              textTransform: "uppercase",
+                              marginBottom: 4,
+                            }}
+                          >
+                            📊 {t("bookings.cols.status")}
+                          </div>
+                          <select
+                            value={editForm.bookingStatus ?? ""}
+                            onChange={(e) =>
+                              setEditForm((f) => ({
+                                ...f,
+                                bookingStatus: e.target.value,
+                              }))
+                            }
+                            style={{
+                              width: "100%",
+                              padding: "8px 10px",
+                              borderRadius: 8,
+                              border: "1.5px solid #e2e8f0",
+                              fontSize: "0.88rem",
+                              fontFamily: "inherit",
+                              outline: "none",
+                              background: "#fff",
+                            }}
+                          >
+                            {[
+                              {
+                                value: "BOOKED",
+                                label: t("editBooking.statusBooked"),
+                              },
+                              {
+                                value: "CONFIRMED",
+                                label: t("editBooking.statusConfirmed"),
+                              },
+                              {
+                                value: "CHECKED_IN",
+                                label: t("editBooking.statusCheckedIn"),
+                              },
+                              {
+                                value: "CHECKED_OUT",
+                                label: t("editBooking.statusCheckedOut"),
+                              },
+                              {
+                                value: "CANCELLED",
+                                label: t("editBooking.statusCancelled"),
+                              },
+                            ].map(({ value, label }) => (
+                              <option key={value} value={value}>
+                                {label}
+                              </option>
                             ))}
                           </select>
                         </div>
                         {/* Thông tin khách (read-only trong edit) */}
-                        <div style={{ borderTop: "1px dashed #e2e8f0", paddingTop: 10,
-                          display: "flex", flexDirection: "column", gap: 4 }}>
+                        <div
+                          style={{
+                            borderTop: "1px dashed #e2e8f0",
+                            paddingTop: 10,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 4,
+                          }}
+                        >
                           {[
-                            { icon: "👤", label: t("users.cols.customer"), value: roomPopup.booking.user?.name },
-                            { icon: "📧", label: t("users.cols.email"),    value: roomPopup.booking.user?.email },
-                            { icon: "📱", label: t("staff.cols.phone"),    value: roomPopup.booking.user?.phoneNumber },
+                            {
+                              icon: "👤",
+                              label: t("users.cols.customer"),
+                              value: roomPopup.booking.user?.name,
+                            },
+                            {
+                              icon: "📧",
+                              label: t("users.cols.email"),
+                              value: roomPopup.booking.user?.email,
+                            },
+                            {
+                              icon: "📱",
+                              label: t("staff.cols.phone"),
+                              value: roomPopup.booking.user?.phoneNumber,
+                            },
                           ].map(({ icon, label, value }) => (
-                            <div key={label} style={{ fontSize: "0.82rem", color: "#64748b", display: "flex", gap: 6 }}>
+                            <div
+                              key={label}
+                              style={{
+                                fontSize: "0.82rem",
+                                color: "#64748b",
+                                display: "flex",
+                                gap: 6,
+                              }}
+                            >
                               <span>{icon}</span>
                               <span style={{ fontWeight: 600 }}>{label}:</span>
                               <span>{value || "—"}</span>
@@ -350,77 +740,257 @@ const AdminPage = () => {
                     ) : (
                       /* ── VIEW MODE ── */
                       <>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: 12,
+                            marginBottom: 12,
+                          }}
+                        >
                           {[
-                            { icon: "📅", label: t("bookings.cols.checkin"),  value: fmtDate(roomPopup.booking.checkInDate) },
-                            { icon: "📅", label: t("bookings.cols.checkout"), value: fmtDate(roomPopup.booking.checkOutDate) },
-                            { icon: "👥", label: t("bookings.cols.guests"),   value: roomPopup.booking.totalNumOfGuest },
-                            { icon: "📊", label: t("bookings.cols.status"),
-                              value: roomPopup.booking.bookingStatus || roomPopup.booking.status || "—" },
+                            {
+                              icon: "📅",
+                              label: t("bookings.cols.checkin"),
+                              value: fmtDate(roomPopup.booking.checkInDate),
+                            },
+                            {
+                              icon: "📅",
+                              label: t("bookings.cols.checkout"),
+                              value: fmtDate(roomPopup.booking.checkOutDate),
+                            },
+                            {
+                              icon: "👥",
+                              label: t("bookings.cols.guests"),
+                              value: roomPopup.booking.totalNumOfGuest,
+                            },
+                            {
+                              icon: "📊",
+                              label: t("bookings.cols.status"),
+                              value:
+                                roomPopup.booking.bookingStatus ||
+                                roomPopup.booking.status ||
+                                "—",
+                            },
                           ].map(({ icon, label, value }) => (
-                            <div key={label} style={{ background: "#f8fafc", borderRadius: 10, padding: "12px 14px" }}>
-                              <div style={{ fontSize: "0.7rem", color: "#94a3b8", fontWeight: 700,
-                                textTransform: "uppercase", marginBottom: 4 }}>{icon} {label}</div>
-                              <div style={{ fontWeight: 700, color: "#1a1a2e", fontSize: "0.9rem" }}>{value || "—"}</div>
+                            <div
+                              key={label}
+                              style={{
+                                background: "#f8fafc",
+                                borderRadius: 10,
+                                padding: "12px 14px",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  fontSize: "0.7rem",
+                                  color: "#94a3b8",
+                                  fontWeight: 700,
+                                  textTransform: "uppercase",
+                                  marginBottom: 4,
+                                }}
+                              >
+                                {icon} {label}
+                              </div>
+                              <div
+                                style={{
+                                  fontWeight: 700,
+                                  color: "#1a1a2e",
+                                  fontSize: "0.9rem",
+                                }}
+                              >
+                                {value || "—"}
+                              </div>
                             </div>
                           ))}
                         </div>
-                        <div style={{ borderTop: "1px solid #f0f0f0", paddingTop: 14,
-                          display: "flex", flexDirection: "column", gap: 10 }}>
-                          <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#6b7280",
-                            textTransform: "uppercase", letterSpacing: 0.5 }}>
+                        <div
+                          style={{
+                            borderTop: "1px solid #f0f0f0",
+                            paddingTop: 14,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 10,
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: "0.75rem",
+                              fontWeight: 700,
+                              color: "#6b7280",
+                              textTransform: "uppercase",
+                              letterSpacing: 0.5,
+                            }}
+                          >
                             {t("users.cols.customer")}
                           </div>
                           {[
-                            { icon: "👤", label: t("users.cols.customer"), value: roomPopup.booking.user?.name },
-                            { icon: "📧", label: t("users.cols.email"),    value: roomPopup.booking.user?.email },
-                            { icon: "📱", label: t("staff.cols.phone"),    value: roomPopup.booking.user?.phoneNumber },
+                            {
+                              icon: "👤",
+                              label: t("users.cols.customer"),
+                              value: roomPopup.booking.user?.name,
+                            },
+                            {
+                              icon: "📧",
+                              label: t("users.cols.email"),
+                              value: roomPopup.booking.user?.email,
+                            },
+                            {
+                              icon: "📱",
+                              label: t("staff.cols.phone"),
+                              value: roomPopup.booking.user?.phoneNumber,
+                            },
                           ].map(({ icon, label, value }) => (
-                            <div key={label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                              <span style={{ width: 30, height: 30, borderRadius: 8, background: "#f1f5f9",
-                                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <div
+                              key={label}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 10,
+                              }}
+                            >
+                              <span
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  borderRadius: 8,
+                                  background: "#f1f5f9",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  flexShrink: 0,
+                                }}
+                              >
                                 {icon}
                               </span>
                               <div>
-                                <div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 600, textTransform: "uppercase" }}>{label}</div>
-                                <div style={{ fontWeight: 600, color: "#1a1a2e", fontSize: "0.85rem" }}>{value || "—"}</div>
+                                <div
+                                  style={{
+                                    fontSize: "0.68rem",
+                                    color: "#94a3b8",
+                                    fontWeight: 600,
+                                    textTransform: "uppercase",
+                                  }}
+                                >
+                                  {label}
+                                </div>
+                                <div
+                                  style={{
+                                    fontWeight: 600,
+                                    color: "#1a1a2e",
+                                    fontSize: "0.85rem",
+                                  }}
+                                >
+                                  {value || "—"}
+                                </div>
                               </div>
                             </div>
                           ))}
                         </div>
                       </>
-                    )
-                  )}
+                    ))}
                 </div>
               </div>
             ) : (
               /* Body — chế độ compact */
-              <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 14 }}>
+              <div
+                style={{
+                  padding: 24,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 14,
+                }}
+              >
                 {roomPopup.booking ? (
                   <>
                     {[
-                      { icon: "👤", label: t("users.cols.customer"),   value: roomPopup.booking.user?.name || "—" },
-                      { icon: "📧", label: t("users.cols.email"),      value: roomPopup.booking.user?.email || "—" },
-                      { icon: "📱", label: t("staff.cols.phone"),      value: roomPopup.booking.user?.phoneNumber || "—" },
-                      { icon: "🎫", label: t("bookings.cols.code"),    value: roomPopup.booking.bookingConfirmationCode },
-                      { icon: "📅", label: t("bookings.cols.checkin"), value: fmtDate(roomPopup.booking.checkInDate) },
-                      { icon: "📅", label: t("bookings.cols.checkout"),value: fmtDate(roomPopup.booking.checkOutDate) },
-                      { icon: "👥", label: t("bookings.cols.guests"),  value: roomPopup.booking.totalNumOfGuest },
+                      {
+                        icon: "👤",
+                        label: t("users.cols.customer"),
+                        value: roomPopup.booking.user?.name || "—",
+                      },
+                      {
+                        icon: "📧",
+                        label: t("users.cols.email"),
+                        value: roomPopup.booking.user?.email || "—",
+                      },
+                      {
+                        icon: "📱",
+                        label: t("staff.cols.phone"),
+                        value: roomPopup.booking.user?.phoneNumber || "—",
+                      },
+                      {
+                        icon: "🎫",
+                        label: t("bookings.cols.code"),
+                        value: roomPopup.booking.bookingConfirmationCode,
+                      },
+                      {
+                        icon: "📅",
+                        label: t("bookings.cols.checkin"),
+                        value: fmtDate(roomPopup.booking.checkInDate),
+                      },
+                      {
+                        icon: "📅",
+                        label: t("bookings.cols.checkout"),
+                        value: fmtDate(roomPopup.booking.checkOutDate),
+                      },
+                      {
+                        icon: "👥",
+                        label: t("bookings.cols.guests"),
+                        value: roomPopup.booking.totalNumOfGuest,
+                      },
                     ].map(({ icon, label, value }) => (
-                      <div key={label} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <span style={{ width: 32, height: 32, borderRadius: 8, background: "#f8fafc",
-                          display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", flexShrink: 0 }}>
+                      <div
+                        key={label}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 8,
+                            background: "#f8fafc",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "1rem",
+                            flexShrink: 0,
+                          }}
+                        >
                           {icon}
                         </span>
                         <div>
-                          <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 600, textTransform: "uppercase" }}>{label}</div>
-                          <div style={{ fontWeight: 600, color: "#1a1a2e", fontSize: "0.9rem" }}>{value || "—"}</div>
+                          <div
+                            style={{
+                              fontSize: "0.72rem",
+                              color: "#94a3b8",
+                              fontWeight: 600,
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {label}
+                          </div>
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              color: "#1a1a2e",
+                              fontSize: "0.9rem",
+                            }}
+                          >
+                            {value || "—"}
+                          </div>
                         </div>
                       </div>
                     ))}
                   </>
                 ) : (
-                  <div style={{ textAlign: "center", color: "#aaa", padding: 20 }}>
+                  <div
+                    style={{ textAlign: "center", color: "#aaa", padding: 20 }}
+                  >
                     {t("bookings.noBookings")}
                   </div>
                 )}
@@ -428,35 +998,88 @@ const AdminPage = () => {
             )}
 
             {/* Footer */}
-            <div style={{ padding: "14px 24px", borderTop: "1px solid #f0f2f5",
-              display: "flex", gap: 10, justifyContent: "flex-end" }}>
+            <div
+              style={{
+                padding: "14px 24px",
+                borderTop: "1px solid #f0f2f5",
+                display: "flex",
+                gap: 10,
+                justifyContent: "flex-end",
+              }}
+            >
               {roomPopup.editMode ? (
                 <>
-                  <button onClick={() => setRoomPopup(p => ({ ...p, editMode: false }))}
+                  <button
+                    onClick={() =>
+                      setRoomPopup((p) => ({ ...p, editMode: false }))
+                    }
                     disabled={saving}
-                    style={{ padding: "9px 16px", borderRadius: 9, border: "1.5px solid #e2e8f0",
-                      background: "#fff", color: "#555", cursor: "pointer", fontSize: "0.85rem", fontWeight: 600 }}>
-                    Hủy
+                    style={{
+                      padding: "9px 16px",
+                      borderRadius: 9,
+                      border: "1.5px solid #e2e8f0",
+                      background: "#fff",
+                      color: "#555",
+                      cursor: "pointer",
+                      fontSize: "0.85rem",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {t("staff.addModal.cancelBtn")}
                   </button>
-                  <button onClick={saveEdit} disabled={saving}
-                    style={{ padding: "9px 20px", borderRadius: 9, border: "none",
-                      background: saving ? "#94a3b8" : "#0d9488", color: "#fff",
-                      cursor: saving ? "not-allowed" : "pointer", fontSize: "0.85rem", fontWeight: 700 }}>
-                    {saving ? "Đang lưu..." : "💾 Lưu"}
+                  <button
+                    onClick={saveEdit}
+                    disabled={saving}
+                    style={{
+                      padding: "9px 20px",
+                      borderRadius: 9,
+                      border: "none",
+                      background: saving ? "#94a3b8" : "#0d9488",
+                      color: "#fff",
+                      cursor: saving ? "not-allowed" : "pointer",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {saving
+                      ? t("staff.addModal.saving")
+                      : "💾 " + t("staff.addModal.updateBtn")}
                   </button>
                 </>
               ) : roomPopup.detailMode ? (
                 /* Detail mode: chỉ hiện nút Sửa */
-                <button onClick={startEdit}
-                  style={{ padding: "9px 16px", borderRadius: 9, border: "1.5px solid #e2e8f0",
-                    background: "#fff", color: "#555", cursor: "pointer", fontSize: "0.85rem", fontWeight: 600 }}>
+                <button
+                  onClick={startEdit}
+                  style={{
+                    padding: "9px 16px",
+                    borderRadius: 9,
+                    border: "1.5px solid #e2e8f0",
+                    background: "#fff",
+                    color: "#555",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                  }}
+                >
                   ✎ {t("rooms.edit")}
                 </button>
               ) : (
                 /* Compact mode: chỉ hiện nút Chi tiết */
-                <button onClick={() => setRoomPopup(p => ({ ...p, detailMode: true }))}
-                  style={{ padding: "9px 16px", borderRadius: 9, border: "none",
-                    background: "#0d9488", color: "#fff", cursor: "pointer", fontSize: "0.85rem", fontWeight: 700 }}>
+                <button
+                  onClick={() =>
+                    setRoomPopup((p) => ({ ...p, detailMode: true }))
+                  }
+                  style={{
+                    padding: "9px 16px",
+                    borderRadius: 9,
+                    border: "none",
+                    background: "#0d9488",
+                    color: "#fff",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: 700,
+                  }}
+                >
                   📋 {t("bookings.details")}
                 </button>
               )}

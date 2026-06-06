@@ -12,6 +12,7 @@ const TypeDropdown = ({
   value,
   onChange,
   allLabel = "Tất cả loại phòng",
+  lang = "en",
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -24,7 +25,9 @@ const TypeDropdown = ({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const selected = value || allLabel;
+  const getLabel = (opt) =>
+    opt ? getRoomTranslation(opt, lang)?.roomType || opt : allLabel;
+  const selected = getLabel(value);
   const isFiltered = !!value;
 
   return (
@@ -78,7 +81,7 @@ const TypeDropdown = ({
           }}
         >
           {["", ...options].map((opt) => {
-            const label = opt || allLabel;
+            const label = getLabel(opt);
             const isActive = value === opt;
             return (
               <div
@@ -115,6 +118,18 @@ const TypeDropdown = ({
       )}
     </div>
   );
+};
+
+const EXCHANGE_RATES = { vi: 25000, ja: 155, en: 1 };
+const formatPrice = (amountUSD, lang) => {
+  const code = (lang || "en").split("-")[0];
+  if (code === "vi") {
+    return `${Math.round(amountUSD * EXCHANGE_RATES.vi).toLocaleString("vi-VN")} VNĐ`;
+  }
+  if (code === "ja") {
+    return `¥${Math.round(amountUSD * EXCHANGE_RATES.ja).toLocaleString("ja-JP")}`;
+  }
+  return `$${amountUSD}`;
 };
 
 const ManageRoomPage = () => {
@@ -277,6 +292,7 @@ const ManageRoomPage = () => {
               setCurrentPage(1);
             }}
             allLabel={t("rooms.allTypes")}
+            lang={lang}
           />
 
           {/* Clear filter */}
@@ -437,7 +453,7 @@ const ManageRoomPage = () => {
                   {/* Giá */}
                   <td style={{ padding: "10px 16px" }}>
                     <span style={{ fontWeight: 700, color: "#0d9488" }}>
-                      ${room.roomPrice}
+                      {formatPrice(room.roomPrice, lang)}
                     </span>
                   </td>
 

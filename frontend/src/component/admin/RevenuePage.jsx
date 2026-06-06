@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { getRoomTranslation } from "../../data/roomTranslations";
 
-const fmt = (n) => new Intl.NumberFormat().format(Math.round(n));
+const EXCHANGE_RATES = { vi: 25000, ja: 155, en: 1 };
+const formatPrice = (amountUSD, lang) => {
+  const code = (lang || "en").split("-")[0];
+  if (code === "vi")
+    return `${Math.round(amountUSD * EXCHANGE_RATES.vi).toLocaleString("vi-VN")} VNĐ`;
+  if (code === "ja")
+    return `¥${Math.round(amountUSD * EXCHANGE_RATES.ja).toLocaleString("ja-JP")}`;
+  return `$${new Intl.NumberFormat().format(Math.round(amountUSD))}`;
+};
 
 // Dùng cùng logic với ManageBookingsPage
 const isPaid = (b) => {
@@ -28,7 +37,8 @@ const getRevenue = (b) => {
 };
 
 const RevenuePage = () => {
-  const { t } = useTranslation("adminPanel");
+  const { t, i18n } = useTranslation("adminPanel");
+  const lang = i18n.language.split("-")[0];
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("month");
@@ -97,14 +107,14 @@ const RevenuePage = () => {
   const statCards = [
     {
       label: t("revenue.totalRevenue"),
-      value: `$${fmt(totalRevenue)}`,
+      value: formatPrice(totalRevenue, lang),
       sub: `${paid.length} ${t("revenue.paidBookings")}`,
       color: "#0d9488",
       icon: "💰",
     },
     {
       label: `${t("revenue.periodRevenue")} ${PERIOD_LABELS[period]}`,
-      value: `$${fmt(periodRevenue)}`,
+      value: formatPrice(periodRevenue, lang),
       sub: `${periodPaid.length} ${t("revenue.paidBookings")}`,
       color: "#6366f1",
       icon: "📈",
@@ -151,7 +161,7 @@ const RevenuePage = () => {
             {t("revenue.title")}
           </h2>
           <p style={{ margin: "4px 0 0", color: "#888", fontSize: "0.88rem" }}>
-            Thống kê tài chính từ đặt phòng
+            {t("revenue.subtitle")}
           </p>
         </div>
 
@@ -297,7 +307,7 @@ const RevenuePage = () => {
                     }}
                   >
                     <div
-                      title={`$${fmt(val)}`}
+                      title={formatPrice(val, lang)}
                       style={{
                         width: "100%",
                         height: h,
@@ -391,7 +401,7 @@ const RevenuePage = () => {
                           color: "#1a1a2e",
                         }}
                       >
-                        {type}
+                        {getRoomTranslation(type, lang)?.roomType || type}
                       </span>
                       <span
                         style={{
@@ -400,7 +410,7 @@ const RevenuePage = () => {
                           color: "#0d9488",
                         }}
                       >
-                        ${fmt(rev)}
+                        {formatPrice(rev, lang)}
                       </span>
                     </div>
                     <div

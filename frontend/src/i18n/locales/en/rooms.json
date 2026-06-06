@@ -34,7 +34,7 @@
     "roomDetails": "Room Details",
     "roomDescription": "Description",
     "defaultDesc": "No description available.",
-    "night": "$/ night",
+    "night": "/ night",
     "bookRoom": "Book Room",
     "checkIn": "Check-in Date",
     "checkOut": "Check-out Date",

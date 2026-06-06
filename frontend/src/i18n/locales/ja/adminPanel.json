@@ -100,10 +100,20 @@
     "email": "メールアドレス",
     "phone": "電話番号",
     "perNight": "/泊",
+    "statusBooked": "予約済み",
     "statusPaid": "支払い済み",
     "statusConfirmed": "確認済み",
     "statusCancelled": "キャンセル済み",
-    "statusPending": "支払い待ち"
+    "statusPending": "支払い待ち",
+    "statusCheckedIn": "チェックイン済み",
+    "statusCheckedOut": "チェックアウト済み",
+    "maxAdults": "大人最大{{count}}人",
+    "maxChildren": "子供最大{{count}}人",
+    "errMinAdults": "大人が1人以上必要です。",
+    "errMaxAdults": "{{type}}タイプは大人最大{{count}}人です。",
+    "errMaxChildren": "{{type}}タイプは子供最大{{count}}人です。",
+    "errMaxTotal": "{{type}}タイプは合計最大{{count}}人です。",
+    "errSave": "保存に失敗しました"
   },
   "addRoom": {
     "title": "新しい客室を追加",
@@ -132,7 +142,8 @@
     "addfailed": "客室の追加に失敗しました（コード：{{code}}）。",
     "namePlaceholder": "新しい客室タイプを入力...",
     "pricePlaceholder": "最低20",
-    "descPlaceholder": "部屋の詳細な説明、設備、眺望など..."
+    "descPlaceholder": "部屋の詳細な説明、設備、眺望など...",
+    "back": "戻る"
   },
   "editRoom": {
     "title": "客室を編集",
@@ -172,6 +183,10 @@
     "delete": "削除",
     "confirmDelete": "このアカウントを削除しますか？",
     "deleteSuccess": "アカウントを削除しました。",
+    "deleteFail": "削除に失敗しました",
+    "confirmSetRole": "{{name}}を{{role}}に変更しますか？",
+    "setRoleSuccess": "{{name}}を{{role}}に変更しました。",
+    "setRoleError": "エラー",
     "noUsers": "顧客が見つかりません。"
   },
   "staff": {
@@ -201,6 +216,9 @@
     "password_min": "パスワードは6文字以上にしてください。",
     "password_match": "パスワード確認が一致しません。",
     "register_success": "{{name}}のアカウントを作成しました。メール：{{email}}",
+    "field_required": "{{field}}は必須です。",
+    "phone_required": "電話番号を入力してください。",
+    "create_failed": "アカウント作成に失敗しました。",
     "addModal": {
       "title": "スタッフを追加",
       "editTitle": "スタッフを編集",
@@ -252,6 +270,15 @@
     "delete": "削除",
     "confirmDelete": "このサービスを削除しますか？",
     "deleteSuccess": "サービスを削除しました。",
+    "hideSuccess": "サービスをリストから非表示にしました。",
+    "saveSuccess": "サービスをシステムに保存しました。",
+    "addSuccess": "サービスを追加しました。",
+    "updateSuccess": "サービスを更新しました。",
+    "deleteFail": "削除に失敗しました",
+    "errUnknown": "不明なエラー",
+    "errPrefix": "エラー",
+    "nameRequired": "サービス名を入力してください。",
+    "descRequired": "説明を入力してください。",
     "noServices": "サービスがありません。",
     "addModal": {
       "addTitle": "新しいサービスを追加",

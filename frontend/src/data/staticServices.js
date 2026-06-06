@@ -290,6 +290,10 @@ export const SERVICE_TRANSLATIONS = {
       name: "Đưa Đón Sân Bay",
       description: "Đưa đón sân bay bằng xe sang, đúng giờ, phục vụ 24/7.",
     },
+    "Airport Transfer": {
+      name: "Đưa Đón Sân Bay",
+      description: "Đưa đón sân bay bằng xe sang, đúng giờ, phục vụ 24/7.",
+    },
     "Laundry & Dry Cleaning": {
       name: "Giặt Ủi & Giặt Khô",
       description:
@@ -323,6 +327,141 @@ export const SERVICE_TRANSLATIONS = {
       name: "Điều Hòa Nhiệt Độ",
       description: "Hệ thống điều hòa tiên tiến giữ phòng mát mẻ và thoải mái.",
     },
+    "Spa & Massage": {
+      name: "Spa & Massage",
+      description:
+        "Liệu trình massage thư giãn 60 phút với tinh dầu thiên nhiên. Phục hồi năng lượng toàn diện.",
+    },
+    "Private Beach Bonfire": {
+      name: "Tiệc Lửa Trại Bãi Biển Riêng",
+      description:
+        "Tiệc lửa trại riêng tư trên bãi biển cho 2–6 người. Kèm BBQ hải sản, nhạc acoustic và cocktail.",
+    },
+    "Private Pool Access": {
+      name: "Hồ Bơi Riêng Tư",
+      description:
+        "Thuê riêng hồ bơi vô cực tầng thượng 2 giờ. Kèm đồ uống miễn phí và ghế nằm VIP.",
+    },
+    "Fitness & Yoga Class": {
+      name: "Lớp Gym & Yoga",
+      description:
+        "Lớp yoga bình minh hoặc PT gym riêng. Lịch linh hoạt theo yêu cầu.",
+    },
+    "Beach BBQ Dinner": {
+      name: "Tiệc BBQ Bãi Biển",
+      description:
+        "Bữa tối nướng trên bãi biển riêng cho 2 người, kèm rượu vang và nhạc live.",
+    },
+    "Room Decoration": {
+      name: "Trang Trí Phòng",
+      description:
+        "Trang trí phòng theo chủ đề: sinh nhật, kỷ niệm, lãng mạn. Hoa tươi và nến.",
+    },
+    "Tour & Sightseeing": {
+      name: "Tour Tham Quan",
+      description:
+        "Tour tham quan địa phương cùng hướng dẫn viên. Khởi hành 8:00 sáng hàng ngày.",
+    },
+    "Bicycle Rental": {
+      name: "Thuê Xe Đạp",
+      description:
+        "Thuê xe đạp khám phá xung quanh resort. Mũ bảo hiểm và bản đồ đi kèm.",
+    },
+    "Cocktail & Drinks Package": {
+      name: "Gói Cocktail & Đồ Uống",
+      description:
+        "Gói cocktail thủ công tại pool bar: 5 ly theo lựa chọn, phục vụ từ 15:00–21:00.",
+    },
+    "Babysitting Service": {
+      name: "Dịch Vụ Trông Trẻ",
+      description:
+        "Dịch vụ trông trẻ chuyên nghiệp theo giờ. An toàn, vui vẻ cho bé từ 1–10 tuổi.",
+    },
+    "Water Sports Package": {
+      name: "Gói Thể Thao Nước",
+      description:
+        "Gói thể thao nước: kayak, paddleboard, snorkeling. Hướng dẫn viên đi kèm.",
+    },
+    "Photography Session": {
+      name: "Chụp Ảnh Chuyên Nghiệp",
+      description:
+        "Chụp ảnh kỷ niệm chuyên nghiệp tại các điểm đẹp của resort (45 phút, 20+ ảnh chỉnh sửa).",
+    },
+    "Sunset Cruise": {
+      name: "Ngắm Hoàng Hôn Trên Du Thuyền",
+      description:
+        "Ngắm hoàng hôn trên du thuyền 2 giờ, kèm cocktail và snack cao cấp.",
+    },
+    "Cooking Class": {
+      name: "Lớp Học Nấu Ăn",
+      description:
+        "Học nấu ẩm thực địa phương cùng đầu bếp resort. Mang công thức về nhà.",
+    },
+    "Flower Arrangement": {
+      name: "Học Cắm Hoa",
+      description:
+        "Workshop cắm hoa nghệ thuật 90 phút. Mang tác phẩm của bạn về phòng.",
+    },
+    "Pet Care Service": {
+      name: "Dịch Vụ Chăm Sóc Thú Cưng",
+      description:
+        "Chăm sóc thú cưng theo giờ khi bạn đi tham quan. An toàn và chu đáo.",
+    },
+    "Golf Cart Rental": {
+      name: "Thuê Xe Golf",
+      description:
+        "Thuê xe golf điện khám phá khuôn viên resort rộng lớn. Tối đa 4 người.",
+    },
+    "Karaoke Room": {
+      name: "Phòng Karaoke",
+      description:
+        "Phòng karaoke riêng tư 2 giờ cho nhóm đến 10 người, hệ thống âm thanh cao cấp.",
+    },
+    "In-Room Movie Night": {
+      name: "Xem Phim Trong Phòng",
+      description:
+        "Gói xem phim trong phòng: màn chiếu HD, popcorn, đồ uống và chăn mềm cho 2 người.",
+    },
+    "Private Romantic Dinner": {
+      name: "Bữa Tối Lãng Mạn Riêng Tư",
+      description:
+        "Bữa tối lãng mạn riêng tư tại bãi biển hoặc vườn resort. Nến, hoa tươi, thực đơn 5 món và rượu vang.",
+    },
+    "Yacht Charter": {
+      name: "Thuê Du Thuyền Riêng",
+      description:
+        "Thuê du thuyền riêng khám phá vịnh 3 giờ. Dành cho tối đa 8 người, kèm thuyền trưởng và đồ uống cao cấp.",
+    },
+    "Sunrise Yoga on Beach": {
+      name: "Yoga Bình Minh Trên Bãi Biển",
+      description:
+        "Lớp yoga bình minh trên bãi biển mỗi sáng 6:00–7:00. Thảm và khăn được cung cấp.",
+    },
+    "Honeymoon Package": {
+      name: "Gói Trăng Mật",
+      description:
+        "Gói trăng mật đặc biệt: trang trí phòng hoa tươi, champagne, bánh, bồn tắm cánh hoa và bữa tối riêng tư.",
+    },
+    "Kids Club & Activities": {
+      name: "Câu Lạc Bộ Thiếu Nhi",
+      description:
+        "Câu lạc bộ thiếu nhi trọn ngày với hoạt động vẽ tranh, làm đồ thủ công, bể bơi mini. Cho trẻ 3–12 tuổi.",
+    },
+    "Wine & Cocktail Tasting": {
+      name: "Thưởng Rượu & Cocktail",
+      description:
+        "Buổi thưởng rượu vang và cocktail thủ công 90 phút tại sky bar. Chuyên gia pha chế hướng dẫn.",
+    },
+    "Traditional Herbal Spa": {
+      name: "Spa Thảo Dược Truyền Thống",
+      description:
+        "Liệu trình spa thảo dược truyền thống 90 phút: tắm thảo dược, đắp mặt nạ bùn khoáng và massage đầu.",
+    },
+    "Stargazing Night Experience": {
+      name: "Ngắm Sao Đêm",
+      description:
+        "Ngắm sao trên bãi biển riêng tư với kính thiên văn chuyên nghiệp, rượu vang và đồ ăn nhẹ cao cấp cho 2 người.",
+    },
   },
   ja: {
     "Luxury Mini Bar": {
@@ -340,6 +479,10 @@ export const SERVICE_TRANSLATIONS = {
         "完全なリラクゼーションで体力を回復させる高級トリートメント。",
     },
     "Airport Shuttle Service": {
+      name: "空港送迎サービス",
+      description: "高級車で安全・時間通りの空港送迎。24時間対応。",
+    },
+    "Airport Transfer": {
       name: "空港送迎サービス",
       description: "高級車で安全・時間通りの空港送迎。24時間対応。",
     },
@@ -371,6 +514,133 @@ export const SERVICE_TRANSLATIONS = {
     "Air Conditioning": {
       name: "エアコン",
       description: "快適な温度を保つ先進の空調システム。",
+    },
+    "Spa & Massage": {
+      name: "スパ＆マッサージ",
+      description:
+        "天然アロマオイルを使った60分のリラックスマッサージ。完全なエネルギー回復。",
+    },
+    "Private Beach Bonfire": {
+      name: "プライベートビーチ焚き火",
+      description:
+        "2〜6名のプライベートビーチファイア。海鮮BBQ・アコースティック音楽・カクテル付き。",
+    },
+    "Private Pool Access": {
+      name: "プライベートプール貸し切り",
+      description:
+        "屋上インフィニティプール2時間貸し切り。フリードリンク＆VIPラウンジャー付き。",
+    },
+    "Fitness & Yoga Class": {
+      name: "ヨガ＆フィットネスクラス",
+      description:
+        "早朝ヨガまたは専属トレーナーによるジム。柔軟なスケジュール対応。",
+    },
+    "Beach BBQ Dinner": {
+      name: "ビーチBBQディナー",
+      description: "2名様向けビーチBBQディナー。ワインとライブ音楽付き。",
+    },
+    "Room Decoration": {
+      name: "お部屋デコレーション",
+      description:
+        "誕生日・記念日・ロマンスをテーマにしたお部屋装飾。生花とキャンドル。",
+    },
+    "Tour & Sightseeing": {
+      name: "現地ツアー＆観光",
+      description: "ガイド付き地元観光ツアー。毎日午前8時出発。",
+    },
+    "Bicycle Rental": {
+      name: "自転車レンタル",
+      description:
+        "リゾート周辺を探索できる自転車レンタル。ヘルメットと地図付き。",
+    },
+    "Cocktail & Drinks Package": {
+      name: "カクテル＆ドリンクパッケージ",
+      description: "プールバーでのクラフトカクテル5杯。15:00〜21:00提供。",
+    },
+    "Babysitting Service": {
+      name: "ベビーシッターサービス",
+      description:
+        "プロのベビーシッターによる時間制サービス。1〜10歳のお子様対応。",
+    },
+    "Water Sports Package": {
+      name: "ウォータースポーツパッケージ",
+      description:
+        "カヤック・パドルボード・シュノーケリング体験。インストラクター付き。",
+    },
+    "Photography Session": {
+      name: "プロ写真撮影",
+      description:
+        "リゾートの絶景スポットでのプロ撮影（45分・20枚以上の編集済み写真）。",
+    },
+    "Sunset Cruise": {
+      name: "サンセットクルーズ",
+      description: "2時間のヨットで夕日鑑賞。カクテルと高級スナック付き。",
+    },
+    "Cooking Class": {
+      name: "料理教室",
+      description: "リゾートシェフと一緒に地元料理を学ぶ。レシピをお持ち帰り。",
+    },
+    "Flower Arrangement": {
+      name: "フラワーアレンジメント",
+      description:
+        "90分のアートフラワーアレンジメント教室。作品はお部屋にお持ち帰り。",
+    },
+    "Pet Care Service": {
+      name: "ペットケアサービス",
+      description: "観光中のペットをプロのスタッフが時間制でお世話します。",
+    },
+    "Golf Cart Rental": {
+      name: "ゴルフカートレンタル",
+      description: "広いリゾート敷地内を探索できる電動ゴルフカート。最大4名。",
+    },
+    "Karaoke Room": {
+      name: "カラオケルーム",
+      description:
+        "最大10名向けのプライベートカラオケルーム2時間。高品質音響システム。",
+    },
+    "In-Room Movie Night": {
+      name: "お部屋映画ナイト",
+      description:
+        "HDスクリーン・ポップコーン・ドリンク・2名様用ブランケット付きの映画パッケージ。",
+    },
+    "Private Romantic Dinner": {
+      name: "ロマンティックディナー",
+      description:
+        "ビーチまたはガーデンでのプライベートディナー。キャンドル・生花・5コース・ワイン付き。",
+    },
+    "Yacht Charter": {
+      name: "ヨットチャーター",
+      description:
+        "3時間のプライベートヨットで湾内クルーズ。最大8名、船長＆高級ドリンク付き。",
+    },
+    "Sunrise Yoga on Beach": {
+      name: "ビーチ早朝ヨガ",
+      description: "毎朝6:00〜7:00のビーチヨガ。マットとタオル提供。",
+    },
+    "Honeymoon Package": {
+      name: "ハネムーンパッケージ",
+      description:
+        "特別なハネムーン：生花デコレーション・シャンパン・ケーキ・フラワーバス・プライベートディナー。",
+    },
+    "Kids Club & Activities": {
+      name: "キッズクラブ＆アクティビティ",
+      description:
+        "絵画・工作・ミニプールなど充実した終日キッズクラブ。3〜12歳対象。",
+    },
+    "Wine & Cocktail Tasting": {
+      name: "ワイン＆カクテルテイスティング",
+      description:
+        "スカイバーでのワインとクラフトカクテル90分テイスティング。バーテンダー指導付き。",
+    },
+    "Traditional Herbal Spa": {
+      name: "伝統的ハーブスパ",
+      description:
+        "90分の伝統ハーブスパ：ハーブ湯・ミネラルマッドパック・ヘッドマッサージ。",
+    },
+    "Stargazing Night Experience": {
+      name: "星空鑑賞ナイト体験",
+      description:
+        "プロの天体望遠鏡でビーチから星空を観察。ワイン＆高級スナック（2名様）付き。",
     },
   },
 };

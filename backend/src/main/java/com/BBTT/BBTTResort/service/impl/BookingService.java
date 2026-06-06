@@ -279,10 +279,16 @@ public class BookingService implements IBookingService {
         try {
             Booking booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new OurException("Booking not found"));
-            if (updateRequest.getCheckInDate() != null)
+
+            boolean datesChanged = false;
+            if (updateRequest.getCheckInDate() != null) {
                 booking.setCheckInDate(updateRequest.getCheckInDate());
-            if (updateRequest.getCheckOutDate() != null)
+                datesChanged = true;
+            }
+            if (updateRequest.getCheckOutDate() != null) {
                 booking.setCheckOutDate(updateRequest.getCheckOutDate());
+                datesChanged = true;
+            }
             if (updateRequest.getNumOfAdults() > 0)
                 booking.setNumOfAdults(updateRequest.getNumOfAdults());
             booking.setNumOfChildren(updateRequest.getNumOfChildren());
@@ -291,6 +297,17 @@ public class BookingService implements IBookingService {
                 booking.setPaymentStatus(updateRequest.getPaymentStatus());
             if (updateRequest.getBookingStatus() != null)
                 booking.setBookingStatus(updateRequest.getBookingStatus());
+
+            if (datesChanged && booking.getRoom() != null) {
+                Room room = roomRepository.findById(booking.getRoom().getId()).orElse(null);
+                if (room != null) {
+                    long totalDays = ChronoUnit.DAYS.between(booking.getCheckInDate(), booking.getCheckOutDate());
+                    double basePrice = room.getRoomPrice().doubleValue() * totalDays;
+                    double discountAmount = booking.getDiscountAmount() != null ? booking.getDiscountAmount() : 0;
+                    booking.setTotalPrice(basePrice - discountAmount);
+                }
+            }
+
             bookingRepository.save(booking);
             response.setStatusCode(200);
             response.setMessage("Booking updated successfully");
