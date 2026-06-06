@@ -281,6 +281,9 @@ export default class ApiService {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userPhone");
+    localStorage.removeItem("userDataId");
   }
 
   static isAuthenticated() {
