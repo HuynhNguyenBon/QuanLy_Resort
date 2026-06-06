@@ -42,8 +42,8 @@ const ProfilePage = () => {
       const localPhone = localStorage.getItem("userPhone");
       setUser({
         ...u,
-        name: localName || u.name,
-        phoneNumber: localPhone || u.phoneNumber,
+        name: u.name || localName,
+        phoneNumber: u.phoneNumber || localPhone,
       });
     } catch (err) {
       console.error(err);
