@@ -23,10 +23,11 @@ const EditProfilePage = () => {
       .then((res) => {
         setUser(res.user);
         // Ưu tiên giá trị đã lưu local nếu có
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userPhone");
         setForm({
-          name: localStorage.getItem("userName") || res.user.name || "",
-          phoneNumber:
-            localStorage.getItem("userPhone") || res.user.phoneNumber || "",
+          name: res.user.name || "",
+          phoneNumber: res.user.phoneNumber || "",
         });
       })
       .catch((err) => showMsg(err.message, "error"));
