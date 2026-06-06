@@ -57,11 +57,13 @@ const EditProfilePage = () => {
       });
       localStorage.setItem("userName", form.name);
       localStorage.setItem("userPhone", form.phoneNumber);
+      localStorage.setItem("userDataId", String(user.id));
       showMsg(t("updateSuccess"));
     } catch (err) {
       if (err.response?.status === 403) {
         localStorage.setItem("userName", form.name);
         localStorage.setItem("userPhone", form.phoneNumber);
+        localStorage.setItem("userDataId", String(user.id));
         showMsg(t("updateSuccess"));
       } else {
         showMsg(err.response?.data?.message || err.message, "error");
