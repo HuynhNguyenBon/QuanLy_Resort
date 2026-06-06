@@ -33,22 +33,14 @@ const isCancelled = (b) => {
 const isActiveBooking = (b) => {
   if (isCancelled(b)) return false;
   const today = todayDate();
-  const ci = new Date(b.checkInDate);
-  ci.setHours(0, 0, 0, 0);
-  const co = new Date(b.checkOutDate);
-  co.setHours(0, 0, 0, 0);
+  const ci = new Date(b.checkInDate); ci.setHours(0,0,0,0);
+  const co = new Date(b.checkOutDate); co.setHours(0,0,0,0);
   return ci <= today && today < co;
 };
 const isOccupiedToday = (room, bookings) =>
-  bookings.some(
-    (b) =>
-      (b.room?.id === room.id || b.roomId === room.id) && isActiveBooking(b),
-  );
+  bookings.some(b => (b.room?.id === room.id || b.roomId === room.id) && isActiveBooking(b));
 const getActiveBooking = (room, bookings) =>
-  bookings.find(
-    (b) =>
-      (b.room?.id === room.id || b.roomId === room.id) && isActiveBooking(b),
-  ) || null;
+  bookings.find(b => (b.room?.id === room.id || b.roomId === room.id) && isActiveBooking(b)) || null;
 const getActiveGuest = (room, bookings) => {
   const b = getActiveBooking(room, bookings);
   return b?.user?.name || null;
@@ -95,87 +87,28 @@ const AdminPage = () => {
     fetchData();
   }, []);
 
-  const occupiedCount = rooms.filter((r) =>
-    isOccupiedToday(r, bookings),
-  ).length;
+  const occupiedCount  = rooms.filter(r => isOccupiedToday(r, bookings)).length;
   const availableCount = rooms.length - occupiedCount;
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const todayCheckIns = bookings.filter(
-    (b) =>
-      !isCancelled(b) &&
-      new Date(b.checkInDate) >= today &&
-      new Date(b.checkInDate) < tomorrow,
-  ).length;
-  const todayCheckOuts = bookings.filter(
-    (b) =>
-      !isCancelled(b) &&
-      new Date(b.checkOutDate) >= today &&
-      new Date(b.checkOutDate) < tomorrow,
-  ).length;
+  const todayCheckIns  = bookings.filter(b => !isCancelled(b) && new Date(b.checkInDate)  >= today && new Date(b.checkInDate)  < tomorrow).length;
+  const todayCheckOuts = bookings.filter(b => !isCancelled(b) && new Date(b.checkOutDate) >= today && new Date(b.checkOutDate) < tomorrow).length;
 
   const stats = [
-    {
-      label: t("overview.totalRooms"),
-      value: rooms.length,
-      icon: "🏨",
-      color: "#3498db",
-    },
-    {
-      label: t("overview.occupied"),
-      value: occupiedCount,
-      icon: "🔴",
-      color: "#e74c3c",
-    },
-    {
-      label: t("overview.available"),
-      value: availableCount,
-      icon: "🟢",
-      color: "#27ae60",
-    },
-    {
-      label: t("overview.todayCheckin"),
-      value: todayCheckIns,
-      icon: "📥",
-      color: "#f39c12",
-    },
-    {
-      label: t("overview.todayCheckout"),
-      value: todayCheckOuts,
-      icon: "📤",
-      color: "#9b59b6",
-    },
+    { label: t("overview.totalRooms"),    value: rooms.length,   icon: "🏨", color: "#3498db" },
+    { label: t("overview.occupied"),      value: occupiedCount,  icon: "🔴", color: "#e74c3c" },
+    { label: t("overview.available"),     value: availableCount, icon: "🟢", color: "#27ae60" },
+    { label: t("overview.todayCheckin"),  value: todayCheckIns,  icon: "📥", color: "#f39c12" },
+    { label: t("overview.todayCheckout"), value: todayCheckOuts, icon: "📤", color: "#9b59b6" },
   ];
 
   const QUICK_ACTIONS = [
-    {
-      label: t("overview.addRoom"),
-      icon: "➕",
-      path: "/admin/add-room",
-      color: "#3498db",
-    },
-    {
-      label: t("overview.viewBookings"),
-      icon: "📋",
-      path: "/admin/manage-bookings",
-      color: "#27ae60",
-    },
-    {
-      label: t("overview.manageRooms"),
-      icon: "🛏️",
-      path: "/admin/manage-rooms",
-      color: "#f39c12",
-    },
-    {
-      label: t("overview.viewReviews"),
-      icon: "⭐",
-      path: "/admin/manage-reviews",
-      color: "#9b59b6",
-    },
+    { label: t("overview.addRoom"),       icon: "➕", path: "/admin/add-room",        color: "#3498db" },
+    { label: t("overview.viewBookings"),  icon: "📋", path: "/admin/manage-bookings", color: "#27ae60" },
+    { label: t("overview.manageRooms"),   icon: "🛏️", path: "/admin/manage-rooms",    color: "#f39c12" },
+    { label: t("overview.viewReviews"),   icon: "⭐", path: "/admin/manage-reviews",  color: "#9b59b6" },
   ];
 
   const startEdit = () => {
@@ -279,22 +212,15 @@ const AdminPage = () => {
   return (
     <div className="adm-dashboard">
       <div className="adm-welcome">
-        {t("overview.greeting")},{" "}
-        <span className="adm-welcome-name">{adminName}</span> 👋
+        {t("overview.greeting")}, <span className="adm-welcome-name">{adminName}</span> 👋
       </div>
 
       {/* Stats */}
       <div className="adm-stats-row">
-        {stats.map((s) => (
-          <div
-            key={s.label}
-            className="adm-stat-card"
-            style={{ borderTopColor: s.color }}
-          >
+        {stats.map(s => (
+          <div key={s.label} className="adm-stat-card" style={{ borderTopColor: s.color }}>
             <div className="adm-stat-icon">{s.icon}</div>
-            <div className="adm-stat-value" style={{ color: s.color }}>
-              {loading ? "—" : s.value}
-            </div>
+            <div className="adm-stat-value" style={{ color: s.color }}>{loading ? "—" : s.value}</div>
             <div className="adm-stat-label">{s.label}</div>
           </div>
         ))}
@@ -305,15 +231,9 @@ const AdminPage = () => {
         <div className="adm-section-header">
           <h3>🗺️ {t("overview.floorMap")}</h3>
           <div className="adm-map-legend">
-            <span
-              className="adm-legend-dot"
-              style={{ background: "#27ae60" }}
-            />
+            <span className="adm-legend-dot" style={{ background: "#27ae60" }} />
             {t("overview.available_label")}
-            <span
-              className="adm-legend-dot"
-              style={{ background: "#e74c3c", marginLeft: 12 }}
-            />
+            <span className="adm-legend-dot" style={{ background: "#e74c3c", marginLeft: 12 }} />
             {t("overview.occupied_label")}
           </div>
         </div>
@@ -326,17 +246,14 @@ const AdminPage = () => {
           <div className="adm-floor-map">
             {floors.map((floorRooms, floorIdx) => (
               <div key={floorIdx} className="adm-floor">
-                <div className="adm-floor-label">
-                  {i18n.language === "ja" ? "フロア" : "Tầng"} {floorIdx + 1}
-                </div>
+                <div className="adm-floor-label">{i18n.language==="ja"?"フロア":"Tầng"} {floorIdx + 1}</div>
                 <div className="adm-floor-rooms">
-                  {floorRooms.map((room) => {
+                  {floorRooms.map(room => {
                     const occupied = isOccupiedToday(room, bookings);
-                    const guest = getActiveGuest(room, bookings);
+                    const guest    = getActiveGuest(room, bookings);
                     const booking = getActiveBooking(room, bookings);
                     return (
-                      <div
-                        key={room.id}
+                      <div key={room.id}
                         className={`adm-room-cell${occupied ? " occupied" : " available"}`}
                         onClick={() =>
                           occupied
@@ -347,13 +264,9 @@ const AdminPage = () => {
                       >
                         <div className="adm-room-id">#{room.id}</div>
                         <div className="adm-room-type">{room.roomType}</div>
-                        {occupied && guest && (
-                          <div className="adm-room-guest">{guest}</div>
-                        )}
+                        {occupied && guest && <div className="adm-room-guest">{guest}</div>}
                         <div className="adm-room-status">
-                          {occupied
-                            ? t("overview.occupied_label")
-                            : t("overview.available_label")}
+                          {occupied ? t("overview.occupied_label") : t("overview.available_label")}
                         </div>
                       </div>
                     );
@@ -372,13 +285,10 @@ const AdminPage = () => {
             <h3>⚡ {t("overview.quickActions")}</h3>
           </div>
           <div className="adm-quick-actions">
-            {QUICK_ACTIONS.map((a) => (
-              <button
-                key={a.path}
-                className="adm-quick-btn"
+            {QUICK_ACTIONS.map(a => (
+              <button key={a.path} className="adm-quick-btn"
                 style={{ borderLeftColor: a.color }}
-                onClick={() => navigate(a.path)}
-              >
+                onClick={() => navigate(a.path)}>
                 <span className="adm-quick-icon">{a.icon}</span>
                 {a.label}
               </button>

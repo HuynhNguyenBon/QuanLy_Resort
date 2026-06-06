@@ -35,10 +35,11 @@ const Toast = ({ type, message, onClose }) => {
         .phong-toast__title { font-weight:600; font-size:14px; margin-bottom:2px; }
         .phong-toast__msg   { font-size:13px; opacity:0.85; }
         .phong-toast__close {
-          background:none; border:none; cursor:pointer;
-          font-size:16px; opacity:0.5; padding:0; color:inherit; flex-shrink:0;
+          background:none !important; border:none !important; cursor:pointer;
+          font-size:16px; opacity:0.5; padding:4px 6px; color:inherit; flex-shrink:0;
+          border-radius:4px; transition:opacity 0.15s;
         }
-        .phong-toast__close:hover { opacity:1; }
+        .phong-toast__close:hover { opacity:1 !important; background:rgba(0,0,0,0.08) !important; }
         .phong-toast__bar {
           position:absolute; bottom:0; left:0; height:3px; border-radius:0 0 12px 12px;
         }
@@ -80,6 +81,7 @@ const EditRoomPage = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [toastTimer, setToastTimer] = useState(null);
+
 
   const showToast = (type, message, duration) => {
     if (toastTimer) clearTimeout(toastTimer);
@@ -142,11 +144,11 @@ const EditRoomPage = () => {
       return;
     }
     if (!selected.type.startsWith("image/")) {
-      showToast("error", "Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, ...).");
+      showToast("error", t("addRoom.imageInvalid"));
       return;
     }
     if (selected.size > 5 * 1024 * 1024) {
-      showToast("error", "Kích thước ảnh không được vượt quá 5MB.");
+      showToast("error", t("addRoom.imageSize"));
       return;
     }
     setFile(selected);
@@ -161,11 +163,11 @@ const EditRoomPage = () => {
     }
     const price = Number(roomDetails.roomPrice);
     if (!roomDetails.roomPrice || isNaN(price) || price <= 0) {
-      showToast("error", "Giá phòng phải là số dương hợp lệ.");
+      showToast("error", t("addRoom.priceInvalid"));
       return false;
     }
     if (price < 20) {
-      showToast("error", "Giá phòng tối thiểu là 20$. Vui lòng nhập lại.");
+      showToast("error", t("addRoom.priceMin"));
       return false;
     }
     if (!roomDetails.roomDescription.trim()) {
@@ -188,7 +190,7 @@ const EditRoomPage = () => {
       const result = await ApiService.updateRoom(roomId, formData);
 
       if (result.statusCode === 200) {
-        showToast("success", t("editRoomPage.updateSuccess"), 3000);
+        showToast("success", t("editRoom.updateSuccess"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
         showToast("error", `Cập nhật thất bại (mã: ${result.statusCode}).`);
@@ -201,12 +203,12 @@ const EditRoomPage = () => {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(t("editRoomPage.deleteConfirm"))) return;
+    if (!window.confirm(t("editRoom.deleteConfirm"))) return;
     setLoading(true);
     try {
       const result = await ApiService.deleteRoom(roomId);
       if (result.statusCode === 200) {
-        showToast("success", t("editRoomPage.deleteSuccess"), 3000);
+        showToast("success", t("editRoom.deleteSuccess"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
         showToast("error", `Xóa thất bại (mã: ${result.statusCode}).`);
@@ -253,52 +255,19 @@ const EditRoomPage = () => {
       )}
 
       {/* Page header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          marginBottom: 20,
-        }}
-      >
-        <button
-          onClick={() => navigate("/admin/manage-rooms")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 5,
-            padding: "7px 14px",
-            borderRadius: 8,
-            border: "1.5px solid #e2e8f0",
-            background: "#fff",
-            color: "#555",
-            cursor: "pointer",
-            fontSize: "0.83rem",
-            fontWeight: 600,
-            transition: "all 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "#0d9488";
-            e.currentTarget.style.color = "#0d9488";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "#e2e8f0";
-            e.currentTarget.style.color = "#555";
-          }}
-        >
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+        <button onClick={() => navigate("/admin/manage-rooms")}
+          style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 14px",
+            borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff",
+            color: "#555", cursor: "pointer", fontSize: "0.83rem", fontWeight: 600,
+            transition: "all 0.15s" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "#0d9488"; e.currentTarget.style.color = "#0d9488"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.color = "#555"; }}>
           ← {t("editRoom.back")}
         </button>
         <div>
-          <h2
-            style={{
-              margin: 0,
-              fontSize: "1.35rem",
-              fontWeight: 700,
-              color: "#1a1a2e",
-            }}
-          >
-            {t("editRoom.title")}{" "}
-            <span style={{ color: "#0d9488" }}>#{roomId}</span>
+          <h2 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "#1a1a2e" }}>
+            {t("editRoom.title")} <span style={{ color: "#0d9488" }}>#{roomId}</span>
           </h2>
         </div>
       </div>
@@ -328,9 +297,7 @@ const EditRoomPage = () => {
             <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
               {roomDetails.roomType || "Đang tải..."} — Phòng #{roomId}
             </div>
-            <div
-              style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}
-            >
+            <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}>
               {t("editRoom.subtitle")}
             </div>
           </div>
@@ -379,74 +346,29 @@ const EditRoomPage = () => {
             </div>
 
             {/* Upload button */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              disabled={loading}
-              style={{ display: "none" }}
-            />
+            <input ref={fileInputRef} type="file" accept="image/*"
+              onChange={handleFileChange} disabled={loading} style={{ display: "none" }} />
 
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={loading}
-              style={{
-                padding: "10px 0",
-                borderRadius: 9,
-                border: "2px dashed #0d9488",
-                background: "#f0fdfa",
-                color: "#0d9488",
-                cursor: loading ? "not-allowed" : "pointer",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                transition: "background 0.15s",
-                width: "100%",
-                textAlign: "center",
-              }}
-              onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.background = "#ccfbf1";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f0fdfa";
-              }}
-            >
-              {file
-                ? `✓ ${file.name.length > 20 ? file.name.slice(0, 18) + "…" : file.name}`
-                : `📁  ${t("editRoom.newImage")}`}
+            <button onClick={() => fileInputRef.current?.click()} disabled={loading}
+              style={{ padding: "10px 0", borderRadius: 9, border: "2px dashed #0d9488",
+                background: "#f0fdfa", color: "#0d9488", cursor: loading ? "not-allowed" : "pointer",
+                fontSize: "0.85rem", fontWeight: 600, transition: "background 0.15s",
+                width: "100%", textAlign: "center" }}
+              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = "#ccfbf1"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "#f0fdfa"; }}>
+              {file ? `✓ ${file.name.length > 20 ? file.name.slice(0, 18) + "…" : file.name}` : `📁  ${t("editRoom.newImage")}`}
             </button>
 
             {file && (
-              <button
-                onClick={() => {
-                  setFile(null);
-                  setPreview(null);
-                }}
-                disabled={loading}
-                style={{
-                  padding: "7px 0",
-                  borderRadius: 8,
-                  border: "1px solid #fecaca",
-                  background: "#fff5f5",
-                  color: "#e74c3c",
-                  cursor: "pointer",
-                  fontSize: "0.8rem",
-                  fontWeight: 600,
-                  width: "100%",
-                }}
-              >
-                ✕ {t("editRoom.removeImage")}
+              <button onClick={() => { setFile(null); setPreview(null); }} disabled={loading}
+                style={{ padding: "7px 0", borderRadius: 8, border: "1px solid #fecaca",
+                  background: "#fff5f5", color: "#e74c3c", cursor: "pointer",
+                  fontSize: "0.8rem", fontWeight: 600, width: "100%" }}>
+                ✕  {t("editRoom.removeImage")}
               </button>
             )}
 
-            <p
-              style={{
-                margin: 0,
-                color: "#b0b7c3",
-                fontSize: "0.75rem",
-                textAlign: "center",
-              }}
-            >
+            <p style={{ margin: 0, color: "#b0b7c3", fontSize: "0.75rem", textAlign: "center" }}>
               {t("editRoom.imageHint")}
             </p>
           </div>
@@ -470,12 +392,8 @@ const EditRoomPage = () => {
             >
               <div>
                 <label style={labelStyle}>{t("editRoom.typeLabel")}</label>
-                <input
-                  type="text"
-                  name="roomType"
-                  value={roomDetails.roomType}
-                  onChange={handleChange}
-                  disabled={loading}
+                <input type="text" name="roomType" value={roomDetails.roomType}
+                  onChange={handleChange} disabled={loading}
                   placeholder="VD: Deluxe, Suite, King..."
                   style={fieldStyle}
                   onFocus={(e) => {
@@ -529,12 +447,8 @@ const EditRoomPage = () => {
             {/* Mô tả */}
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>{t("editRoom.descLabel")}</label>
-              <textarea
-                name="roomDescription"
-                value={roomDetails.roomDescription}
-                onChange={handleChange}
-                disabled={loading}
-                rows={7}
+              <textarea name="roomDescription" value={roomDetails.roomDescription}
+                onChange={handleChange} disabled={loading} rows={7}
                 placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
                 style={{ ...fieldStyle, resize: "vertical", lineHeight: 1.65 }}
                 onFocus={(e) => {
@@ -556,61 +470,24 @@ const EditRoomPage = () => {
 
             {/* Buttons */}
             <div style={{ display: "flex", gap: 12 }}>
-              <button
-                onClick={handleUpdate}
-                disabled={loading}
-                style={{
-                  flex: 1,
-                  padding: "12px 0",
-                  borderRadius: 10,
-                  border: "none",
-                  background: loading ? "#99d6d0" : "#0d9488",
-                  color: "#fff",
-                  fontSize: "0.92rem",
-                  fontWeight: 700,
-                  cursor: loading ? "not-allowed" : "pointer",
-                  transition: "background 0.15s",
-                  boxShadow: "0 2px 8px rgba(13,148,136,0.3)",
-                }}
-                onMouseEnter={(e) => {
-                  if (!loading) e.currentTarget.style.background = "#0a7c73";
-                }}
-                onMouseLeave={(e) => {
-                  if (!loading) e.currentTarget.style.background = "#0d9488";
-                }}
-              >
-                {loading
-                  ? t("editRoom.updating")
-                  : `✓  ${t("editRoom.updateBtn")}`}
+              <button onClick={handleUpdate} disabled={loading}
+                style={{ flex: 1, padding: "12px 0", borderRadius: 10, border: "none",
+                  background: loading ? "#99d6d0" : "#0d9488", color: "#fff",
+                  fontSize: "0.92rem", fontWeight: 700,
+                  cursor: loading ? "not-allowed" : "pointer", transition: "background 0.15s",
+                  boxShadow: "0 2px 8px rgba(13,148,136,0.3)" }}
+                onMouseEnter={e => { if (!loading) e.currentTarget.style.background = "#0a7c73"; }}
+                onMouseLeave={e => { if (!loading) e.currentTarget.style.background = "#0d9488"; }}>
+                {loading ? t("editRoom.updating") : `✓  ${t("editRoom.updateBtn")}`}
               </button>
-              <button
-                onClick={handleDelete}
-                disabled={loading}
-                style={{
-                  padding: "12px 22px",
-                  borderRadius: 10,
-                  border: "1.5px solid #fca5a5",
-                  background: "#fff5f5",
-                  color: "#e74c3c",
-                  fontSize: "0.9rem",
-                  fontWeight: 700,
-                  cursor: loading ? "not-allowed" : "pointer",
-                  transition: "all 0.15s",
-                }}
-                onMouseEnter={(e) => {
-                  if (!loading) {
-                    e.currentTarget.style.background = "#e74c3c";
-                    e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.borderColor = "#e74c3c";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#fff5f5";
-                  e.currentTarget.style.color = "#e74c3c";
-                  e.currentTarget.style.borderColor = "#fca5a5";
-                }}
-              >
-                🗑 {t("editRoom.deleteBtn")}
+              <button onClick={handleDelete} disabled={loading}
+                style={{ padding: "12px 22px", borderRadius: 10,
+                  border: "1.5px solid #fca5a5", background: "#fff5f5",
+                  color: "#e74c3c", fontSize: "0.9rem", fontWeight: 700,
+                  cursor: loading ? "not-allowed" : "pointer", transition: "all 0.15s" }}
+                onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = "#e74c3c"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "#e74c3c"; }}}
+                onMouseLeave={e => { e.currentTarget.style.background = "#fff5f5"; e.currentTarget.style.color = "#e74c3c"; e.currentTarget.style.borderColor = "#fca5a5"; }}>
+                🗑  {t("editRoom.deleteBtn")}
               </button>
             </div>
           </div>
