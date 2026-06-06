@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 import { getRoomTranslation } from "../../data/roomTranslations";
+import { formatPrice as fmtPrice } from "../../utils/formatPrice";
 import "react-datepicker/dist/react-datepicker.css";
 import ApiService from "../../service/ApiService";
 import Pagination from "../common/Pagination";
@@ -133,8 +134,21 @@ const AllRoomsPage = () => {
     "";
 
   const formatPrice = (price) => {
-    if (!price) return "0";
-    return Number(price).toLocaleString("en-US");
+    if (lang === "en") return fmtPrice(price, lang);
+    if (lang === "vi") {
+      const vnd = price * 25000;
+      if (vnd >= 1000000) {
+        return (
+          (vnd / 1000000).toLocaleString("vi-VN", {
+            maximumFractionDigits: 1,
+          }) + " tr"
+        );
+      }
+      return vnd.toLocaleString("vi-VN", { maximumFractionDigits: 0 });
+    }
+    return new Intl.NumberFormat("ja-JP", { maximumFractionDigits: 0 }).format(
+      price * 150,
+    );
   };
 
   // ─── Close dropdown khi click ngoài ─────────────────────────────────────────

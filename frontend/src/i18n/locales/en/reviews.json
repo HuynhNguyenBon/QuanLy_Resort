@@ -1,0 +1,16 @@
+{
+  "reviewsTitle": "Guest Reviews",
+  "writeReview": "✍️ Write Review",
+  "cancel": "Cancel",
+  "reviewRoom": "Review Room {{roomType}}",
+  "yourName": "Your Name",
+  "namePlaceholder": "e.g. John Smith",
+  "rating": "Rating",
+  "comment": "Comment",
+  "commentPlaceholder": "Share your experience at BBHH Resort...",
+  "submit": "Submit Review",
+  "noReviews": "No reviews yet. Be the first to share!",
+  "yourNameError": "Please enter your name.",
+  "commentError": "Please enter a comment.",
+  "avgLabel": "reviews"
+}

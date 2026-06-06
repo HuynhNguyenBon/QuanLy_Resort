@@ -34,7 +34,7 @@
     "roomDetails": "Chi tiết phòng",
     "roomDescription": "Mô tả",
     "defaultDesc": "Không có mô tả.",
-    "night": "VNĐ/ đêm",
+    "night": "/ đêm",
     "bookRoom": "Đặt phòng",
     "checkIn": "Ngày nhận phòng",
     "checkOut": "Ngày trả phòng",
@@ -104,7 +104,7 @@
     "available": "Còn phòng",
     "amenityAC": "Điều hòa",
     "amenityPool": "Hồ bơi",
-    "night": "VNĐ/ đêm",
+    "night": "/ đêm",
     "bookNow": "Đặt ngay"
   }
 }

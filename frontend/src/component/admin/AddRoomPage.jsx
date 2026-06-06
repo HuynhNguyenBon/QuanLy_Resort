@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { getRoomTranslation } from "../../data/roomTranslations";
 
 /* ─── Toast Component (dùng chung style với EditRoomPage) ──────────────── */
 const Toast = ({ type, message, onClose }) => {
@@ -90,7 +91,15 @@ const parseError = (err) => {
 };
 
 /* ─── Custom room-type dropdown ────────────────────────────────────────── */
-const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
+const RoomTypeDropdown = ({
+  roomTypes,
+  value,
+  isNew,
+  onChange,
+  disabled,
+  t,
+  lang,
+}) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -103,8 +112,10 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
   }, []);
 
   const displayLabel = isNew
-    ? "✏️ Nhập loại phòng mới..."
-    : value || "— Chọn loại phòng —";
+    ? "✏️ " + t("addRoom.newType")
+    : value
+      ? getRoomTranslation(value, lang)?.roomType || value
+      : t("addRoom.allTypes");
   const hasValue = !isNew && !!value;
 
   return (
@@ -173,7 +184,7 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
               cursor: "default",
             }}
           >
-            — Chọn loại phòng —
+            {t("addRoom.allTypes")}
           </div>
 
           {/* Existing types */}
@@ -208,7 +219,7 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
                   }
                 }}
               >
-                {type}
+                {getRoomTranslation(type, lang)?.roomType || type}
               </div>
             );
           })}
@@ -242,7 +253,8 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
               }
             }}
           >
-            ✏️ Nhập loại phòng mới...
+            {"✏️ "}
+            {t("addRoom.newType")}
           </div>
         </div>
       )}
@@ -252,8 +264,9 @@ const RoomTypeDropdown = ({ roomTypes, value, isNew, onChange, disabled }) => {
 
 /* ─── AddRoomPage ──────────────────────────────────────────────────────── */
 const AddRoomPage = () => {
-  const { t } = useTranslation("adminPanel");
+  const { t, i18n } = useTranslation("adminPanel");
   const navigate = useNavigate();
+  const lang = i18n.language.split("-")[0];
 
   const [roomDetails, setRoomDetails] = useState({
     roomPhotoUrl: "",
@@ -369,7 +382,10 @@ const AddRoomPage = () => {
         showToast("success", t("addRoom.roomAdded"), 3000);
         setTimeout(() => navigate("/admin/manage-rooms"), 3000);
       } else {
-        showToast("error", `Thêm phòng thất bại (mã: ${result.statusCode}).`);
+        showToast(
+          "error",
+          t("addRoom.add_failed", { code: result.statusCode }),
+        );
       }
     } catch (err) {
       showToast("error", parseError(err));
@@ -547,11 +563,21 @@ const AddRoomPage = () => {
                   setFile(null);
                   setPreview(null);
                   if (fileInputRef.current) fileInputRef.current.value = "";
-                }} disabled={loading}
-                style={{ padding: "7px 0", borderRadius: 8, border: "1px solid #fecaca",
-                  background: "#fff5f5", color: "#e74c3c", cursor: "pointer",
-                  fontSize: "0.8rem", fontWeight: 600, width: "100%" }}>
-                ✕  {t("editRoom.removeImage")}
+                }}
+                disabled={loading}
+                style={{
+                  padding: "7px 0",
+                  borderRadius: 8,
+                  border: "1px solid #fecaca",
+                  background: "#fff5f5",
+                  color: "#e74c3c",
+                  cursor: "pointer",
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                  width: "100%",
+                }}
+              >
+                ✕ {t("editRoom.removeImage")}
               </button>
             )}
           </div>
@@ -576,13 +602,15 @@ const AddRoomPage = () => {
                 isNew={newRoomType}
                 onChange={handleRoomTypeChange}
                 disabled={loading}
+                t={t}
+                lang={lang}
               />
 
               {newRoomType && (
                 <input
                   type="text"
                   name="roomType"
-                  placeholder="Nhập tên loại phòng mới..."
+                  placeholder={t("addRoom.namePlaceholder")}
                   value={roomDetails.roomType}
                   onChange={handleChange}
                   disabled={loading}
@@ -626,7 +654,7 @@ const AddRoomPage = () => {
                   value={roomDetails.roomPrice}
                   onChange={handleChange}
                   disabled={loading}
-                  placeholder="Tối thiểu 20"
+                  placeholder={t("addRoom.pricePlaceholder")}
                   style={{ ...fieldStyle, paddingLeft: 28 }}
                   onFocus={(e) => {
                     e.target.style.borderColor = "#0d9488";
@@ -651,7 +679,7 @@ const AddRoomPage = () => {
                 value={roomDetails.roomDescription}
                 onChange={handleChange}
                 disabled={loading}
-                placeholder="Mô tả tiện nghi, đặc điểm nổi bật của phòng..."
+                placeholder={t("addRoom.descPlaceholder")}
                 style={{ ...fieldStyle, resize: "vertical", lineHeight: 1.65 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = "#0d9488";

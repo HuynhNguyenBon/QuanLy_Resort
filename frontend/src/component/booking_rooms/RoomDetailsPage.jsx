@@ -29,6 +29,20 @@ const getLimit = (roomType) => ROOM_LIMITS[roomType] || DEFAULT_LIMIT;
 const DATE_FORMATS = { vi: "dd/MM/yyyy", en: "MM/dd/yyyy", ja: "yyyy/MM/dd" };
 const getDateFormat = (lang) => DATE_FORMATS[lang] || "dd/MM/yyyy";
 
+const EXCHANGE_RATES = { vi: 25000, ja: 155, en: 1 };
+const formatPrice = (amountUSD, lang) => {
+  const code = (lang || "en").split("-")[0];
+  if (code === "vi") {
+    const vnd = Math.round(amountUSD * EXCHANGE_RATES.vi);
+    return `${vnd.toLocaleString("vi-VN")} VNĐ`;
+  }
+  if (code === "ja") {
+    const jpy = Math.round(amountUSD * EXCHANGE_RATES.ja);
+    return `¥${jpy.toLocaleString("ja-JP")}`;
+  }
+  return `$${amountUSD}`;
+};
+
 const RoomDetailsPage = () => {
   const { t, i18n } = useTranslation("rooms");
   const { roomId } = useParams();
@@ -301,7 +315,9 @@ const RoomDetailsPage = () => {
                     t("roomDetailsPage.defaultDesc")}
                 </p>
                 <div className="bbhh-price-circle">
-                  <span>{roomDetails.roomPrice}</span>
+                  <span>
+                    {formatPrice(roomDetails.roomPrice, i18n.language)}
+                  </span>
                   {t("roomDetailsPage.night")}
                 </div>
                 <div className="room-limit-info">
@@ -439,22 +455,28 @@ const RoomDetailsPage = () => {
                   <div className="summary-row">
                     <span>{t("roomDetailsPage.roomPrice")}:</span>
                     {promoBase ? (
-                      <span className="promo-price-original">${promoBase}</span>
+                      <span className="promo-price-original">
+                        {formatPrice(promoBase, i18n.language)}
+                      </span>
                     ) : (
-                      <strong>${totalPrice}</strong>
+                      <strong>{formatPrice(totalPrice, i18n.language)}</strong>
                     )}
                   </div>
                   {promoBase && (
                     <>
                       <div className="summary-row promo-discount-row">
                         <span>🏷️ {activePromo.title}:</span>
-                        <strong className="promo-saved">-${promoSaved}</strong>
+                        <strong className="promo-saved">
+                          -{formatPrice(promoSaved, i18n.language)}
+                        </strong>
                       </div>
                       <div className="summary-row">
                         <span>
                           {t("roomDetailsPage.roomPrice")} (sau giảm):
                         </span>
-                        <strong>${totalPrice}</strong>
+                        <strong>
+                          {formatPrice(totalPrice, i18n.language)}
+                        </strong>
                       </div>
                     </>
                   )}
@@ -472,7 +494,7 @@ const RoomDetailsPage = () => {
                           <span>{s.name}</span>
                           <span>
                             {s.price
-                              ? `$${s.price}`
+                              ? formatPrice(s.price, i18n.language)
                               : t("roomDetailsPage.free")}
                           </span>
                         </div>
@@ -489,12 +511,14 @@ const RoomDetailsPage = () => {
                   <div className="summary-row summary-total-row">
                     <span>{t("roomDetailsPage.total")}:</span>
                     <strong className="text-orange">
-                      $
-                      {totalPrice +
-                        selectedServices.reduce(
-                          (s, sv) => s + (sv.price || 0),
-                          0,
-                        )}
+                      {formatPrice(
+                        totalPrice +
+                          selectedServices.reduce(
+                            (s, sv) => s + (sv.price || 0),
+                            0,
+                          ),
+                        i18n.language,
+                      )}
                     </strong>
                   </div>
 

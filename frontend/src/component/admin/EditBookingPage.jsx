@@ -2,91 +2,108 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { getRoomTranslation } from "../../data/roomTranslations";
 
-const fmtDate = (d) =>
-  d
-    ? new Date(d).toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-    : "—";
-
-const getStatusConfig = (b) => {
-  if (!b) return null;
-  const p = (b.paymentStatus || "").toUpperCase();
-  if (p === "PAID")
-    return {
-      label: "Đã thanh toán",
-      bg: "#f0fdf4",
-      color: "#15803d",
-      border: "#bbf7d0",
-      dot: "#22c55e",
-    };
-  const s = (b.bookingStatus || "").toLowerCase();
-  if (s === "confirmed" || s === "true")
-    return {
-      label: "Đã xác nhận",
-      bg: "#f0fdf4",
-      color: "#15803d",
-      border: "#bbf7d0",
-      dot: "#22c55e",
-    };
-  if (s === "cancelled" || s === "canceled")
-    return {
-      label: "Đã huỷ",
-      bg: "#fef2f2",
-      color: "#b91c1c",
-      border: "#fecaca",
-      dot: "#ef4444",
-    };
-  return {
-    label: "Chờ thanh toán",
-    bg: "#fffbeb",
-    color: "#b45309",
-    border: "#fde68a",
-    dot: "#f59e0b",
-  };
+const EXCHANGE_RATES = { vi: 25000, ja: 155, en: 1 };
+const formatPrice = (amountUSD, lang) => {
+  const code = (lang || "en").split("-")[0];
+  if (code === "vi")
+    return `${Math.round(amountUSD * EXCHANGE_RATES.vi).toLocaleString("vi-VN")} VNĐ`;
+  if (code === "ja")
+    return `¥${Math.round(amountUSD * EXCHANGE_RATES.ja).toLocaleString("ja-JP")}`;
+  return `$${amountUSD}`;
 };
 
-const Field = ({ label, value, accent }) => (
-  <div style={{ marginBottom: 16 }}>
-    <div
-      style={{
-        fontSize: "0.75rem",
-        fontWeight: 600,
-        color: "#6b7280",
-        textTransform: "uppercase",
-        letterSpacing: "0.04em",
-        marginBottom: 4,
-      }}
-    >
-      {label}
-    </div>
-    <div
-      style={{
-        fontSize: "0.9rem",
-        fontWeight: accent ? 700 : 500,
-        color: accent ? "#0d9488" : "#1a1a2e",
-        padding: "9px 13px",
-        background: "#f8fafc",
-        borderRadius: 8,
-        border: "1px solid #e8ecef",
-      }}
-    >
-      {value || "—"}
-    </div>
-  </div>
-);
-
 const EditBookingPage = () => {
-  const { t } = useTranslation("adminPanel");
+  const { t, i18n } = useTranslation("adminPanel");
   const navigate = useNavigate();
+  const lang = i18n.language.split("-")[0];
   const { bookingCode } = useParams();
   const [booking, setBooking] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [cancelling, setCancelling] = useState(false);
+
+  const fmtDate = (d) => {
+    if (!d) return "—";
+    const locale = i18n.language.startsWith("ja")
+      ? "ja-JP"
+      : i18n.language.startsWith("en")
+        ? "en-US"
+        : "vi-VN";
+    return new Date(d).toLocaleDateString(locale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const getStatusConfig = (b) => {
+    if (!b) return null;
+    const p = (b.paymentStatus || "").toUpperCase();
+    if (p === "PAID")
+      return {
+        label: t("editBooking.statusPaid"),
+        bg: "#f0fdf4",
+        color: "#15803d",
+        border: "#bbf7d0",
+        dot: "#22c55e",
+      };
+    const s = (b.bookingStatus || "").toLowerCase();
+    if (s === "confirmed" || s === "true")
+      return {
+        label: t("editBooking.statusConfirmed"),
+        bg: "#f0fdf4",
+        color: "#15803d",
+        border: "#bbf7d0",
+        dot: "#22c55e",
+      };
+    if (s === "cancelled" || s === "canceled")
+      return {
+        label: t("editBooking.statusCancelled"),
+        bg: "#fef2f2",
+        color: "#b91c1c",
+        border: "#fecaca",
+        dot: "#ef4444",
+      };
+    return {
+      label: t("editBooking.statusPending"),
+      bg: "#fffbeb",
+      color: "#b45309",
+      border: "#fde68a",
+      dot: "#f59e0b",
+    };
+  };
+
+  const Field = ({ label, value, accent }) => (
+    <div style={{ marginBottom: 16 }}>
+      <div
+        style={{
+          fontSize: "0.75rem",
+          fontWeight: 600,
+          color: "#6b7280",
+          textTransform: "uppercase",
+          letterSpacing: "0.04em",
+          marginBottom: 4,
+        }}
+      >
+        {label}
+      </div>
+      <div
+        style={{
+          fontSize: "0.9rem",
+          fontWeight: accent ? 700 : 500,
+          color: accent ? "#0d9488" : "#1a1a2e",
+          padding: "9px 13px",
+          background: "#f8fafc",
+          borderRadius: 8,
+          border: "1px solid #e8ecef",
+        }}
+      >
+        {value ?? "—"}
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     ApiService.getBookingByConfirmationCode(bookingCode)
@@ -95,13 +112,16 @@ const EditBookingPage = () => {
   }, [bookingCode]);
 
   const handleCancel = async () => {
-    if (!window.confirm("Xác nhận huỷ đặt phòng này?")) return;
+    if (!window.confirm(t("editBooking.confirmCancel"))) return;
     setCancelling(true);
     try {
       const res = await ApiService.cancelBooking(booking.id);
       if (res.statusCode === 200) {
-        setSuccess("Đã huỷ đặt phòng thành công.");
-        setTimeout(() => navigate("/admin/manage-bookings"), 2500);
+        setSuccess(t("editBooking.cancelSuccess"));
+        const dest = ApiService.isAdmin()
+          ? "/admin/manage-bookings"
+          : "/staff/bookings";
+        setTimeout(() => navigate(dest), 2500);
       }
     } catch (e) {
       setError(e.response?.data?.message || e.message);
@@ -121,6 +141,8 @@ const EditBookingPage = () => {
         ),
       )
     : 0;
+
+  const handleBack = () => navigate(-1);
 
   return (
     <div className="adm-dashboard">
@@ -240,7 +262,10 @@ const EditBookingPage = () => {
             <span style={{ fontSize: "1.3rem" }}>📋</span>
             <div>
               <div style={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>
-                {booking.room?.roomType || "Đặt phòng"}
+                {(booking.room?.roomType
+                  ? getRoomTranslation(booking.room.roomType, lang)?.roomType ||
+                    booking.room.roomType
+                  : null) || t("editBooking.title")}
               </div>
               <div
                 style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.8rem" }}
@@ -254,10 +279,10 @@ const EditBookingPage = () => {
                 style={{ color: "#fff", fontWeight: 800, fontSize: "1.4rem" }}
               >
                 {booking.totalPrice != null
-                  ? `$${booking.totalPrice}`
+                  ? formatPrice(booking.totalPrice, lang)
                   : booking.room?.roomPrice
-                    ? `$${booking.room.roomPrice * nights}`
-                    : "Xem chi tiết"}
+                    ? formatPrice(booking.room.roomPrice * nights, lang)
+                    : "—"}
               </div>
               <div
                 style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.78rem" }}
@@ -326,10 +351,15 @@ const EditBookingPage = () => {
                     marginBottom: 4,
                   }}
                 >
-                  {booking.room?.roomType || "—"}
+                  {booking.room?.roomType
+                    ? getRoomTranslation(booking.room.roomType, lang)
+                        ?.roomType || booking.room.roomType
+                    : "—"}
                 </div>
                 <div style={{ color: "#0d9488", fontWeight: 700 }}>
-                  ${booking.room?.roomPrice}
+                  {booking.room?.roomPrice != null
+                    ? formatPrice(booking.room.roomPrice, lang)
+                    : "—"}
                   <span
                     style={{
                       color: "#94a3b8",
@@ -337,7 +367,7 @@ const EditBookingPage = () => {
                       fontSize: "0.82rem",
                     }}
                   >
-                    /đêm
+                    {t("editBooking.perNight")}
                   </span>
                 </div>
               </div>
@@ -359,11 +389,11 @@ const EditBookingPage = () => {
                 📅 {t("editBooking.bookingInfo")}
               </div>
               <Field
-                label="Ngày nhận phòng"
+                label={t("editBooking.checkIn")}
                 value={fmtDate(booking.checkInDate)}
               />
               <Field
-                label="Ngày trả phòng"
+                label={t("editBooking.checkOut")}
                 value={fmtDate(booking.checkOutDate)}
               />
               <div
@@ -373,10 +403,19 @@ const EditBookingPage = () => {
                   gap: 12,
                 }}
               >
-                <Field label="Người lớn" value={booking.numOfAdults} />
-                <Field label="Trẻ em" value={booking.numOfChildren} />
+                <Field
+                  label={t("editBooking.adults")}
+                  value={booking.numOfAdults}
+                />
+                <Field
+                  label={t("editBooking.children")}
+                  value={booking.numOfChildren}
+                />
               </div>
-              <Field label="Tổng số khách" value={booking.totalNumOfGuest} />
+              <Field
+                label={t("editBooking.totalGuests")}
+                value={booking.totalNumOfGuest}
+              />
             </div>
 
             {/* Guest info */}
@@ -394,9 +433,18 @@ const EditBookingPage = () => {
               >
                 👤 {t("editBooking.guestInfo")}
               </div>
-              <Field label="Họ và tên" value={booking.user?.name} />
-              <Field label="Email" value={booking.user?.email} />
-              <Field label="Số điện thoại" value={booking.user?.phoneNumber} />
+              <Field
+                label={t("editBooking.fullName")}
+                value={booking.user?.name}
+              />
+              <Field
+                label={t("editBooking.email")}
+                value={booking.user?.email}
+              />
+              <Field
+                label={t("editBooking.phone")}
+                value={booking.user?.phoneNumber}
+              />
             </div>
           </div>
 
@@ -412,7 +460,7 @@ const EditBookingPage = () => {
             }}
           >
             <button
-              onClick={() => navigate("/admin/manage-bookings")}
+              onClick={handleBack}
               style={{
                 padding: "10px 20px",
                 borderRadius: 10,
