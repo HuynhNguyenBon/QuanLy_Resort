@@ -5,7 +5,7 @@ import ApiService from "../../service/ApiService";
 import { getRoomTranslation } from "../../data/roomTranslations";
 
 /* ─── Toast Component (dùng chung style với EditRoomPage) ──────────────── */
-const Toast = ({ type, message, onClose }) => {
+const Toast = ({ type, message, title, onClose }) => {
   if (!message) return null;
   const isError = type === "error";
   return (
@@ -42,7 +42,7 @@ const Toast = ({ type, message, onClose }) => {
         <span className="phong-toast__icon">{isError ? "⚠️" : "✅"}</span>
         <div className="phong-toast__body">
           <div className="phong-toast__title">
-            {isError ? "Lỗi" : "Thành công"}
+            {title ?? (isError ? "Lỗi" : "Thành công")}
           </div>
           <div className="phong-toast__msg">{message}</div>
         </div>
@@ -285,7 +285,8 @@ const AddRoomPage = () => {
 
   const showToast = (type, message, duration) => {
     if (toastTimer) clearTimeout(toastTimer);
-    setToast({ type, message });
+    const title = type === "error" ? t("addRoom.errorTitle") : t("addRoom.successTitle");
+    setToast({ type, message, title });
     const ms = duration || (type === "error" ? 5000 : 3000);
     const timer = setTimeout(() => setToast(null), ms);
     setToastTimer(timer);
@@ -424,6 +425,7 @@ const AddRoomPage = () => {
         <Toast
           type={toast.type}
           message={toast.message}
+          title={toast.title}
           onClose={dismissToast}
         />
       )}
