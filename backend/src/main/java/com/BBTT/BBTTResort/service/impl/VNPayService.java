@@ -300,31 +300,51 @@ public class VNPayService {
             }
 
             // 6. Lấy kết quả
-            String responseCode = params.get("vnp_ResponseCode");
-            String orderInfo = params.get("vnp_OrderInfo");
-            // orderInfo = "Thanh toan dat phong #XXXXXXXX"
+            String responseCode  = params.get("vnp_ResponseCode");
+            String txnRef        = params.get("vnp_TxnRef");
+            String transactionNo = params.get("vnp_TransactionNo");
+            String orderInfo     = params.get("vnp_OrderInfo");
+
+            // Extract booking confirmation code from orderInfo
             String bookingCode = orderInfo
+                    .replace("Thanh_toan_booking_", "")
                     .replace("Thanh toan dat phong #", "")
                     .replace("Thanh toan dat phong ", "")
                     .trim();
 
+            // Update booking paymentStatus based on VNPay response
+            try {
+                Long bookingId = Long.parseLong(txnRef.split("_")[0]);
+                Booking booking = bookingRepository.findById(bookingId).orElse(null);
+                if (booking != null) {
+                    if ("00".equals(responseCode)) {
+                        booking.setPaymentStatus("PAID");
+                        booking.setVnpayTransactionId(transactionNo);
+                        // bookingCode in return is the numeric ID-based string; use the stored code
+                        bookingCode = booking.getBookingConfirmationCode();
+                    } else {
+                        booking.setPaymentStatus("FAILED");
+                    }
+                    bookingRepository.save(booking);
+                }
+            } catch (Exception ignored) {}
+
             result.put("responseCode", responseCode);
-            result.put("txnRef", params.get("vnp_TxnRef"));
+            result.put("txnRef", txnRef);
             result.put("bookingConfirmationCode", bookingCode);
             result.put("amount", params.get("vnp_Amount"));
-            result.put("transactionId",
-                    params.get("vnp_TransactionNo"));
+            result.put("transactionId", transactionNo);
             result.put("status",
                     "00".equals(responseCode) ? "SUCCESS" : "FAILED");
             result.put("message",
                     "00".equals(responseCode)
                             ? "Thanh toán thành công!"
-                            : "Thanh toán thất bại! Mã lỗi: "
-                              + responseCode);
+                            : "Thanh toán thất bại! Mã lỗi: " + responseCode);
 
         } catch (Exception e) {
             result.put("status", "ERROR");
             result.put("message", e.getMessage());
         }
         return result;
-    }}
+    }
+}

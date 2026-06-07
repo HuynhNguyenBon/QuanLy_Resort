@@ -36,4 +36,10 @@ public class Response {
 
     private BookingServiceDTO bookingService;
     private List<BookingServiceDTO> bookingServiceList;
+
+    private StaffProfileDTO staffProfile;
+    private List<StaffProfileDTO> staffProfileList;
+
+    private ReviewDTO review;
+    private List<ReviewDTO> reviewList;
 }

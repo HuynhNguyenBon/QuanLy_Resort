@@ -34,7 +34,7 @@
     "roomDetails": "部屋詳細",
     "roomDescription": "説明",
     "defaultDesc": "説明はありません。",
-    "night": "¥/ 泊",
+    "night": "/ 泊",
     "bookRoom": "部屋を予約",
     "checkIn": "チェックイン日",
     "checkOut": "チェックアウト日",
@@ -98,12 +98,13 @@
     "viewAllArrow": "すべて見る →",
     "available": "空室あり",
     "bookNow": "今すぐ予約",
-    "night": "¥/ 泊",
+    "night": "/ 泊",
     "amenityAC": "エアコン",
     "amenityPool": "プール",
     "errorSelectDates": "チェックイン日とチェックアウト日を選択してください。",
     "errorCheckoutAfterCheckin": "チェックアウト日はチェックイン日より後でなければなりません。",
     "noRoomsFound": "この期間に利用可能な部屋はありません。別の日付をお試しください。",
-    "searchError": "検索中にエラーが発生しました。もう一度お試しください。"
+    "searchError": "検索中にエラーが発生しました。もう一度お試しください。",
+    "availableBadge": "{{checkIn}}から{{checkOut}}まで{{count}}室空室あり"
   }
 }

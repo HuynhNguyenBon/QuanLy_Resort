@@ -1,0 +1,86 @@
+{
+  "heroTag": "🏷️ PROMOTIONS",
+  "heroTitle1": "Special",
+  "heroAccent": "offers",
+  "heroTitle2": "from BBHH Resort",
+  "heroSub": "Smart savings — complete enjoyment",
+  "bookBtn": "Book with this offer",
+  "conditionsLabel": "Terms & Conditions:",
+  "hintLabel": "💡",
+  "selectDates": "Select dates",
+  "checkIn": "Check-in",
+  "checkOut": "Check-out",
+  "applyPromo": "Apply offer",
+  "cancel": "Cancel",
+  "promos": {
+    "early_bird": {
+      "title": "Early Bird 20% OFF",
+      "desc": "Book 30 days in advance and enjoy 20% off on all room types. Valid all season.",
+      "conditions": [
+        "Book at least 30 days in advance",
+        "Non-refundable",
+        "All room types eligible"
+      ],
+      "hint": "Check-in must be at least 30 days from today."
+    },
+    "family": {
+      "title": "Family Package 15% OFF",
+      "desc": "The ideal family getaway! Get 15% off when booking Family or Suite rooms for 4+ guests.",
+      "conditions": [
+        "Minimum 4 guests",
+        "Family or Suite rooms",
+        "Free cancellation before 48h"
+      ],
+      "hint": "Offer applies to Family rooms. The rooms page will filter accordingly."
+    },
+    "spa": {
+      "title": "Free Spa Session",
+      "desc": "Enjoy a complimentary $50 spa session when booking Deluxe or above. Pure relaxation included.",
+      "conditions": [
+        "Deluxe, Suite or Family rooms",
+        "1 spa session per room",
+        "Book spa 24h in advance"
+      ],
+      "hint": "Choose Deluxe or above to receive the free spa offer."
+    },
+    "weekend": {
+      "title": "Weekend Package",
+      "desc": "Check-in Friday, check-out Sunday — get 10% OFF and complimentary buffet breakfast for 2.",
+      "conditions": [
+        "Check-in on Friday",
+        "Check-out on Sunday",
+        "Book 7 days in advance"
+      ],
+      "hint": "Check-in must be Friday, check-out must be Sunday."
+    },
+    "honeymoon": {
+      "title": "Honeymoon Package",
+      "desc": "Special offer for couples: 25% OFF + room decoration + champagne + romantic dinner.",
+      "conditions": [
+        "Suite or Deluxe rooms",
+        "Minimum 2 nights",
+        "Present marriage certificate"
+      ],
+      "hint": "Minimum 2 nights. The rooms page will filter Suite rooms for you."
+    },
+    "gym": {
+      "title": "Free Gym & Yoga",
+      "desc": "Unlimited access to the Gym and Yoga classes for stays of 3 nights or more.",
+      "conditions": [
+        "Minimum 3-night stay",
+        "All room types",
+        "Register at front desk"
+      ],
+      "hint": "Stay at least 3 nights to enjoy free Gym & Yoga access."
+    }
+  },
+  "validation": {
+    "selectCheckin": "Please select a check-in date.",
+    "selectCheckout": "Please select a check-out date.",
+    "checkoutAfter": "Check-out must be after check-in.",
+    "minNights": "This offer requires a minimum of {{n}} nights.",
+    "minDays": "Must be booked at least {{n}} days in advance.",
+    "weekendOnly": "Check-in must be on a Friday.",
+    "checkoutSunday": "Check-out must be on a Sunday."
+  }
+}

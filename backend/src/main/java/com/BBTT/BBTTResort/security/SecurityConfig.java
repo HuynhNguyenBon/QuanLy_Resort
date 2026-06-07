@@ -37,11 +37,13 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/rooms/**", "/bookings/**", "/services/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/auth/**", "/rooms/**", "/bookings/**", "/services/**", "/reviews/**").permitAll()
                         .requestMatchers("/payment/vnpay-ipn").permitAll()
                         .requestMatchers("/payment/vnpay-return").permitAll()
                         .requestMatchers("/payment/create").authenticated()
-                        .requestMatchers("/translations/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/translations/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/translations/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/users/update/{id}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
@@ -72,4 +74,3 @@ public class SecurityConfig {
     }
 
 }
-

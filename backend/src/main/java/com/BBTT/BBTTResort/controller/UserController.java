@@ -20,7 +20,7 @@ public class UserController {
 
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF')")
     public ResponseEntity<Response> getAllUsers() {
         Response response = userService.getAllUsers();
         return ResponseEntity.status(response.getStatusCode()).body(response);

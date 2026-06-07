@@ -2,16 +2,56 @@
   "menu": {
     "home": "ホーム",
     "rooms": "客室",
-    "booking": "予約確認",
+    "booking": "予約照会",
     "services": "サービス",
-    "profile": "プロフィール",
-    "admin": "管理者",
+    "offers": "特典",
+    "gallery": "ギャラリー",
+    "contact": "お問い合わせ",
+    "about": "概要",
+    "profile": "マイプロフィール",
+    "myBookings": "予約一覧",
+    "wishlist": "お気に入り",
+    "myServices": "選択済みサービス",
+    "admin": "管理",
     "login": "ログイン",
-    "register": "登録",
+    "register": "登録する",
     "logout": "ログアウト"
   },
-
   "logout": {
     "confirm": "ログアウトしてもよろしいですか？"
+  },
+  "rooms_dd": {
+    "allRooms": "全客室",
+    "allRoomsDesc": "全タイプを見る",
+    "standard": "スタンダード",
+    "standardDesc": "快適、カップルに最適",
+    "deluxe": "デラックス",
+    "deluxeDesc": "広々、素晴らしい眺め",
+    "suite": "プレミアムスイート",
+    "suiteDesc": "5つ星の贅沢",
+    "family": "ファミリールーム",
+    "familyDesc": "家族旅行に最適"
+  },
+  "services_dd": {
+    "allServices": "全サービス",
+    "allServicesDesc": "全サービスを探る",
+    "spa": "スパ＆マッサージ",
+    "spaDesc": "リラックス＆回復",
+    "restaurant": "レストラン",
+    "restaurantDesc": "高級ダイニング",
+    "pool": "スイミングプール",
+    "poolDesc": "インフィニティプール",
+    "tour": "ツアー＆アクティビティ",
+    "tourDesc": "地元を探索"
+  },
+  "offers_dd": {
+    "title": "特別オファー",
+    "early": "早期予約20%OFF",
+    "earlyDesc": "30日前予約",
+    "family": "ファミリー-15%",
+    "familyDesc": "4名以上で即割引",
+    "spa": "スパ無料",
+    "spaDesc": "デラックス以上予約時",
+    "viewAll": "全オファーを見る →"
   }
 }

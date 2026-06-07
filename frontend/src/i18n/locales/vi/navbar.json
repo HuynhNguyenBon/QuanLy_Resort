@@ -4,14 +4,54 @@
     "rooms": "Phòng",
     "booking": "Tìm đặt phòng",
     "services": "Dịch vụ",
-    "profile": "Hồ sơ",
+    "offers": "Ưu đãi",
+    "gallery": "Thư viện ảnh",
+    "contact": "Liên hệ",
+    "about": "Giới thiệu",
+    "profile": "Hồ sơ của tôi",
+    "myBookings": "Đặt phòng của tôi",
+    "wishlist": "Yêu thích",
+    "myServices": "Dịch vụ đã chọn",
     "admin": "Quản trị",
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "logout": "Đăng xuất"
   },
-
   "logout": {
     "confirm": "Bạn có chắc muốn đăng xuất không?"
+  },
+  "rooms_dd": {
+    "allRooms": "Tất cả phòng",
+    "allRoomsDesc": "Xem toàn bộ phòng nghỉ",
+    "standard": "Phòng Standard",
+    "standardDesc": "Tiện nghi, phù hợp cặp đôi",
+    "deluxe": "Phòng Deluxe",
+    "deluxeDesc": "Không gian rộng, view đẹp",
+    "suite": "Suite cao cấp",
+    "suiteDesc": "Đẳng cấp 5 sao",
+    "family": "Phòng Family",
+    "familyDesc": "Lý tưởng cho gia đình"
+  },
+  "services_dd": {
+    "allServices": "Tất cả dịch vụ",
+    "allServicesDesc": "Khám phá toàn bộ dịch vụ",
+    "spa": "Spa & Massage",
+    "spaDesc": "Thư giãn, phục hồi",
+    "restaurant": "Nhà hàng",
+    "restaurantDesc": "Ẩm thực 5 sao",
+    "pool": "Hồ bơi",
+    "poolDesc": "Hồ bơi vô cực",
+    "tour": "Tour & Khám phá",
+    "tourDesc": "Khám phá địa phương"
+  },
+  "offers_dd": {
+    "title": "Ưu đãi đặc biệt",
+    "early": "Đặt sớm 20% OFF",
+    "earlyDesc": "Book trước 30 ngày",
+    "family": "Gói gia đình -15%",
+    "familyDesc": "4+ người, giảm ngay",
+    "spa": "Spa miễn phí",
+    "spaDesc": "Khi đặt Deluxe+",
+    "viewAll": "Xem tất cả ưu đãi →"
   }
 }

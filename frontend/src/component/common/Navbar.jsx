@@ -18,6 +18,7 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [langPos, setLangPos] = useState({ top: 0, right: 0 });
   const [userPos, setUserPos] = useState({ top: 0, right: 0 });
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const langBtnRef = useRef(null);
   const userBtnRef = useRef(null);
@@ -37,6 +38,21 @@ function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setIsLangOpen(false);
+    setIsUserOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isMenuOpen]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -75,6 +91,18 @@ function Navbar() {
     }
   };
 
+  const navLinks = [
+    { to: "/home", label: t("menu.home") },
+    { to: "/rooms", label: t("menu.rooms") },
+    ...(!isAuthenticated
+      ? [{ to: "/find-booking", label: t("menu.booking") }]
+      : []),
+    { to: "/services", label: t("menu.services") },
+    { to: "/promotions", label: t("menu.offers") },
+    { to: "/gallery", label: t("menu.gallery") },
+    { to: "/contact", label: t("menu.contact") },
+  ];
+
   const navClass = `bbhh-nav ${isHeroPage && !scrolled ? "nav-transparent" : "nav-solid"}`;
 
   return (
@@ -87,16 +115,9 @@ function Navbar() {
           <span className="logo-star">★</span> BBHH Resort
         </NavLink>
 
-        {/* Links */}
+        {/* Desktop Links */}
         <div className="bbhh-nav-links">
-          {[
-            { to: "/home", label: t("menu.home") },
-            { to: "/rooms", label: t("menu.rooms") },
-            ...(!isAuthenticated
-              ? [{ to: "/find-booking", label: t("menu.booking") }]
-              : []),
-            { to: "/services", label: t("menu.services") },
-          ].map((item) => (
+          {navLinks.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -109,7 +130,7 @@ function Navbar() {
           ))}
         </div>
 
-        {/* Right */}
+        {/* Desktop Right */}
         <div className="bbhh-nav-right">
           {isAdmin && (
             <button
@@ -233,7 +254,136 @@ function Navbar() {
             )}
           </div>
         </div>
+
+        {/* Hamburger (mobile only) */}
+        <button
+          className="bbhh-nav-hamburger"
+          onClick={() => setIsMenuOpen((p) => !p)}
+          aria-label="Mở menu"
+        >
+          {isMenuOpen ? "✕" : "☰"}
+        </button>
       </nav>
+
+      {/* Mobile Drawer */}
+      {isMenuOpen && (
+        <>
+          <div
+            className="bbhh-mobile-overlay"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          <div className="bbhh-mobile-drawer">
+            {/* Header */}
+            <div className="bbhh-mobile-drawer-head">
+              <span className="bbhh-mobile-drawer-logo">
+                <span style={{ color: "#F59E0B" }}>★</span> BBHH Resort
+              </span>
+              <button
+                className="bbhh-mobile-drawer-close"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Nav Links */}
+            <div className="bbhh-mobile-nav-links">
+              {navLinks.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `bbhh-mobile-nav-link${isActive ? " active" : ""}`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
+
+            <div className="bbhh-mobile-divider" />
+
+            {/* Auth */}
+            <div className="bbhh-mobile-auth">
+              {!isAuthenticated ? (
+                <>
+                  <button
+                    className="bbhh-mobile-btn-login"
+                    onClick={() => navigate("/login")}
+                  >
+                    {t("menu.login")}
+                  </button>
+                  <button
+                    className="bbhh-mobile-btn-register"
+                    onClick={() => navigate("/register")}
+                  >
+                    {t("menu.register")}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="bbhh-mobile-user-info">
+                    <span className="bbhh-mobile-user-role">
+                      Đã đăng nhập —{" "}
+                      {isAdmin ? "Administrator" : "Thành viên"}
+                    </span>
+                  </div>
+                  {isUser && (
+                    <button
+                      className="bbhh-mobile-btn-login"
+                      onClick={() => navigate("/profile")}
+                    >
+                      👤 {t("menu.profile")}
+                    </button>
+                  )}
+                  {isAdmin && (
+                    <button
+                      className="bbhh-mobile-btn-login"
+                      onClick={() => navigate("/admin")}
+                    >
+                      🛡️ {t("menu.admin")}
+                    </button>
+                  )}
+                  <button
+                    className="bbhh-mobile-btn-logout"
+                    onClick={handleLogout}
+                  >
+                    🚪 {t("menu.logout")}
+                  </button>
+                </>
+              )}
+            </div>
+
+            <div className="bbhh-mobile-divider" />
+
+            {/* Language */}
+            <div className="bbhh-mobile-lang-section">
+              <div className="bbhh-mobile-lang-title">Ngôn ngữ</div>
+              {languages.map((lang) => (
+                <div
+                  key={lang.code}
+                  className={`bbhh-mobile-lang-item${lang.code === i18n.language ? " selected" : ""}`}
+                  onClick={() => {
+                    i18n.changeLanguage(lang.code);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <img
+                    src={`https://flagcdn.com/w40/${lang.country}.png`}
+                    width="20"
+                    height="13"
+                    alt={lang.code}
+                  />
+                  {lang.name}
+                  {lang.code === i18n.language && (
+                    <span className="bbhh-mobile-lang-check">✓</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
