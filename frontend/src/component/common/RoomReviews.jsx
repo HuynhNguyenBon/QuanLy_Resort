@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-const STORAGE_KEY = (id) => `bbhh_reviews_${id}`;
+import ApiService from "../../service/ApiService";
 
 const StarInput = ({ value, onChange }) => (
   <div className="rv-star-input">
@@ -35,23 +34,24 @@ const RoomReviews = ({ roomId, roomType }) => {
   const [form, setForm] = useState({ name: "", rating: 5, comment: "" });
   const [showForm, setShowForm] = useState(false);
   const [err, setErr] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const loadReviews = () => {
+    ApiService.getReviewsByRoom(roomId)
+      .then((r) => setReviews(r.reviewList || r || []))
+      .catch(() => setReviews([]));
+  };
 
   useEffect(() => {
-    try {
-      const stored = JSON.parse(
-        localStorage.getItem(STORAGE_KEY(roomId)) || "[]",
-      );
-      setReviews(stored);
-    } catch {
-      setReviews([]);
-    }
+    loadReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   const avgRating = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
     : null;
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!form.name.trim()) {
       setErr(t("yourNameError"));
@@ -61,17 +61,22 @@ const RoomReviews = ({ roomId, roomType }) => {
       setErr(t("commentError"));
       return;
     }
-    const review = {
-      ...form,
-      date: new Date().toLocaleDateString("vi-VN"),
-      id: Date.now(),
-    };
-    const next = [review, ...reviews];
-    setReviews(next);
-    localStorage.setItem(STORAGE_KEY(roomId), JSON.stringify(next));
-    setForm({ name: "", rating: 5, comment: "" });
-    setShowForm(false);
-    setErr("");
+    setSubmitting(true);
+    try {
+      await ApiService.addReview(roomId, {
+        name: form.name.trim(),
+        rating: form.rating,
+        comment: form.comment.trim(),
+      });
+      loadReviews();
+      setForm({ name: "", rating: 5, comment: "" });
+      setShowForm(false);
+      setErr("");
+    } catch (e2) {
+      setErr(e2.response?.data?.message || e2.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -127,8 +132,8 @@ const RoomReviews = ({ roomId, roomType }) => {
             />
           </div>
           {err && <p className="rv-err">{err}</p>}
-          <button type="submit" className="rv-submit-btn">
-            {t("submit")}
+          <button type="submit" className="rv-submit-btn" disabled={submitting}>
+            {submitting ? "..." : t("submit")}
           </button>
         </form>
       )}

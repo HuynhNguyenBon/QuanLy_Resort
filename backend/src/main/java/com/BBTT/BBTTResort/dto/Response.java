@@ -39,4 +39,7 @@ public class Response {
 
     private StaffProfileDTO staffProfile;
     private List<StaffProfileDTO> staffProfileList;
+
+    private ReviewDTO review;
+    private List<ReviewDTO> reviewList;
 }

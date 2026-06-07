@@ -427,6 +427,51 @@ export default class ApiService {
     return response.data;
   }
 
+  // =================== REVIEWS ===================
+  static async getReviewsByRoom(roomId) {
+    const response = await axios.get(`${this.BASE_URL}/reviews/room/${roomId}`);
+    return response.data;
+  }
+
+  // (Dành cho Admin) Lấy tất cả đánh giá
+  static async getAllReviews() {
+    const response = await axios.get(`${this.BASE_URL}/reviews/all`, {
+      headers: this.getHeader(),
+    });
+    return response.data;
+  }
+
+  // Gửi đánh giá mới (khách không cần đăng nhập)
+  static async addReview(roomId, reviewData) {
+    const params = new URLSearchParams();
+    params.append("roomId", roomId);
+    params.append("name", reviewData.name);
+    params.append("rating", reviewData.rating);
+    params.append("comment", reviewData.comment);
+    const response = await axios.post(`${this.BASE_URL}/reviews/add`, params, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+    return response.data;
+  }
+
+  // (Dành cho Admin) Xoá 1 đánh giá
+  static async deleteReview(reviewId) {
+    const response = await axios.delete(
+      `${this.BASE_URL}/reviews/delete/${reviewId}`,
+      { headers: this.getHeader() },
+    );
+    return response.data;
+  }
+
+  // (Dành cho Admin) Xoá toàn bộ đánh giá của 1 phòng
+  static async deleteReviewsByRoom(roomId) {
+    const response = await axios.delete(
+      `${this.BASE_URL}/reviews/room/${roomId}`,
+      { headers: this.getHeader() },
+    );
+    return response.data;
+  }
+
   // =================== VNPAY ===================
   static async createVNPayPayment(bookingId) {
     const response = await axios.post(

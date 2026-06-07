@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/rooms/**", "/bookings/**", "/services/**").permitAll()
+                        .requestMatchers("/auth/**", "/rooms/**", "/bookings/**", "/services/**", "/reviews/**").permitAll()
                         .requestMatchers("/payment/vnpay-ipn").permitAll()
                         .requestMatchers("/payment/vnpay-return").permitAll()
                         .requestMatchers("/payment/create").authenticated()
