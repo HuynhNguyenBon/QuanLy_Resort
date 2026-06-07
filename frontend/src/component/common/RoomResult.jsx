@@ -2,11 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { formatPrice } from "../../utils/formatPrice";
 import "../../UiverseElements.css";
 
 const RoomResult = ({ roomSearchResults }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
+  const lang = i18n.language.split("-")[0];
   const isAdmin = ApiService.isAdmin();
 
   if (!roomSearchResults || roomSearchResults.length === 0) return null;
@@ -14,7 +16,7 @@ const RoomResult = ({ roomSearchResults }) => {
   return (
     <section className="room-results">
       <div className="room-list-uiverse">
-        {roomSearchResults.map(room => (
+        {roomSearchResults.map((room) => (
           <div key={room.id} className="room-card-uiverse">
             <div className="room-image-box">
               <img src={room.roomPhotoUrl} alt={room.roomType} />
@@ -22,7 +24,7 @@ const RoomResult = ({ roomSearchResults }) => {
             <div className="room-content-box">
               <h3 className="room-title">{room.roomType}</h3>
               <p className="room-price">
-                {room.roomPrice?.toLocaleString("vi-VN")}$ / {t("room.perNight")}
+                {formatPrice(room.roomPrice, lang)} / {t("room.perNight")}
               </p>
               <p className="room-desc">{room.roomDescription}</p>
               <div className="room-amenities-tags">

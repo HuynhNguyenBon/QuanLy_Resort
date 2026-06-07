@@ -38,7 +38,7 @@ public class BookingController {
 
     }
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     public ResponseEntity<Response> getAllBookings() {
         Response response = bookingService.getAllBookings();
         return ResponseEntity.status(response.getStatusCode()).body(response);
@@ -79,7 +79,7 @@ public class BookingController {
     }
 
     @PutMapping("/update/{bookingId}")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER') or hasAuthority('STAFF')")
     public ResponseEntity<Response> updateBooking(
             @PathVariable Long bookingId,
             @RequestBody Booking updateRequest) {

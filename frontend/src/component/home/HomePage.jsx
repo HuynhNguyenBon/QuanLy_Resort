@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatPrice } from "../../utils/formatPrice";
 import { useTranslation } from "react-i18next";
@@ -6,19 +6,40 @@ import RoomResult from "../common/RoomResult";
 import RoomSearch from "../common/RoomSearch";
 import "../../UiverseElements.css";
 
+// type = key dịch i18n để hiển thị, backendType = giá trị thực trong database
 const ROOM_TYPES = [
-  { type: "Standard", price: "50", emoji: "🛏️", bg: "#F8FAFC" },
-  { type: "Superior", price: "80", emoji: "🌟", bg: "#FFFBEB" },
-  { type: "Deluxe", price: "120", emoji: "👑", bg: "#ECFDF5" },
-  { type: "Suite", price: "200", emoji: "💎", bg: "#EFF6FF" },
-  { type: "Family", price: "150", emoji: "👨‍👩‍👧", bg: "#FDF4FF" },
+  { type: "Standard", backendType: "Standrad", price: "50", emoji: "🛏️" },
+  { type: "Superior", backendType: "Studio", price: "80", emoji: "🌟" },
+  { type: "Deluxe", backendType: "Precidential", price: "120", emoji: "👑" },
+  { type: "Suite", backendType: "Suit", price: "200", emoji: "💎" },
+  { type: "Family", backendType: "Family", price: "150", emoji: "👨‍👩‍👧" },
 ];
 
 const SERVICES = [
-  { key: "pool", descKey: "poolDesc", icon: "🏊" },
-  { key: "miniBar", descKey: "miniBarDesc", icon: "🍽️" },
-  { key: "parking", descKey: "parkingDesc", icon: "🚗" },
-  { key: "spa", descKey: "spaDesc", icon: "💆" },
+  {
+    key: "pool",
+    descKey: "poolDesc",
+    icon: "🏊",
+    path: "/services?highlight=pool",
+  },
+  {
+    key: "miniBar",
+    descKey: "miniBarDesc",
+    icon: "🍽️",
+    path: "/services?highlight=miniBar",
+  },
+  {
+    key: "gym",
+    descKey: "gymDesc",
+    icon: "🏋️",
+    path: "/services?highlight=gym",
+  },
+  {
+    key: "spa",
+    descKey: "spaDesc",
+    icon: "💆",
+    path: "/services?highlight=spa",
+  },
 ];
 
 const TESTIMONIALS = [
@@ -48,10 +69,83 @@ const TESTIMONIALS = [
   },
 ];
 
+const PROMOS = [
+  {
+    icon: "🌙",
+    badge: "HOT",
+    titleKey: "promoEarly",
+    descKey: "promoEarlyDesc",
+    discount: "20%",
+    color: "#0F3460",
+    path: "/rooms",
+  },
+  {
+    icon: "👨‍👩‍👧",
+    badge: "NEW",
+    titleKey: "promoFamily",
+    descKey: "promoFamilyDesc",
+    discount: "15%",
+    color: "#0F3460",
+    path: "/rooms?type=Family",
+  },
+  {
+    icon: "💆",
+    badge: "DEAL",
+    titleKey: "promoSpa",
+    descKey: "promoSpaDesc",
+    discount: "FREE",
+    color: "#0F3460",
+    path: "/services?highlight=spa",
+  },
+];
+
 const HomePage = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation("home");
   const [roomSearchResults, setRoomSearchResults] = useState([]);
+  const [weather, setWeather] = useState(null);
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("bbhh_wishlist") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  // Lấy thời tiết thực tế (Open-Meteo - miễn phí, không cần API key)
+  useEffect(() => {
+    fetch(
+      "https://api.open-meteo.com/v1/forecast?latitude=10.7769&longitude=106.7009&current=temperature_2m,weathercode,windspeed_10m&timezone=Asia/Bangkok",
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        const code = data.current.weathercode;
+        const temp = Math.round(data.current.temperature_2m);
+        const wind = Math.round(data.current.windspeed_10m);
+        const icons = {
+          0: "☀️",
+          1: "🌤️",
+          2: "⛅",
+          3: "☁️",
+          45: "🌫️",
+          48: "🌫️",
+          51: "🌦️",
+          53: "🌦️",
+          55: "🌧️",
+          61: "🌧️",
+          63: "🌧️",
+          65: "🌧️",
+          80: "🌦️",
+          81: "🌧️",
+          82: "⛈️",
+          95: "⛈️",
+          96: "⛈️",
+          99: "⛈️",
+        };
+        setWeather({ temp, wind, icon: icons[code] || "🌤️" });
+      })
+      .catch(() => setWeather({ temp: 28, wind: 15, icon: "☀️" }));
+  }, []);
 
   return (
     <div>
@@ -63,8 +157,21 @@ const HomePage = () => {
           className="hp-hero-bg"
           fetchpriority="high"
           decoding="async"
+          onError={(e) => (e.target.style.display = "none")}
         />
         <div className="hp-hero-overlay" />
+
+        {/* Weather badge */}
+        {weather && (
+          <div className="hp-weather-badge">
+            <span className="hp-weather-icon">{weather.icon}</span>
+            <div>
+              <div className="hp-weather-temp">{weather.temp}°C</div>
+              <div className="hp-weather-loc">{t("weatherLocation")}</div>
+            </div>
+          </div>
+        )}
+
         <div className="hp-hero-content">
           <div className="hp-hero-badge">{t("heroBadge")}</div>
           <h1 className="hp-hero-h1">
@@ -104,7 +211,7 @@ const HomePage = () => {
         <RoomSearch handleSearchResult={setRoomSearchResults} />
       </div>
 
-      {/* ── KẾT QUẢ ── */}
+      {/* ── KẾT QUẢ TÌM KIẾM ── */}
       {roomSearchResults.length > 0 && (
         <section className="hp-section hp-section-alt">
           <div className="hp-results-wrap">
@@ -128,8 +235,37 @@ const HomePage = () => {
         </section>
       )}
 
-      {/* ── PHÒNG NGHỈ ── */}
+      {/* ── ƯU ĐÃI ĐẶC BIỆT ── */}
       <section className="hp-section">
+        <div className="hp-section-inner">
+          <div className="hp-section-header">
+            <div>
+              <p className="hp-section-tag">{t("promoSectionTag")}</p>
+              <h2 className="hp-section-h2">{t("promoSectionTitle")}</h2>
+              <p className="hp-section-sub">{t("promoSectionSub")}</p>
+            </div>
+          </div>
+          <div className="hp-promo-grid">
+            {PROMOS.map((p, i) => (
+              <div
+                key={i}
+                className="hp-promo-card"
+                onClick={() => navigate(p.path)}
+              >
+                <div className="hp-promo-badge">{p.badge}</div>
+                <div className="hp-promo-icon">{p.icon}</div>
+                <div className="hp-promo-discount">{p.discount}</div>
+                <h3 className="hp-promo-title">{t(p.titleKey)}</h3>
+                <p className="hp-promo-desc">{t(p.descKey)}</p>
+                <button className="hp-promo-btn">{t("promoBookNow")} →</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PHÒNG NGHỈ ── */}
+      <section className="hp-section hp-section-alt">
         <div className="hp-section-inner">
           <div className="hp-section-header">
             <div>
@@ -146,15 +282,13 @@ const HomePage = () => {
               <div
                 key={r.type}
                 className="hp-room-card"
-                onClick={() => navigate("/rooms")}
+                onClick={() => navigate(`/rooms?type=${r.backendType}`)}
               >
                 <span className="hp-room-emoji">{r.emoji}</span>
                 <div className="hp-room-type">{t(`roomTypes.${r.type}`)}</div>
-
                 <div className="hp-room-price">
                   {formatPrice(r.price, i18n.language)} / {t("perNight")}
                 </div>
-
                 <div className="hp-room-arrow">{t("viewRoom")} →</div>
               </div>
             ))}
@@ -163,7 +297,7 @@ const HomePage = () => {
       </section>
 
       {/* ── DỊCH VỤ ── */}
-      <section className="hp-section hp-section-alt">
+      <section className="hp-section">
         <div className="hp-section-inner">
           <p className="hp-section-tag">{t("servicesTag")}</p>
           <h2 className="hp-section-h2">
@@ -177,7 +311,7 @@ const HomePage = () => {
               <div
                 key={s.key}
                 className="hp-svc-card"
-                onClick={() => navigate("/services")}
+                onClick={() => navigate(s.path)}
               >
                 <div className="hp-svc-icon-wrap">
                   <span className="hp-svc-icon">{s.icon}</span>
@@ -194,7 +328,7 @@ const HomePage = () => {
       </section>
 
       {/* ── ĐÁNH GIÁ ── */}
-      <section className="hp-section hp-section-center">
+      <section className="hp-section hp-section-center hp-section-alt">
         <div className="hp-section-inner">
           <p className="hp-section-tag">{t("testimonials.tag")}</p>
           <h2 className="hp-section-h2" style={{ marginBottom: "36px" }}>
@@ -204,7 +338,7 @@ const HomePage = () => {
           </h2>
           <div className="hp-testi-grid">
             {TESTIMONIALS.map((r) => (
-              <div key={r.name} className="hp-testi-card">
+              <div key={r.nameKey} className="hp-testi-card">
                 <div className="hp-testi-stars">
                   {"★".repeat(r.rating)}
                   {"☆".repeat(5 - r.rating)}
@@ -212,7 +346,6 @@ const HomePage = () => {
                 <p className="hp-testi-text">
                   "{t(`testimonials.${r.textKey}`)}"
                 </p>
-
                 <div className="hp-testi-author">
                   <div
                     className="hp-testi-avatar"
@@ -220,12 +353,10 @@ const HomePage = () => {
                   >
                     {r.avatar}
                   </div>
-
                   <div>
                     <div className="hp-testi-name">
                       {t(`testimonials.${r.nameKey}`)}
                     </div>
-
                     <div className="hp-testi-city">
                       📍 {t(`cities.${r.city}`)}
                     </div>
@@ -236,6 +367,29 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* ── TIỆN ÍCH RESORT ── */}
+      <section className="hp-section">
+  <div className="hp-section-inner">
+    <p className="hp-section-tag">
+      {t("amenityTag")}
+    </p>
+
+    <h2 className="hp-section-h2">
+      {t("amenityTitle")}
+    </h2>
+
+    <div className="hp-amenity-grid">
+      {t("amenities", { returnObjects: true }).map((a, i) => (
+        <div key={i} className="hp-amenity-item">
+          <span className="hp-amenity-icon">{a.icon}</span>
+          <div className="hp-amenity-label">{a.label}</div>
+          <div className="hp-amenity-desc">{a.desc}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* ── CTA ── */}
       <section className="hp-section hp-section-alt">

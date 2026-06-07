@@ -34,6 +34,18 @@ public class ServiceController {
         Response response = serviceManagement.addNewService(name, price, description);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+    // Cập nhật dịch vụ
+    @PutMapping("/update/{serviceId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Response> updateService(
+            @PathVariable("serviceId") Long serviceId,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("price") BigDecimal price) {
+        Response response = serviceManagement.updateService(serviceId, name, price, description);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
     // Xóa dịch vụ
     @DeleteMapping("/delete/{serviceId}")
     @PreAuthorize("hasAuthority('ADMIN')")

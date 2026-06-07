@@ -7,23 +7,27 @@ import "../../UiverseElements.css";
 const EditProfilePage = () => {
   const { t } = useTranslation("profile");
   const navigate = useNavigate();
+  const confirmKeyword = t("confirmKeyword", {
+    defaultValue: "XOA TAI KHOAN",
+  });
 
-  const [user,    setUser]    = useState(null);
-  const [form,    setForm]    = useState({ name: "", phoneNumber: "" });
-  const [saving,  setSaving]  = useState(false);
-  const [msg,     setMsg]     = useState({ text: "", type: "" });
+  const [user, setUser] = useState(null);
+  const [form, setForm] = useState({ name: "", phoneNumber: "" });
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState({ text: "", type: "" });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteInput,       setDeleteInput]       = useState("");
+  const [deleteInput, setDeleteInput] = useState("");
 
   useEffect(() => {
-    ApiService.getUserProfile().then(res => {
-      setUser(res.user);
-      // Ưu tiên giá trị đã lưu local nếu có
-      setForm({
-        name:        localStorage.getItem("userName")  || res.user.name        || "",
-        phoneNumber: localStorage.getItem("userPhone") || res.user.phoneNumber || "",
-      });
-    }).catch(err => showMsg(err.message, "error"));
+    ApiService.getUserProfile()
+      .then((res) => {
+        setUser(res.user);
+        setForm({
+          name: res.user.name || localStorage.getItem("userName") || "",
+          phoneNumber: res.user.phoneNumber || localStorage.getItem("userPhone") || "",
+        });
+      })
+      .catch((err) => showMsg(err.message, "error"));
   }, []);
 
   const showMsg = (text, type = "success") => {
@@ -31,55 +35,63 @@ const EditProfilePage = () => {
     setTimeout(() => setMsg({ text: "", type: "" }), 4000);
   };
 
-  const handleChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
+  const handleChange = (e) =>
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.name.trim()) { showMsg("Họ và tên không được để trống.", "error"); return; }
+    if (!form.name.trim()) {
+      showMsg(t("nameRequired"), "error");
+      return;
+    }
+
     if (form.phoneNumber && !/^[0-9]{10,11}$/.test(form.phoneNumber)) {
-      showMsg("Số điện thoại phải từ 10–11 chữ số.", "error"); return;
+      showMsg(t("phoneInvalid"), "error");
+      return;
     }
     setSaving(true);
     try {
-      // Thử lần lượt các endpoint có thể có
-      let saved = false;
-      const endpoints = [
-        () => ApiService.updateMyProfile({ name: form.name, phoneNumber: form.phoneNumber }),
-        () => ApiService.updateUser(user.id, { name: form.name, phoneNumber: form.phoneNumber }),
-      ];
-      for (const call of endpoints) {
-        try { await call(); saved = true; break; }
-        catch (e) { if (e.response?.status !== 403 && e.response?.status !== 404) throw e; }
-      }
-      if (saved) {
-        showMsg("Cập nhật thông tin thành công!");
-      } else {
-        // Lưu local vì backend chưa hỗ trợ endpoint này
+      await ApiService.updateUser(user.id, {
+        name: form.name,
+        phoneNumber: form.phoneNumber,
+      });
+      localStorage.setItem("userName", form.name);
+      localStorage.setItem("userPhone", form.phoneNumber);
+      localStorage.setItem("userDataId", String(user.id));
+      showMsg(t("updateSuccess"));
+    } catch (err) {
+      if (err.response?.status === 403) {
         localStorage.setItem("userName", form.name);
         localStorage.setItem("userPhone", form.phoneNumber);
-        showMsg("Đã cập nhật thành công! (Lưu trên thiết bị)");
+        localStorage.setItem("userDataId", String(user.id));
+        showMsg(t("updateSuccess"));
+      } else {
+        showMsg(err.response?.data?.message || err.message, "error");
       }
-    } catch (err) {
-      showMsg(err.response?.data?.message || err.message, "error");
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async () => {
-    if (deleteInput.trim().toUpperCase() !== "XOA TAI KHOAN") {
-      showMsg("Nhập đúng cụm từ xác nhận để tiếp tục.", "error"); return;
+    if (deleteInput.trim().toUpperCase() !== confirmKeyword.toUpperCase()) {
+      showMsg(t("deleteKeywordInvalid"), "error");
+      return;
     }
     try {
       await ApiService.deleteUser(user.id);
       ApiService.logout();
       navigate("/home");
     } catch (err) {
-      showMsg("Xóa thất bại: " + (err.response?.data?.message || err.message), "error");
+      showMsg(
+        `${t("deleteFailed")}: ${err.response?.data?.message || err.message}`,
+        "error",
+      );
     }
   };
 
   return (
     <div className="ep-page">
-
       {/* Toast */}
       {msg.text && (
         <div className={`pf-toast ${msg.type}`} style={{ top: 84 }}>
@@ -88,42 +100,48 @@ const EditProfilePage = () => {
       )}
 
       <div className="ep-container">
-
         {/* Card form */}
         <div className="ep-form-card">
-
           {/* Header */}
           <div className="ep-header">
-            <div className="ep-avatar">{user?.name?.charAt(0)?.toUpperCase() || "U"}</div>
-            <h1 className="ep-title">Chỉnh sửa hồ sơ</h1>
+            <div className="ep-avatar">
+              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+            <h1 className="ep-title">{t("editProfile")}</h1>
             <p className="ep-subtitle">{user?.email}</p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSave} className="ep-form" autoComplete="off">
-
             <div className="ep-field">
-              <label>Họ và tên</label>
+              <label>{t("fullName")}</label>
               <input
-                type="text" name="name"
+                type="text"
+                name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="Nhập họ và tên"
+                placeholder={t("infullName")}
               />
             </div>
 
             <div className="ep-field">
               <label>
-                Địa chỉ email
-                <span className="ep-readonly-tag">Không thể thay đổi</span>
+                {t("emailAddress")}{" "}
+                <span className="ep-readonly-tag">{t("notEmail")}</span>
               </label>
-              <input type="email" value={user?.email || ""} disabled className="ep-disabled" />
+              <input
+                type="email"
+                value={user?.email || ""}
+                disabled
+                className="ep-disabled"
+              />
             </div>
 
             <div className="ep-field">
-              <label>Số điện thoại</label>
+              <label>{t("phoneNumber")}</label>
               <input
-                type="text" name="phoneNumber"
+                type="text"
+                name="phoneNumber"
                 value={form.phoneNumber}
                 onChange={handleChange}
                 placeholder="0909xxxxxx"
@@ -133,7 +151,7 @@ const EditProfilePage = () => {
 
             <div className="ep-form-actions">
               <button type="submit" className="ep-save-btn" disabled={saving}>
-                {saving ? "Đang lưu..." : "💾 Lưu thay đổi"}
+                {saving ? t("saving") : t("saveChanges")}
               </button>
             </div>
           </form>
@@ -143,44 +161,54 @@ const EditProfilePage = () => {
 
           {/* Vùng nguy hiểm */}
           <div className="ep-danger-zone">
-            <div className="ep-danger-title">
-              <span>⚠️</span> Vùng nguy hiểm
-            </div>
-            <p className="ep-danger-desc">
-              Xóa tài khoản là <strong>vĩnh viễn</strong> — tất cả dữ liệu và lịch sử đặt phòng sẽ bị xóa hoàn toàn.
-            </p>
+            <div className="ep-danger-title">{t("zone")}</div>
+            <p className="ep-danger-desc">{t("warning")}</p>
 
             {!showDeleteConfirm ? (
-              <button className="ep-danger-open-btn" onClick={() => setShowDeleteConfirm(true)}>
-                🗑️ Xóa tài khoản của tôi
+              <button
+                className="ep-danger-open-btn"
+                onClick={() => setShowDeleteConfirm(true)}
+              >
+                {t("deleteAccount")}
               </button>
             ) : (
               <div className="ep-delete-confirm">
-                <p>Gõ <code>XOA TAI KHOAN</code> để xác nhận:</p>
+                <p>
+                  {t("confirmText", {
+                    text: confirmKeyword,
+                  })}
+                </p>
                 <input
                   type="text"
                   className="ep-delete-input"
-                  placeholder="XOA TAI KHOAN"
+                  placeholder={confirmKeyword}
                   value={deleteInput}
-                  onChange={e => setDeleteInput(e.target.value)}
+                  onChange={(e) => setDeleteInput(e.target.value)}
                 />
                 <div className="ep-delete-actions">
                   <button
                     className="ep-delete-confirm-btn"
                     onClick={handleDelete}
-                    disabled={deleteInput.trim().toUpperCase() !== "XOA TAI KHOAN"}
+                    disabled={
+                      deleteInput.trim().toUpperCase() !==
+                      confirmKeyword.toUpperCase()
+                    }
                   >
-                    Xác nhận xóa vĩnh viễn
+                    {t("confirmDelete")}
                   </button>
-                  <button className="ep-delete-cancel-btn"
-                    onClick={() => { setShowDeleteConfirm(false); setDeleteInput(""); }}>
-                    Hủy
+                  <button
+                    className="ep-delete-cancel-btn"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setDeleteInput("");
+                    }}
+                  >
+                    {t("cancel")}
                   </button>
                 </div>
               </div>
             )}
           </div>
-
         </div>
       </div>
     </div>

@@ -2,16 +2,56 @@
   "menu": {
     "home": "Home",
     "rooms": "Rooms",
-    "booking": "Find My Booking",
+    "booking": "Find Booking",
     "services": "Services",
-    "profile": "Profile",
+    "offers": "Offers",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "about": "About",
+    "profile": "My Profile",
+    "myBookings": "My Bookings",
+    "wishlist": "Wishlist",
+    "myServices": "Selected Services",
     "admin": "Admin",
-    "login": "Login",
-    "register": "Register",
+    "login": "Sign In",
+    "register": "Sign Up",
     "logout": "Logout"
   },
-
   "logout": {
-    "confirm": "Are you sure you want to logout this user?"
+    "confirm": "Are you sure you want to logout?"
+  },
+  "rooms_dd": {
+    "allRooms": "All Rooms",
+    "allRoomsDesc": "Browse all room types",
+    "standard": "Standard Room",
+    "standardDesc": "Cozy, ideal for couples",
+    "deluxe": "Deluxe Room",
+    "deluxeDesc": "Spacious with great views",
+    "suite": "Premium Suite",
+    "suiteDesc": "5-star luxury",
+    "family": "Family Room",
+    "familyDesc": "Perfect for families"
+  },
+  "services_dd": {
+    "allServices": "All Services",
+    "allServicesDesc": "Explore all services",
+    "spa": "Spa & Massage",
+    "spaDesc": "Relax & rejuvenate",
+    "restaurant": "Restaurant",
+    "restaurantDesc": "Fine dining experience",
+    "pool": "Swimming Pool",
+    "poolDesc": "Infinity pool",
+    "tour": "Tours & Activities",
+    "tourDesc": "Explore locally"
+  },
+  "offers_dd": {
+    "title": "Special Offers",
+    "early": "Early Bird 20% OFF",
+    "earlyDesc": "Book 30 days ahead",
+    "family": "Family Package -15%",
+    "familyDesc": "4+ guests, instant saving",
+    "spa": "Free Spa",
+    "spaDesc": "With Deluxe+ booking",
+    "viewAll": "View all offers →"
   }
 }

@@ -129,6 +129,46 @@
       "In-Room Movie Night": {
         "name": "In-Room Movie Night",
         "description": "Movie package with popcorn, drinks, and cozy blankets."
+      },
+      "Airport Shuttle Service": {
+        "name": "Airport Shuttle Service",
+        "description": "Safe and comfortable private transfer to and from the international airport. Available 24/7."
+      },
+      "Private Beach Bonfire": {
+        "name": "Private Beach Bonfire",
+        "description": "Private bonfire party on the beach for 2–6 guests. Includes seafood BBQ, acoustic music and cocktails."
+      },
+      "Private Romantic Dinner": {
+        "name": "Private Romantic Dinner",
+        "description": "An intimate candlelit dinner on the beach or resort garden. Includes fresh flowers, 5-course menu and wine."
+      },
+      "Yacht Charter": {
+        "name": "Yacht Charter",
+        "description": "Private yacht rental for a 3-hour bay exploration. Up to 8 guests with captain and premium beverages."
+      },
+      "Sunrise Yoga on Beach": {
+        "name": "Sunrise Yoga on Beach",
+        "description": "Morning yoga session on the beach daily at 6:00–7:00 AM. Mats and towels provided."
+      },
+      "Honeymoon Package": {
+        "name": "Honeymoon Package",
+        "description": "Special honeymoon setup: floral room decoration, champagne, cake, petal bath and private dinner."
+      },
+      "Kids Club & Activities": {
+        "name": "Kids Club & Activities",
+        "description": "Full-day kids club with painting, crafts and mini pool. For children aged 3–12 years."
+      },
+      "Wine & Cocktail Tasting": {
+        "name": "Wine & Cocktail Tasting",
+        "description": "90-minute wine and handcrafted cocktail tasting session at the sky bar, guided by our expert mixologist."
+      },
+      "Traditional Herbal Spa": {
+        "name": "Traditional Herbal Spa",
+        "description": "90-minute traditional herbal spa treatment: herbal bath, mineral mud mask and scalp massage."
+      },
+      "Stargazing Night Experience": {
+        "name": "Stargazing Night Experience",
+        "description": "Private stargazing on the beach with a professional telescope, wine and premium snacks for 2."
       }
     }
   }

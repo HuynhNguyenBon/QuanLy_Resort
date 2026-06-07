@@ -6,16 +6,31 @@
   "subtitle": "Bước vào thiên đường của sự thoải mái và chăm sóc",
   "heroSubtitle": "🛏️ Đặt phòng ngay",
   "heroServices": "Xem dịch vụ",
-
   "stats_rooms": "Phòng nghỉ",
   "stats_satisfaction": "Hài lòng",
   "stats_years": "Năm kinh nghiệm",
   "stats_support": "Hỗ trợ 24/7",
-
   "searchResultTitle": "Tìm thấy {{count}} ",
   "searchResultTitle1": "phòng còn trống",
   "clearResult": "Xoá kết quả",
-
+  "clearResults": "Xoá kết quả",
+  "weatherLocation": "TP. Hồ Chí Minh",
+  "promoSectionTag": "🏷️ ƯU ĐÃI ĐẶC BIỆT",
+  "promoSectionTitle": "Khuyến mãi dành cho bạn",
+  "promoSectionSub": "Đặt sớm, tiết kiệm nhiều hơn",
+  "promoBookNow": "Đặt ngay",
+  "amenityTag": "🏖️ TIỆN ÍCH RESORT",
+  "amenityTitle": "Mọi thứ bạn cần trong một kỳ nghỉ",
+  "amenities": [
+    { "icon": "🏊", "label": "Hồ bơi vô cực", "desc": "Mở 6:00–22:00" },
+    { "icon": "🍽️", "label": "5 nhà hàng", "desc": "Ẩm thực đa dạng" },
+    { "icon": "💆", "label": "Spa & Wellness", "desc": "Thư giãn toàn diện" },
+    { "icon": "🏋️", "label": "Gym & Yoga", "desc": "Thiết bị hiện đại" },
+    { "icon": "🎾", "label": "Sân tennis", "desc": "4 sân tiêu chuẩn" },
+    { "icon": "🚗", "label": "Đưa đón sân bay", "desc": "24/7 xe sang" },
+    { "icon": "🏖️", "label": "Bãi biển riêng", "desc": "500m bờ biển" },
+    { "icon": "👶", "label": "Club trẻ em", "desc": "Vui chơi an toàn" }
+  ],
   "roomsTag": "PHÒNG NGHỈ",
   "roomsTitle": "Chọn phòng phù hợp với bạn",
   "roomsSubtitle": "Từ phòng tiêu chuẩn đến suite cao cấp — đầy đủ tiện nghi cho mọi nhu cầu.",
@@ -29,49 +44,48 @@
     "Suite": "Phòng suite",
     "Family": "Phòng gia đình"
   },
-
   "servicesTag": "DỊCH VỤ",
   "servicesSubtitle": "Tiện nghi hiện đại, dịch vụ chu đáo — được thiết kế để kỳ nghỉ thật sự trọn vẹn.",
   "viewDetail": "Xem chi tiết",
-
   "pool": "Hồ bơi vô cực",
   "poolDesc": "Hồ bơi tràn bờ view mở, mở cửa 6:00–22:00. Tận hưởng không gian thư giãn ngay giữa thiên nhiên.",
-
   "miniBar": "Nhà hàng & Ẩm thực",
   "miniBarDesc": "Thực đơn phong phú Á–Âu, nguyên liệu tươi mỗi ngày. Đặt bàn dễ dàng, phục vụ từ bữa sáng đến khuya.",
-
   "parking": "Bãi đỗ xe miễn phí",
   "parkingDesc": "Bãi đỗ xe rộng rãi, có mái che, bảo vệ 24/7. Dịch vụ valet parking theo yêu cầu.",
+  "gym": "Gym & Yoga",
+  "gymDesc": "Phòng tập hiện đại với đầy đủ thiết bị, lớp yoga mỗi sáng. Mở cửa 6:00–22:00, miễn phí cho khách lưu trú.",
   "wifi": "WiFi",
   "wifiDesc": "Luôn kết nối với Wi-Fi tốc độ cao miễn phí tại tất cả phòng nghỉ và khu vực công cộng.",
   "spa": "Spa & Massage",
   "spaDesc": "Liệu trình massage chuyên sâu, trị liệu bằng tinh dầu thiên nhiên. Phục hồi năng lượng sau những ngày dài.",
-
   "testimonials": {
     "tag": "ĐÁNH GIÁ KHÁCH HÀNG",
     "titlePrefix": "Hơn",
     "titleSuffix": "lượt nghỉ hài lòng",
-
     "testimonial1": "Dịch vụ tuyệt vời, phòng rộng rãi và sạch sẽ. chúng tôi sẽ quay lại.",
     "testimonial2": "Hồ bơi vô cực đẹp, view biển tuyệt hảo. Nhà hàng ngon và đa dạng món ăn.",
     "testimonial3": "Không gian yên tĩnh, nghỉ ngơi rất thoải mái. Spa rất chuyên nghiệp, thư giãn cực kỳ.",
-
     "testimonialName1": "Nguyễn Minh Anh",
     "testimonialName2": "Trần Văn Khoa",
     "testimonialName3": "Lê Thu Hương"
   },
-
   "cities": {
     "Hanoi": "Hà Nội",
     "HCMC": "TP.HCM",
     "Danang": "Đà Nẵng"
   },
-
   "cta": {
     "title": "Sẵn sàng cho kỳ nghỉ của bạn?",
     "subtitle": "Đặt phòng ngay — xác nhận tức thì, hủy miễn phí trước 24h.",
     "bookNow": "🛏️ Đặt phòng ngay",
     "findBooking": "🔍 Tra cứu đặt phòng",
     "note": "✓ Hủy miễn phí trước 24h · ✓ Xác nhận tức thì · ✓ Hỗ trợ 24/7"
-  }
+  },
+  "promoEarly": "Đặt sớm 20% OFF",
+  "promoEarlyDesc": "Đặt trước 30 ngày, tiết kiệm 20% cho mọi loại phòng.",
+  "promoFamily": "Gói gia đình 15% OFF",
+  "promoFamilyDesc": "Đặt phòng Family hoặc Suite cho 4+ người, giảm ngay 15%.",
+  "promoSpa": "Spa miễn phí",
+  "promoSpaDesc": "Đặt phòng Deluxe trở lên, tặng 1 lần spa trị giá $50."
 }

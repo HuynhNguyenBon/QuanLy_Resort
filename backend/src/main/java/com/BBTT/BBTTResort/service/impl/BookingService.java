@@ -83,11 +83,16 @@ public class BookingService implements IBookingService {
                     bookingRequest.getCheckOutDate()
             );
 
-            double totalPrice = room.getRoomPrice().doubleValue() * totalDays;
-
+            double basePrice = room.getRoomPrice().doubleValue() * totalDays;
+            double discountAmount = 0;
+            if (bookingRequest.getDiscountPercent() != null && bookingRequest.getDiscountPercent() > 0) {
+                discountAmount = basePrice * bookingRequest.getDiscountPercent() / 100.0;
+            }
+            double totalPrice = basePrice - discountAmount;
 
             bookingRequest.setRoom(room);
             bookingRequest.setUser(user);
+            bookingRequest.setDiscountAmount(discountAmount);
             bookingRequest.setTotalPrice(totalPrice);
             bookingRequest.setBookingStatus("BOOKED");
             bookingRequest.setCreatedAt(LocalDate.now());
@@ -274,14 +279,35 @@ public class BookingService implements IBookingService {
         try {
             Booking booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new OurException("Booking not found"));
-            if (updateRequest.getCheckInDate() != null)
+
+            boolean datesChanged = false;
+            if (updateRequest.getCheckInDate() != null) {
                 booking.setCheckInDate(updateRequest.getCheckInDate());
-            if (updateRequest.getCheckOutDate() != null)
+                datesChanged = true;
+            }
+            if (updateRequest.getCheckOutDate() != null) {
                 booking.setCheckOutDate(updateRequest.getCheckOutDate());
+                datesChanged = true;
+            }
             if (updateRequest.getNumOfAdults() > 0)
                 booking.setNumOfAdults(updateRequest.getNumOfAdults());
             booking.setNumOfChildren(updateRequest.getNumOfChildren());
             booking.calculateTotalnumberOfGuest();
+            if (updateRequest.getPaymentStatus() != null)
+                booking.setPaymentStatus(updateRequest.getPaymentStatus());
+            if (updateRequest.getBookingStatus() != null)
+                booking.setBookingStatus(updateRequest.getBookingStatus());
+
+            if (datesChanged && booking.getRoom() != null) {
+                Room room = roomRepository.findById(booking.getRoom().getId()).orElse(null);
+                if (room != null) {
+                    long totalDays = ChronoUnit.DAYS.between(booking.getCheckInDate(), booking.getCheckOutDate());
+                    double basePrice = room.getRoomPrice().doubleValue() * totalDays;
+                    double discountAmount = booking.getDiscountAmount() != null ? booking.getDiscountAmount() : 0;
+                    booking.setTotalPrice(basePrice - discountAmount);
+                }
+            }
+
             bookingRepository.save(booking);
             response.setStatusCode(200);
             response.setMessage("Booking updated successfully");

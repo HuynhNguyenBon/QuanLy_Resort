@@ -6,16 +6,31 @@
   "subtitle": "Step into a haven of comfort and care",
   "heroSubtitle": "🛏️ Book Your Stay Now",
   "heroServices": "Explore Our Services",
-
   "stats_rooms": "Rooms",
   "stats_satisfaction": "Satisfaction",
   "stats_years": "Years of experience",
   "stats_support": "24/7 Support",
-
   "searchResultTitle": "Found {{count}}",
   "searchResultTitle1": "available rooms",
   "clearResult": "Clear results",
-
+  "clearResults": "Clear results",
+  "weatherLocation": "Ho Chi Minh City",
+  "promoSectionTag": "🏷️ SPECIAL OFFERS",
+  "promoSectionTitle": "Promotions for you",
+  "promoSectionSub": "Book early, save more",
+  "promoBookNow": "Book now",
+  "amenityTag": "🏖️ RESORT AMENITIES",
+  "amenityTitle": "Everything you need for a perfect vacation",
+  "amenities": [
+    { "icon": "🏊", "label": "Infinity Pool", "desc": "Open 6:00–22:00" },
+    { "icon": "🍽️", "label": "5 Restaurants", "desc": "Diverse cuisine" },
+    { "icon": "💆", "label": "Spa & Wellness", "desc": "Total relaxation" },
+    { "icon": "🏋️", "label": "Gym & Yoga", "desc": "Modern equipment" },
+    { "icon": "🎾", "label": "Tennis Courts", "desc": "4 standard courts" },
+    { "icon": "🚗", "label": "Airport Transfer", "desc": "24/7 luxury cars" },
+    { "icon": "🏖️", "label": "Private Beach", "desc": "500m of shoreline" },
+    { "icon": "👶", "label": "Kids Club", "desc": "Safe & fun activities" }
+  ],
   "roomsTag": "ROOMS",
   "roomsTitle": "Choose the perfect room for you",
   "roomsSubtitle": "From standard rooms to luxury suites — fully equipped for every need.",
@@ -29,49 +44,48 @@
     "Suite": "Suite Room",
     "Family": "Family Room"
   },
-
   "servicesTag": "SERVICES",
   "servicesSubtitle": "Modern facilities and thoughtful services — designed for a truly complete stay.",
   "viewDetail": "View details",
-
   "pool": "Infinity Pool",
   "poolDesc": "Open-horizon infinity pool with panoramic views, open 6:00–22:00. The perfect place to unwind.",
-
   "miniBar": "Restaurant & Dining",
   "miniBarDesc": "Rich Asian–European menu with fresh daily ingredients. Easy reservations, served from breakfast to late night.",
-
   "parking": "Free Parking",
   "parkingDesc": "Spacious covered parking with 24/7 security. Valet parking service available on request.",
+  "gym": "Gym & Yoga",
+  "gymDesc": "Modern fitness center with full equipment and daily morning yoga classes. Open 6:00–22:00, complimentary for all guests.",
   "wifi": "WiFi",
   "wifiDesc": "Stay connected throughout your stay with complimentary high-speed Wi-Fi access available in all guest rooms and public areas.",
   "spa": "Spa & Massage",
   "spaDesc": "Deep-tissue massage and natural essential oil therapies. Restore your energy after long days of travel.",
-
   "testimonials": {
     "tag": "CUSTOMER REVIEWS",
     "titlePrefix": "Over",
     "titleSuffix": "happy stays",
-
     "testimonial1": "Excellent service, spacious and clean rooms. We will definitely come back.",
     "testimonial2": "Amazing infinity pool and beautiful ocean view. Great food variety.",
     "testimonial3": "Peaceful environment, very relaxing stay. Professional spa service.",
-
     "testimonialName1": "Minh Anh Nguyen",
     "testimonialName2": "Van Khoa Tran",
     "testimonialName3": "Thu Huong Le"
   },
-
   "cities": {
     "Hanoi": "Hanoi",
     "HCMC": "Ho Chi Minh City",
     "Danang": "Da Nang"
   },
-
   "cta": {
     "title": "Ready for your stay?",
     "subtitle": "Book now — instant confirmation, free cancellation within 24 hours.",
     "bookNow": "🛏️ Book Now",
     "findBooking": "🔍 Find Booking",
     "note": "✓ Free cancellation within 24h · ✓ Instant confirmation · ✓ 24/7 support"
-  }
+  },
+  "promoEarly": "Early Bird 20% OFF",
+  "promoEarlyDesc": "Book 30 days in advance and save 20% on all room types.",
+  "promoFamily": "Family Package 15% OFF",
+  "promoFamilyDesc": "Book Family or Suite for 4+ guests, get 15% off instantly.",
+  "promoSpa": "Free Spa",
+  "promoSpaDesc": "Book Deluxe or above and receive a complimentary $50 spa session."
 }

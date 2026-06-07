@@ -1,216 +1,75 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ApiService from "../../service/ApiService";
 import { formatPrice } from "../../utils/formatPrice";
+import {
+  STATIC_SERVICES,
+  IMAGE_MAP,
+  EMOJI_MAP,
+  mergeServices,
+} from "../../data/staticServices";
 import "../../UiverseElements.css";
 
-const IMAGE_MAP = {
-  "Luxury Mini Bar": "mini-bar.png",
-  "Gourmet Breakfast": "breakfast.png",
-  "Spa & Wellness Center": "spa.png",
-  "Spa & Massage": "spa.png",
-  "Laundry & Dry Cleaning": "laundry.png",
-  "Room Service 24/7": "room-service.png",
-  "Private Pool Access": "pool.png",
-  "Infinity Swimming Pool": "pool.png",
-  "Fitness & Yoga Class": "gym.png",
-  "Modern Fitness Center": "gym.png",
-};
-
-// Emoji fallback theo tên
-const EMOJI_MAP = {
-  "Luxury Mini Bar": "🥂",
-  "Gourmet Breakfast": "🍳",
-  "Spa & Wellness Center": "💆",
-  "Spa & Massage": "💆",
-  "Airport Shuttle Service": "✈️",
-  "Airport Transfer": "✈️",
-  "Laundry & Dry Cleaning": "👔",
-  "Room Service 24/7": "🛎️",
-  "Private Pool Access": "🏊",
-  "Fitness & Yoga Class": "🧘",
-  "Beach BBQ Dinner": "🍖",
-  "Room Decoration": "🌹",
-  "Tour & Sightseeing": "🗺️",
-  "Bicycle Rental": "🚲",
-  "Cocktail & Drinks Package": "🍹",
-  "Babysitting Service": "👶",
-  "Water Sports Package": "🤿",
-  "Photography Session": "📸",
-  "Sunset Cruise": "⛵",
-  "Cooking Class": "👨‍🍳",
-  "Flower Arrangement": "💐",
-  "Pet Care Service": "🐾",
-  "Golf Cart Rental": "⛳",
-  "Karaoke Room": "🎤",
-  "In-Room Movie Night": "🎬",
-};
-
-// Dịch vụ tĩnh — hiển thị khi API không có hoặc bổ sung thêm
-const STATIC_SERVICES = [
-  {
-    id: 101,
-    name: "Spa & Massage",
-    price: 50,
-    description:
-      "Liệu trình massage thư giãn 60 phút với tinh dầu thiên nhiên. Phục hồi năng lượng toàn diện.",
-  },
-  {
-    id: 102,
-    name: "Gourmet Breakfast",
-    price: 15,
-    description:
-      "Buffet sáng quốc tế hơn 40 món, nguyên liệu tươi mỗi ngày. Phục vụ từ 6:30–10:30.",
-  },
-  {
-    id: 103,
-    name: "Airport Transfer",
-    price: 30,
+// Tên & mô tả tiếng Việt cho các dịch vụ lấy từ API (override)
+const VI_MAP = {
+  "Airport Shuttle Service": {
+    name: "Đưa Đón Sân Bay",
     description:
       "Đưa đón sân bay bằng xe sang, đúng giờ, phục vụ 24/7. Đặt trước ít nhất 6 giờ.",
   },
-  {
-    id: 104,
-    name: "Laundry & Dry Cleaning",
-    price: 15,
+  "Gourmet Breakfast": {
+    name: "Buffet Sáng Quốc Tế",
+    description:
+      "Buffet sáng hơn 40 món tươi ngon mỗi ngày. Phục vụ từ 6:30 – 10:30.",
+  },
+  "Infinity Swimming Pool": {
+    name: "Hồ Bơi Vô Cực",
+    description:
+      "Thuê riêng hồ bơi vô cực tầng thượng. Kèm đồ uống và ghế nằm VIP.",
+  },
+  "Modern Fitness Center": {
+    name: "Phòng Tập Hiện Đại",
+    description:
+      "Thiết bị tập luyện tiên tiến, mở cửa 5:00 – 23:00. PT riêng theo yêu cầu.",
+  },
+  "Spa & Wellness Center": {
+    name: "Spa & Chăm Sóc Sức Khỏe",
+    description:
+      "Liệu trình thư giãn cao cấp giúp phục hồi năng lượng toàn diện.",
+  },
+  "Laundry & Dry Cleaning": {
+    name: "Giặt Ủi & Giặt Khô",
     description:
       "Giặt ủi chuyên nghiệp, trả trong 24 giờ. Dịch vụ giặt khô theo yêu cầu.",
   },
-  {
-    id: 105,
-    name: "Luxury Mini Bar",
-    price: 25,
+  "Luxury Mini Bar": {
+    name: "Mini Bar Cao Cấp",
     description:
-      "Gói đồ uống: rượu vang, cocktail, nước trái cây tươi và đồ ăn nhẹ cao cấp.",
+      "Rượu vang, cocktail, nước trái cây tươi và đồ ăn nhẹ cao cấp trong phòng.",
   },
-  {
-    id: 106,
-    name: "Room Service 24/7",
-    price: 20,
+  "Room Service 24/7": {
+    name: "Phục Vụ Phòng 24/7",
+    description: "Ăn uống tận phòng bất kỳ lúc nào với thực đơn Á–Âu đa dạng.",
+  },
+  "Private Pool Access": {
+    name: "Hồ Bơi Riêng Tư",
     description:
-      "Phục vụ ăn uống tận phòng bất kỳ lúc nào với thực đơn Á–Âu đa dạng.",
+      "Thuê riêng hồ bơi vô cực tầng thượng 2 giờ. Kèm đồ uống và ghế nằm VIP.",
   },
-  {
-    id: 107,
-    name: "Private Pool Access",
-    price: 40,
-    description:
-      "Thuê riêng hồ bơi vô cực tầng thượng 2 giờ. Kèm đồ uống miễn phí và ghế nằm VIP.",
-  },
-  {
-    id: 108,
-    name: "Fitness & Yoga Class",
-    price: 20,
-    description:
-      "Lớp yoga bình minh hoặc PT gym riêng. Lịch linh hoạt theo yêu cầu.",
-  },
-  {
-    id: 109,
-    name: "Beach BBQ Dinner",
-    price: 80,
-    description:
-      "Bữa tối nướng trên bãi biển riêng cho 2 người, kèm rượu vang và nhạc live.",
-  },
-  {
-    id: 110,
-    name: "Room Decoration",
-    price: 35,
-    description:
-      "Trang trí phòng theo chủ đề: sinh nhật, kỷ niệm, lãng mạn. Hoa tươi và nến.",
-  },
-  {
-    id: 111,
-    name: "Tour & Sightseeing",
-    price: 35,
-    description:
-      "Tour tham quan địa phương cùng hướng dẫn viên. Khởi hành 8:00 sáng hàng ngày.",
-  },
-  {
-    id: 112,
-    name: "Bicycle Rental",
-    price: 10,
-    description:
-      "Thuê xe đạp khám phá xung quanh resort. Mũ bảo hiểm và bản đồ đi kèm.",
-  },
-  {
-    id: 113,
-    name: "Cocktail & Drinks Package",
-    price: 20,
-    description:
-      "Gói cocktail thủ công tại pool bar: 5 ly theo lựa chọn, phục vụ từ 15:00–21:00.",
-  },
-  {
-    id: 114,
-    name: "Babysitting Service",
-    price: 25,
-    description:
-      "Dịch vụ trông trẻ chuyên nghiệp theo giờ. An toàn, vui vẻ cho bé từ 1–10 tuổi.",
-  },
-  {
-    id: 115,
-    name: "Water Sports Package",
-    price: 45,
-    description:
-      "Gói thể thao nước: kayak, paddleboard, snorkeling. Hướng dẫn viên đi kèm.",
-  },
-  {
-    id: 116,
-    name: "Photography Session",
-    price: 60,
-    description:
-      "Chụp ảnh kỷ niệm chuyên nghiệp tại các điểm đẹp của resort (45 phút, 20+ ảnh chỉnh sửa).",
-  },
-  {
-    id: 117,
-    name: "Sunset Cruise",
-    price: 55,
-    description:
-      "Ngắm hoàng hôn trên du thuyền 2 giờ, kèm cocktail và snack cao cấp.",
-  },
-  {
-    id: 118,
-    name: "Cooking Class",
-    price: 30,
-    description:
-      "Học nấu ẩm thực địa phương cùng đầu bếp resort. Mang công thức về nhà.",
-  },
-  {
-    id: 119,
-    name: "Flower Arrangement",
-    price: 25,
-    description:
-      "Workshop cắm hoa nghệ thuật 90 phút. Mang tác phẩm của bạn về phòng.",
-  },
-  {
-    id: 120,
-    name: "Pet Care Service",
-    price: 20,
-    description:
-      "Chăm sóc thú cưng theo giờ khi bạn đi tham quan. An toàn và chu đáo.",
-  },
-  {
-    id: 121,
-    name: "Golf Cart Rental",
-    price: 15,
-    description:
-      "Thuê xe golf điện khám phá khuôn viên resort rộng lớn. Tối đa 4 người.",
-  },
-  {
-    id: 122,
-    name: "Karaoke Room",
-    price: 40,
-    description:
-      "Phòng karaoke riêng tư 2 giờ cho nhóm đến 10 người, hệ thống âm thanh cao cấp.",
-  },
-  {
-    id: 123,
-    name: "In-Room Movie Night",
-    price: 25,
-    description:
-      "Gói xem phim trong phòng: màn chiếu HD, popcorn, đồ uống và chăn mềm cho 2 người.",
-  },
-];
+};
+
+const getViName = (service) => VI_MAP[service.name]?.name || service.name;
+const getViDesc = (service) =>
+  VI_MAP[service.name]?.description || service.description;
+
+// Map highlight param → keyword to search in service name
+const HIGHLIGHT_MAP = {
+  pool: "pool",
+  spa: "spa",
+  miniBar: "mini bar",
+  gym: "fitness",
+};
 
 const CART_KEY = "bbhh_selected_services";
 
@@ -220,10 +79,13 @@ const getImage = (name) => IMAGE_MAP[name] || null;
 
 const ServicePage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t, i18n } = useTranslation("services");
   const lang = i18n.language.split("-")[0];
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [highlightId, setHighlightId] = useState(null);
+  const highlightRef = useRef(null);
   const [cart, setCart] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -238,18 +100,7 @@ const ServicePage = () => {
       try {
         const response = await ApiService.getAllServices();
         const apiList = response.serviceList || response || [];
-        const apiPaid = apiList.filter((s) => s.price != null && s.price > 0);
-
-        // Merge: API trước, bổ sung STATIC nếu tên VÀ ảnh chưa có trong API
-        const apiNames = new Set(apiPaid.map((s) => s.name));
-        const apiImages = new Set(
-          apiPaid.map((s) => getImage(s.name)).filter(Boolean),
-        );
-        const staticExtra = STATIC_SERVICES.filter((s) => {
-          const img = getImage(s.name);
-          return !apiNames.has(s.name) && !(img && apiImages.has(img));
-        });
-        setServices([...apiPaid, ...staticExtra]);
+        setServices(mergeServices(apiList));
       } catch {
         setServices(STATIC_SERVICES);
       } finally {
@@ -262,6 +113,29 @@ const ServicePage = () => {
   useEffect(() => {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
   }, [cart]);
+
+  // Scroll đến dịch vụ được highlight từ URL param
+  useEffect(() => {
+    if (isLoading || services.length === 0) return;
+    const param = searchParams.get("highlight");
+    if (!param) return;
+    const keyword = HIGHLIGHT_MAP[param];
+    if (!keyword) return;
+    const matched = services.find((s) =>
+      s.name.toLowerCase().includes(keyword),
+    );
+    if (matched) {
+      setHighlightId(matched.id);
+      setTimeout(() => {
+        if (highlightRef.current) {
+          highlightRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
+      }, 150);
+    }
+  }, [isLoading, services]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isInCart = (id) => cart.some((s) => s.id === id);
 
@@ -310,10 +184,12 @@ const ServicePage = () => {
                 const inCart = isInCart(service.id);
                 const justAdd = addedId === service.id;
                 const imgFile = getImage(service.name);
+                const isHighlighted = highlightId === service.id;
                 return (
                   <div
                     key={service.id}
-                    className={`sv-card${inCart ? " sv-card-selected" : ""}`}
+                    ref={isHighlighted ? highlightRef : null}
+                    className={`sv-card${inCart ? " sv-card-selected" : ""}${isHighlighted ? " sv-card-highlighted" : ""}`}
                   >
                     <div className="sv-card-img">
                       {imgFile ? (
@@ -340,20 +216,20 @@ const ServicePage = () => {
                       <h3 className="sv-card-title">
                         {t(
                           `servicePage.services.${service.name}.name`,
-                          service.name,
+                          getViName(service),
                         )}
                       </h3>
-
                       <p className="sv-card-desc">
                         {t(
                           `servicePage.services.${service.name}.description`,
-                          service.description,
+                          getViDesc(service),
                         )}
                       </p>
                       <div className="sv-card-footer">
                         <span className="sv-price">
-                          {t("servicePage.from")}{" "}
-                          {formatPrice(service.price, lang)}
+                          {!service.price || service.price === 0
+                            ? "Miễn phí"
+                            : `${t("servicePage.from")} ${formatPrice(service.price, lang)}`}
                         </span>
                         <button
                           className={`sv-add-btn${inCart ? " sv-add-btn-added" : ""}`}

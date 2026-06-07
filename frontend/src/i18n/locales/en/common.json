@@ -25,6 +25,19 @@
     "book": "View / Book Now"
   },
 
+  "compare": {
+    "label": "COMPARE",
+    "addRoom": "+ Add Room",
+    "compareNow": "Compare Now",
+    "clearAll": "Clear All",
+    "modalTitle": "Compare Rooms",
+    "criteria": "Criteria",
+    "roomType": "Room Type",
+    "pricePerNight": "Price / night ($)",
+    "description": "Description",
+    "amenities": "Amenities",
+    "bookNow": "Book Now →"
+  },
   "search": {
     "checkIn": "Check-in Date",
     "checkOut": "Check-out Date",

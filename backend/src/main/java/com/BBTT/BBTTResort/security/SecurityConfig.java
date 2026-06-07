@@ -42,7 +42,8 @@ public class SecurityConfig {
                         .requestMatchers("/payment/vnpay-ipn").permitAll()
                         .requestMatchers("/payment/vnpay-return").permitAll()
                         .requestMatchers("/payment/create").authenticated()
-                        .requestMatchers("/translations/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/translations/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/translations/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/users/update/{id}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
@@ -73,4 +74,3 @@ public class SecurityConfig {
     }
 
 }
-
