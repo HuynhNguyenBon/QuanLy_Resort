@@ -156,6 +156,31 @@ public class Utils {
         return dto;
     }
 
+    public static ReviewDTO mapReviewToDTO(Review entity) {
+        ReviewDTO dto = new ReviewDTO();
+        dto.setId(entity.getId());
+        dto.setRoomId(entity.getRoomId());
+        dto.setName(entity.getName());
+        dto.setRating(entity.getRating());
+        dto.setComment(entity.getComment());
+        dto.setDate(entity.getDate());
+        return dto;
+    }
+
+    public static StaffProfileDTO mapStaffProfileToDTO(StaffProfile entity) {
+        StaffProfileDTO dto = new StaffProfileDTO();
+        dto.setId(entity.getId());
+        dto.setUserId(entity.getUser() != null ? entity.getUser().getId() : null);
+        dto.setName(entity.getName());
+        dto.setEmail(entity.getEmail());
+        dto.setPhoneNumber(entity.getPhoneNumber());
+        dto.setRole(entity.getRole());
+        dto.setStartDate(entity.getStartDate());
+        dto.setNote(entity.getNote());
+        dto.setHasAccount(entity.isHasAccount());
+        return dto;
+    }
+
     // Thanh toán
     public static PaymentDTO mapPaymentToDTO(Payment entity) {
         PaymentDTO dto = new PaymentDTO();
