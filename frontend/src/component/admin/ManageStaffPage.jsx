@@ -168,7 +168,7 @@ const ManageStaffPage = () => {
         },
       ];
       saveStaff(next);
-      showMsg(t("staff.deleteSuccess"));
+      showMsg(t("staff.addSuccess"));
     } else if (modal.data._fromApi) {
       // Lưu metadata cho nhân viên từ API
       const meta = getMeta();
@@ -179,14 +179,14 @@ const ManageStaffPage = () => {
         note: modal.data.note || "",
       };
       saveMeta(meta);
-      showMsg(t("staff.deleteSuccess"));
+      showMsg(t("staff.updateSuccess"));
     } else {
       // Nhân viên thủ công — update localStorage
       const next = list.map((s) =>
         s.id === modal.data.id ? { ...modal.data, name: name.trim() } : s,
       );
       saveStaff(next);
-      showMsg(t("staff.deleteSuccess"));
+      showMsg(t("staff.updateSuccess"));
     }
     setSaving(false);
     closeModal();
