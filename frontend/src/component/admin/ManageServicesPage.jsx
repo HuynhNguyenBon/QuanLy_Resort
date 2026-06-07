@@ -4,7 +4,6 @@ import ApiService from "../../service/ApiService";
 import {
   STATIC_SERVICES,
   EMOJI_MAP,
-  mergeServices,
   getServiceTranslation,
 } from "../../data/staticServices";
 
@@ -19,22 +18,6 @@ const formatPrice = (amountUSD, lang) => {
 };
 
 const EMPTY = { name: "", description: "", price: "", icon: "" };
-const HIDDEN_KEY = "bbhh_hidden_static_services";
-
-const getHidden = () => {
-  try {
-    return JSON.parse(localStorage.getItem(HIDDEN_KEY) || "[]");
-  } catch {
-    return [];
-  }
-};
-const addHidden = (name) => {
-  const h = getHidden();
-  if (!h.includes(name)) {
-    h.push(name);
-    localStorage.setItem(HIDDEN_KEY, JSON.stringify(h));
-  }
-};
 
 const ManageServicesPage = () => {
   const { t, i18n } = useTranslation("adminPanel");
@@ -54,31 +37,40 @@ const ManageServicesPage = () => {
     fetchServices();
   }, []);
 
-  const fetchServices = () => {
+  const fetchServices = async () => {
     setLoading(true);
-    const hidden = getHidden();
-    ApiService.getAllServices()
-      .then((r) => {
-        const apiList = r.serviceList || r || [];
-        const apiPaid = apiList
-          .filter((s) => s.price != null && Number(s.price) > 0)
-          .map((s) => ({ ...s, _isApi: true }));
-        const apiNames = new Set(apiList.map((s) => s.name));
-        const staticExtra = STATIC_SERVICES.filter(
-          (s) => !apiNames.has(s.name) && !hidden.includes(s.name),
-        ).map((s) => ({ ...s, _isApi: false }));
-        setServices([...apiPaid, ...staticExtra]);
-      })
-      .catch(() => {
-        const hidden = getHidden();
-        setServices(
-          STATIC_SERVICES.filter((s) => !hidden.includes(s.name)).map((s) => ({
-            ...s,
-            _isApi: false,
-          })),
+    try {
+      const r = await ApiService.getAllServices();
+      let apiList = r.serviceList || r || [];
+      const apiNames = new Set(apiList.map((s) => s.name));
+
+      // Lần đầu: gieo các dịch vụ mẫu (STATIC_SERVICES) còn thiếu vào database
+      // để việc thêm/sửa/xoá sau này là thao tác thật, áp dụng cho mọi người.
+      const missing = STATIC_SERVICES.filter((s) => !apiNames.has(s.name));
+      if (missing.length > 0) {
+        await Promise.all(
+          missing.map((s) =>
+            ApiService.addService({
+              name: s.name,
+              description: s.description,
+              price: s.price,
+            }).catch(() => null),
+          ),
         );
-      })
-      .finally(() => setLoading(false));
+        const r2 = await ApiService.getAllServices();
+        apiList = r2.serviceList || r2 || [];
+      }
+
+      setServices(
+        apiList
+          .filter((s) => s.price != null && Number(s.price) > 0)
+          .map((s) => ({ ...s, _isApi: true })),
+      );
+    } catch {
+      setServices(STATIC_SERVICES.map((s) => ({ ...s, _isApi: false })));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const showMsg = (text, ok = true) => {
@@ -117,13 +109,9 @@ const ManageServicesPage = () => {
       price: price !== "" && price != null ? Number(price) : 0,
     };
     try {
-      const isBuiltIn = modal.mode === "edit" && !modal.data._isApi;
-      if (modal.mode === "add" || isBuiltIn) {
+      if (modal.mode === "add") {
         await ApiService.addService(payload);
-        if (isBuiltIn) addHidden(modal.data.name);
-        showMsg(
-          isBuiltIn ? t("services.saveSuccess") : t("services.addSuccess"),
-        );
+        showMsg(t("services.addSuccess"));
       } else {
         await ApiService.updateService(modal.data.id, payload);
         showMsg(t("services.updateSuccess"));
@@ -153,15 +141,9 @@ const ManageServicesPage = () => {
     if (!window.confirm(t("services.confirmDelete"))) return;
     setDeletingId(s.id);
     try {
-      if (!s._isApi) {
-        addHidden(s.name);
-        setServices((prev) => prev.filter((x) => x.id !== s.id));
-        showMsg(t("services.hideSuccess"));
-      } else {
-        await ApiService.deleteService(s.id);
-        setServices((prev) => prev.filter((x) => x.id !== s.id));
-        showMsg(t("services.deleteSuccess"));
-      }
+      await ApiService.deleteService(s.id);
+      setServices((prev) => prev.filter((x) => x.id !== s.id));
+      showMsg(t("services.deleteSuccess"));
     } catch (e) {
       showMsg(
         t("services.deleteFail") +

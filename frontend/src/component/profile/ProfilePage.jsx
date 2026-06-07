@@ -40,10 +40,12 @@ const ProfilePage = () => {
       // Merge data đã lưu local (khi backend 403)
       const localName = localStorage.getItem("userName");
       const localPhone = localStorage.getItem("userPhone");
+      const localDataId = localStorage.getItem("userDataId");
+      const isSameUser = localDataId === String(u.id);
       setUser({
         ...u,
-        name: localName || u.name,
-        phoneNumber: localPhone || u.phoneNumber,
+        name: (isSameUser && localName) ? localName : (u.name || ""),
+        phoneNumber: (isSameUser && localPhone) ? localPhone : (u.phoneNumber || ""),
       });
     } catch (err) {
       console.error(err);

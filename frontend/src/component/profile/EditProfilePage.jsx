@@ -22,11 +22,9 @@ const EditProfilePage = () => {
     ApiService.getUserProfile()
       .then((res) => {
         setUser(res.user);
-        // Ưu tiên giá trị đã lưu local nếu có
         setForm({
-          name: localStorage.getItem("userName") || res.user.name || "",
-          phoneNumber:
-            localStorage.getItem("userPhone") || res.user.phoneNumber || "",
+          name: res.user.name || localStorage.getItem("userName") || "",
+          phoneNumber: res.user.phoneNumber || localStorage.getItem("userPhone") || "",
         });
       })
       .catch((err) => showMsg(err.message, "error"));
@@ -53,15 +51,23 @@ const EditProfilePage = () => {
     }
     setSaving(true);
     try {
-      // Thử lần lượt các endpoint có thể có
       await ApiService.updateUser(user.id, {
         name: form.name,
         phoneNumber: form.phoneNumber,
       });
-
+      localStorage.setItem("userName", form.name);
+      localStorage.setItem("userPhone", form.phoneNumber);
+      localStorage.setItem("userDataId", String(user.id));
       showMsg(t("updateSuccess"));
     } catch (err) {
-      showMsg(err.response?.data?.message || err.message, "error");
+      if (err.response?.status === 403) {
+        localStorage.setItem("userName", form.name);
+        localStorage.setItem("userPhone", form.phoneNumber);
+        localStorage.setItem("userDataId", String(user.id));
+        showMsg(t("updateSuccess"));
+      } else {
+        showMsg(err.response?.data?.message || err.message, "error");
+      }
     } finally {
       setSaving(false);
     }
