@@ -306,7 +306,13 @@ public class UserService implements IUserService {
             tokenRepository.deleteByEmail(email);
             tokenRepository.save(token);
 
-            emailService.sendOtpEmail(email, otp);
+            boolean emailSent = emailService.sendOtpEmail(email, otp);
+
+            if (!emailSent) {
+                response.setStatusCode(502);
+                response.setMessage("Không thể gửi email OTP lúc này, vui lòng thử lại sau ít phút");
+                return response;
+            }
 
             response.setStatusCode(200);
             response.setMessage("Mã OTP đã được gửi đến email của bạn");

@@ -20,7 +20,8 @@ public class EmailService {
     private final String SENDER_NAME = "BBHH Resort";
 
     // ── Gửi OTP quên mật khẩu ──────────────────────────────────────────────
-    public void sendOtpEmail(String toEmail, String otp) {
+    // Trả về true nếu gửi thành công, false nếu thất bại (để service gọi biết mà báo lỗi đúng cho người dùng)
+    public boolean sendOtpEmail(String toEmail, String otp) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -42,8 +43,10 @@ public class EmailService {
             );
 
             mailSender.send(message);
+            return true;
         } catch (Exception e) {
             System.err.println("❌ Không thể gửi email OTP: " + e.getMessage());
+            return false;
         }
     }
 
