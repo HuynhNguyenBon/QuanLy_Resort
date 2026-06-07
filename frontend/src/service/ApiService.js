@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default class ApiService {
-  static BASE_URL = "http://localhost:4040";
+  static BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4040";
 
   static getHeader() {
     const token = localStorage.getItem("token");
@@ -364,6 +364,65 @@ export default class ApiService {
       {
         headers: this.getHeader(),
       },
+    );
+    return response.data;
+  }
+
+  // =================== STAFF PROFILES (Admin) ===================
+  static async getAllStaffProfiles() {
+    const response = await axios.get(`${this.BASE_URL}/staff-profiles/all`, {
+      headers: this.getHeader(),
+    });
+    return response.data;
+  }
+
+  static async addStaffProfile(staffData) {
+    const params = new URLSearchParams();
+    params.append("name", staffData.name ?? "");
+    params.append("email", staffData.email ?? "");
+    params.append("phoneNumber", staffData.phoneNumber ?? "");
+    params.append("role", staffData.role ?? "");
+    params.append("startDate", staffData.startDate ?? "");
+    params.append("note", staffData.note ?? "");
+    params.append("hasAccount", staffData.hasAccount ?? false);
+    const response = await axios.post(
+      `${this.BASE_URL}/staff-profiles/add`,
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
+    );
+    return response.data;
+  }
+
+  static async updateStaffProfile(staffId, staffData) {
+    const params = new URLSearchParams();
+    params.append("name", staffData.name ?? "");
+    params.append("email", staffData.email ?? "");
+    params.append("phoneNumber", staffData.phoneNumber ?? "");
+    params.append("role", staffData.role ?? "");
+    params.append("startDate", staffData.startDate ?? "");
+    params.append("note", staffData.note ?? "");
+    const response = await axios.put(
+      `${this.BASE_URL}/staff-profiles/update/${staffId}`,
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
+    );
+    return response.data;
+  }
+
+  static async deleteStaffProfile(staffId) {
+    const response = await axios.delete(
+      `${this.BASE_URL}/staff-profiles/delete/${staffId}`,
+      { headers: this.getHeader() },
     );
     return response.data;
   }
