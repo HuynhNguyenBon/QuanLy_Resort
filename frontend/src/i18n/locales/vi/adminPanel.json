@@ -214,6 +214,8 @@
     "createAccount": "Tạo TK",
     "delete": "Xoá",
     "confirmDelete": "Xác nhận xoá nhân viên này?",
+    "addSuccess": "Đã thêm nhân viên.",
+    "updateSuccess": "Đã cập nhật nhân viên.",
     "deleteSuccess": "Đã xoá nhân viên.",
     "noStaff": "Chưa có nhân viên nào.",
     "email_required": "Email không được để trống.",

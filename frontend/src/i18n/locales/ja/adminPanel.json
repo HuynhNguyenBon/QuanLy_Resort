@@ -211,6 +211,8 @@
     "createAccount": "アカウントを作成",
     "delete": "削除",
     "confirmDelete": "このスタッフを削除しますか？",
+    "addSuccess": "スタッフを追加しました。",
+    "updateSuccess": "スタッフ情報を更新しました。",
     "deleteSuccess": "スタッフを削除しました。",
     "noStaff": "スタッフがいません。",
     "email_required": "メールアドレスは必須です。",
