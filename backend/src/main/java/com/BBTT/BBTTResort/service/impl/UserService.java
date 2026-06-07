@@ -39,6 +39,26 @@ public class UserService implements IUserService {
     @Autowired
     private EmailService emailService;
 
+    // Danh sách domain email tạm thời/ảo phổ biến — chặn để đảm bảo người dùng đăng ký bằng email thật
+    private static final java.util.Set<String> DISPOSABLE_EMAIL_DOMAINS = java.util.Set.of(
+            "10minutemail.com", "20minutemail.com", "guerrillamail.com", "guerrillamail.info",
+            "mailinator.com", "mailinator.net", "tempmail.com", "temp-mail.org", "tempmail.net",
+            "yopmail.com", "yopmail.fr", "trashmail.com", "throwawaymail.com", "fakeinbox.com",
+            "getnada.com", "dispostable.com", "mintemail.com", "moakt.com", "sharklasers.com",
+            "spamgourmet.com", "mailnesia.com", "maildrop.cc", "mohmal.com", "emailondeck.com",
+            "mailcatch.com", "tempinbox.com", "discardmail.com", "spam4.me", "33mail.com",
+            "tempr.email", "fakemailgenerator.com", "trbvm.com", "mytemp.email", "tmpmail.org",
+            "throwawayemailaddresses.com", "10minemail.com", "anonbox.net", "burnermail.io",
+            "nada.email", "tempmailo.com", "luxusmail.org", "inboxkitten.com", "emailfake.com"
+    );
+
+    private boolean isDisposableEmail(String email) {
+        int at = email.lastIndexOf('@');
+        if (at < 0) return false;
+        String domain = email.substring(at + 1).trim().toLowerCase();
+        return DISPOSABLE_EMAIL_DOMAINS.contains(domain);
+    }
+
 
     @Override
     public Response register(User user) {
@@ -64,6 +84,12 @@ public class UserService implements IUserService {
             if (!user.getEmail().matches(emailRegex)) {
                 response.setStatusCode(400);
                 response.setMessage("Email không đúng định dạng");
+                return response;
+            }
+
+            if (isDisposableEmail(user.getEmail())) {
+                response.setStatusCode(400);
+                response.setMessage("Vui lòng sử dụng email thật, không dùng email tạm thời/email ảo");
                 return response;
             }
 
