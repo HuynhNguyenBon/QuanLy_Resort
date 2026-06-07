@@ -140,7 +140,10 @@ const ManageRoomPage = () => {
   const [roomTypes, setRoomTypes] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const saved = parseInt(sessionStorage.getItem("manageRooms_currentPage"), 10);
+    return saved > 0 ? saved : 1;
+  });
   const [deletingId, setDeletingId] = useState(null);
   const [msg, setMsg] = useState("");
 
@@ -151,6 +154,11 @@ const ManageRoomPage = () => {
     ApiService.getRoomTypes().then(setRoomTypes).catch(console.error);
   }, []);
 
+  // Ghi nhớ trang hiện tại để khi quay lại từ trang sửa phòng thì không bị nhảy về trang 1
+  useEffect(() => {
+    sessionStorage.setItem("manageRooms_currentPage", String(currentPage));
+  }, [currentPage]);
+
   const filtered = rooms.filter((r) => {
     const matchType = !selectedType || r.roomType === selectedType;
     const matchSearch =
@@ -159,6 +167,12 @@ const ManageRoomPage = () => {
   });
 
   const totalPages = Math.ceil(filtered.length / ROOMS_PER_PAGE);
+
+  // Đảm bảo trang đã lưu vẫn hợp lệ khi danh sách phòng thay đổi (vd. lọc/tìm kiếm/xoá)
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) setCurrentPage(totalPages);
+  }, [totalPages, currentPage]);
+
   const paginated = filtered.slice(
     (currentPage - 1) * ROOMS_PER_PAGE,
     currentPage * ROOMS_PER_PAGE,
