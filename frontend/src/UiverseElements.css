@@ -1212,24 +1212,6 @@ button.bbhh-btn:hover  { opacity: 0.88; transform: translateY(-2px); }
 .bbhh-btn-confirm-final:focus,
 .bbhh-btn-confirm-final:active { background: var(--amber) !important; outline: none; }
 
-.bbhh-payment-waiting-note {
-  margin-top: 12px; padding: 12px 14px;
-  background: #EFF8FF; border: 1px solid #5BB8D4;
-  border-radius: var(--radius-sm);
-}
-.bbhh-payment-waiting-note p {
-  margin: 0 0 10px; font-size: 13px; color: var(--text-main); line-height: 1.5;
-}
-.bbhh-btn-recheck-payment {
-  width: 100%; padding: 10px;
-  background: #5BB8D4 !important; color: #fff !important;
-  border: none; border-radius: var(--radius-sm);
-  font-weight: 700; font-size: 13px;
-  cursor: pointer; font-family: inherit;
-}
-.bbhh-btn-recheck-payment:hover { background: #4aa3bf !important; }
-
-
 /* ================================================================
    MANAGE BOOKINGS (admin)
 ================================================================ */

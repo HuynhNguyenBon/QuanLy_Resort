@@ -23,6 +23,15 @@ const VNPayReturnPage = () => {
         const response = await ApiService.getVNPayReturn(params);
         setResult(response);
 
+        // Trình duyệt có thể đã xóa localStorage (token đăng nhập) khi điều hướng
+        // qua VNPay rồi quay lại (cơ chế chống bounce-tracking). Nếu backend trả về
+        // token mới kèm kết quả thanh toán, tự khôi phục lại phiên đăng nhập.
+        if (response?.token) {
+          localStorage.setItem("token", response.token);
+          if (response.role) localStorage.setItem("role", response.role);
+          if (response.userEmail) localStorage.setItem("userEmail", response.userEmail);
+        }
+
         // Nếu thanh toán thất bại, xóa booking đã tạo
         if (response?.status !== "SUCCESS") {
           const pendingBookingId = sessionStorage.getItem("pendingBookingId");
