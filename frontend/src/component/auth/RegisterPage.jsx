@@ -62,8 +62,12 @@ function RegisterPage() {
       const res = await ApiService.registerUser(formData);
       if (res.statusCode === 200) {
         setSuccess(t("register.success"));
+        const registeredEmail = formData.email;
         setFormData({ name: "", email: "", password: "", phoneNumber: "" });
-        setTimeout(() => navigate("/login"), 2500);
+        setTimeout(
+          () => navigate("/verify-email", { state: { email: registeredEmail } }),
+          2500,
+        );
       }
     } catch (err) {
       setError(err.response?.data?.message || t("register.failed"));
