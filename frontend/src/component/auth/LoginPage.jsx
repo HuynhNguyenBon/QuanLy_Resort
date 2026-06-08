@@ -132,6 +132,19 @@ function LoginPage() {
             {t("login.noAccount")}{" "}
             <a href="/register">{t("login.registerLink")}</a>
           </p>
+
+          <p className="auth-switch">
+            Chưa xác minh email?{" "}
+            <button
+              type="button"
+              className="auth-link-btn"
+              onClick={() =>
+                navigate("/verify-email", { state: { email } })
+              }
+            >
+              Nhập mã OTP
+            </button>
+          </p>
         </div>
       </div>
     </div>
