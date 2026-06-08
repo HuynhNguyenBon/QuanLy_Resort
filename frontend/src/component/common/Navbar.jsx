@@ -51,7 +51,9 @@ function Navbar() {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isMenuOpen]);
 
   useEffect(() => {
@@ -171,9 +173,9 @@ function Navbar() {
                   style={{ top: userPos.top, right: userPos.right }}
                 >
                   <div className="bbhh-nav-dropdown-head">
-                    <div className="dd-role">Đã đăng nhập</div>
+                    <div className="dd-role">{t("user.loggedIn")}</div>
                     <div className="dd-name">
-                      {isAdmin ? "Administrator" : "Thành viên"}
+                      {isAdmin ? t("user.administrator") : t("user.member")}
                     </div>
                   </div>
                   {isUser && (
@@ -324,8 +326,8 @@ function Navbar() {
                 <>
                   <div className="bbhh-mobile-user-info">
                     <span className="bbhh-mobile-user-role">
-                      Đã đăng nhập —{" "}
-                      {isAdmin ? "Administrator" : "Thành viên"}
+                      {t("user.loggedIn")} —{" "}
+                      {isAdmin ? t("user.administrator") : t("user.member")}
                     </span>
                   </div>
                   {isUser && (
@@ -358,7 +360,7 @@ function Navbar() {
 
             {/* Language */}
             <div className="bbhh-mobile-lang-section">
-              <div className="bbhh-mobile-lang-title">Ngôn ngữ</div>
+              <div className="bbhh-mobile-lang-title">{t("language")}</div>
               {languages.map((lang) => (
                 <div
                   key={lang.code}
