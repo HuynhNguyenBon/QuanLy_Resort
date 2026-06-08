@@ -9,7 +9,7 @@ const VerifyEmailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [form, setForm] = useState({
-    email: location.state?.email || "",
+    email: location.state?.email || sessionStorage.getItem("pendingVerifyEmail") || "",
     otp: "",
   });
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,7 @@ const VerifyEmailPage = () => {
       setError("");
       const response = await ApiService.verifyEmail(form.email, form.otp);
       setSuccess(response.data?.message || t("verifyEmail.success"));
+      sessionStorage.removeItem("pendingVerifyEmail");
       setTimeout(() => navigate("/login"), 2500);
     } catch (err) {
       setError(err.response?.data?.message || t("verifyEmail.generalError"));
