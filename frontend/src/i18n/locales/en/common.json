@@ -43,6 +43,7 @@
     "checkOut": "Check-out Date",
     "roomType": "Room Type",
     "tc": "(Options)",
+    "allTypes": "All Room Types",
     "selectCheckIn": "Select Check-in Date",
     "selectCheckOut": "Select Check-out Date",
     "selectRoomType": "Select Room Type",
