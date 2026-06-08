@@ -41,6 +41,7 @@
     "checkOut": "Ngày trả phòng",
     "roomType": "Loại phòng",
     "tc": "(Tùy chọn) ",
+    "allTypes": "Tất cả loại phòng",
     "selectCheckIn": "Chọn ngày nhận phòng",
     "selectCheckOut": "Chọn ngày trả phòng",
     "selectRoomType": "Chọn loại phòng",

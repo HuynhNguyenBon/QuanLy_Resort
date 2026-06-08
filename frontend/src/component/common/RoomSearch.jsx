@@ -179,7 +179,7 @@ const RoomSearch = ({ handleSearchResult }) => {
                   setDropOpen(false);
                 }}
               >
-                Tất cả loại phòng
+                {t("search.allTypes")}
               </div>
               {roomTypes.map((type) => (
                 <div
@@ -193,7 +193,7 @@ const RoomSearch = ({ handleSearchResult }) => {
                   {roomType === type && (
                     <span className="search-drop-check">✓</span>
                   )}
-                  {type}
+                  {getRoomTypeLabel(type)}
                 </div>
               ))}
             </div>
