@@ -32,6 +32,21 @@ public class AuthController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    @PostMapping("/verify-email")
+    public ResponseEntity<Response> verifyEmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String otp = request.get("otp");
+        Response response = userService.verifyEmail(email, otp);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PostMapping("/resend-verification-otp")
+    public ResponseEntity<Response> resendVerificationOtp(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Response response = userService.resendVerificationOtp(email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<Response> forgotPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
