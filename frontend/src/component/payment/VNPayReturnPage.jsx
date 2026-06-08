@@ -30,6 +30,9 @@ const VNPayReturnPage = () => {
           localStorage.setItem("token", response.token);
           if (response.role) localStorage.setItem("role", response.role);
           if (response.userEmail) localStorage.setItem("userEmail", response.userEmail);
+          // Báo cho Navbar (và các nơi khác) biết trạng thái đăng nhập vừa được khôi phục
+          // để chúng tự re-render, vì localStorage thay đổi không tự kích hoạt re-render trong React.
+          window.dispatchEvent(new Event("authChanged"));
         }
 
         // Nếu thanh toán thất bại, xóa booking đã tạo
