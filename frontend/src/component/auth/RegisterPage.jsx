@@ -62,8 +62,15 @@ function RegisterPage() {
       const res = await ApiService.registerUser(formData);
       if (res.statusCode === 200) {
         setSuccess(t("register.success"));
+        const registeredEmail = formData.email;
         setFormData({ name: "", email: "", password: "", phoneNumber: "" });
-        setTimeout(() => navigate("/login"), 2500);
+        // Lưu lại email để nếu người dùng rời trang xác minh (về trang chủ, mở link email...)
+        // rồi quay lại "/verify-email", trang vẫn biết email cần xác minh là gì.
+        sessionStorage.setItem("pendingVerifyEmail", registeredEmail);
+        setTimeout(
+          () => navigate("/verify-email", { state: { email: registeredEmail } }),
+          2500,
+        );
       }
     } catch (err) {
       setError(err.response?.data?.message || t("register.failed"));
