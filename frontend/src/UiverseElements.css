@@ -3036,6 +3036,13 @@ button[type="submit"]:hover { background: var(--teal-dark); }
   color: #5BB8D4;
   cursor: pointer;
   text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.auth-link-btn::selection,
+.auth-link-btn *::selection {
+  background: transparent;
+  color: inherit;
 }
 .auth-link-btn:hover:not(:disabled) { text-decoration: underline; }
 .auth-link-btn:disabled { opacity: 0.6; cursor: not-allowed; }
