@@ -388,6 +388,40 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Response setUserRole(String userId, String role) {
+
+        Response response = new Response();
+
+        try {
+            User user = userRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new OurException("User Not Found"));
+
+            if (role == null || role.isBlank()) {
+                response.setStatusCode(400);
+                response.setMessage("Vui lòng chọn vai trò");
+                return response;
+            }
+
+            user.setRole(role.trim().toUpperCase());
+            userRepository.save(user);
+
+            response.setStatusCode(200);
+            response.setMessage("Cập nhật vai trò thành công");
+            response.setUser(Utils.mapUserEntityToUserDTO(user));
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Lỗi cập nhật vai trò: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
     public Response resetPassword(String email, String otp, String newPassword) {
 
         Response response = new Response();
