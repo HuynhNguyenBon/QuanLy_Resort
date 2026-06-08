@@ -3038,6 +3038,18 @@ button[type="submit"]:hover { background: var(--teal-dark); }
   text-decoration: none;
   user-select: none;
   -webkit-user-select: none;
+  forced-color-adjust: none;
+  -ms-high-contrast-adjust: none;
+}
+@media (forced-colors: active) {
+  .auth-link-btn,
+  .auth-link-btn:hover,
+  .auth-link-btn:focus,
+  .auth-link-btn:active {
+    background: none !important;
+    color: #5BB8D4 !important;
+    forced-color-adjust: none;
+  }
 }
 .auth-link-btn::selection,
 .auth-link-btn *::selection {
