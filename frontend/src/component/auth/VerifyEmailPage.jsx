@@ -147,7 +147,13 @@ const VerifyEmailPage = () => {
           </p>
 
           <p className="auth-switch">
-            <a href="/login">{t("verifyEmail.backToLogin")}</a>
+            <button
+              type="button"
+              className="auth-link-btn"
+              onClick={() => navigate("/login")}
+            >
+              {t("verifyEmail.backToLogin")}
+            </button>
           </p>
         </div>
       </div>
