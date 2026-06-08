@@ -61,6 +61,8 @@ const RoomDetailsPage = () => {
   const [payNow, setPayNow] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
   const bookingLoadingRef = useRef(false);
+  const [waitingPayment, setWaitingPayment] = useState(false);
+  const pendingPaymentBookingIdRef = useRef(null);
   const [cachedUserId, setCachedUserId] = useState(null);
   const [selectedServices, setSelectedServices] = useState(() => {
     try {
@@ -257,20 +259,16 @@ const RoomDetailsPage = () => {
         );
         if (paymentRes.status === "OK") {
           sessionStorage.setItem("pendingBookingId", bookingRes.bookingId);
-          // Một số trình duyệt (Safari ITP, Firefox Redirect Tracking...) coi luồng
-          // resort -> VNPay -> resort là "bounce tracking" và xoá sạch localStorage
-          // của domain resort ngay khi quay lại, khiến người dùng bị đăng xuất dù
-          // không có code nào gọi logout(). Sao lưu sang sessionStorage để khôi phục
-          // lại sau khi quay về (xem index.js).
-          sessionStorage.setItem(
-            "bbhh_auth_backup",
-            JSON.stringify({
-              token: localStorage.getItem("token"),
-              role: localStorage.getItem("role"),
-              userEmail: localStorage.getItem("userEmail"),
-            }),
-          );
-          window.location.href = paymentRes.paymentUrl;
+          // Mở VNPay ở tab mới và GIỮ NGUYÊN tab hiện tại (không window.location.href).
+          // Lý do: nếu cùng một tab điều hướng resort -> VNPay -> resort, một số
+          // trình duyệt (Safari ITP, Firefox Redirect Tracking...) coi đây là
+          // "bounce tracking" và xoá sạch localStorage/sessionStorage của domain
+          // resort ngay khi quay lại, khiến người dùng tự nhiên bị đăng xuất dù
+          // không có đoạn code nào gọi logout(). Giữ tab gốc không rời đi thì
+          // phiên đăng nhập không bao giờ bị mất.
+          window.open(paymentRes.paymentUrl, "_blank", "noopener,noreferrer");
+          pendingPaymentBookingIdRef.current = bookingRes.bookingId;
+          setWaitingPayment(true);
         } else {
           setError(t("roomDetailsPage.paymentError") + paymentRes.message);
         }
@@ -284,6 +282,45 @@ const RoomDetailsPage = () => {
       setBookingLoading(false);
     }
   };
+
+  // Khi người dùng quay lại tab này (đã hoàn tất hoặc đóng tab thanh toán VNPay),
+  // kiểm tra xem đặt phòng đang chờ đã được thanh toán hay chưa.
+  useEffect(() => {
+    if (!waitingPayment) return;
+
+    const checkPendingPayment = async () => {
+      const bookingId = pendingPaymentBookingIdRef.current;
+      if (!bookingId || !cachedUserId) return;
+      try {
+        const res = await ApiService.getUserBookings(cachedUserId);
+        const bookings = res.user?.bookings || [];
+        const match = bookings.find((b) => b.id === bookingId);
+        if (!match) return;
+
+        const paid =
+          (match.paymentStatus || "").toString().toUpperCase() === "PAID";
+        if (paid) {
+          sessionStorage.removeItem("pendingBookingId");
+          pendingPaymentBookingIdRef.current = null;
+          setWaitingPayment(false);
+          toast("Thanh toán thành công!", "success");
+          navigate("/profile");
+        }
+      } catch (err) {
+        console.error("Lỗi kiểm tra trạng thái thanh toán:", err);
+      }
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") checkPendingPayment();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("focus", checkPendingPayment);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("focus", checkPendingPayment);
+    };
+  }, [waitingPayment, cachedUserId, navigate, toast]);
 
   if (isLoading)
     return (
@@ -561,8 +598,8 @@ const RoomDetailsPage = () => {
                   <button
                     onClick={acceptBooking}
                     className="bbhh-btn-confirm-final"
-                    disabled={bookingLoading}
-                    style={{ opacity: bookingLoading ? 0.75 : 1 }}
+                    disabled={bookingLoading || waitingPayment}
+                    style={{ opacity: bookingLoading || waitingPayment ? 0.75 : 1 }}
                   >
                     {bookingLoading
                       ? "⏳ Đang xử lý..."
@@ -570,6 +607,44 @@ const RoomDetailsPage = () => {
                         ? t("roomDetailsPage.payAndConfirm")
                         : t("roomDetailsPage.reserveNow")}
                   </button>
+
+                  {waitingPayment && (
+                    <div className="bbhh-payment-waiting-note">
+                      <p>
+                        💳 Cổng thanh toán VNPay đã mở ở một tab mới. Hãy hoàn
+                        tất thanh toán ở đó, sau đó quay lại tab này — hệ thống
+                        sẽ tự động kiểm tra kết quả.
+                      </p>
+                      <button
+                        type="button"
+                        className="bbhh-btn-recheck-payment"
+                        onClick={async () => {
+                          const bookingId = pendingPaymentBookingIdRef.current;
+                          if (!bookingId || !cachedUserId) return;
+                          try {
+                            const res = await ApiService.getUserBookings(cachedUserId);
+                            const bookings = res.user?.bookings || [];
+                            const match = bookings.find((b) => b.id === bookingId);
+                            const paid =
+                              (match?.paymentStatus || "").toString().toUpperCase() === "PAID";
+                            if (paid) {
+                              sessionStorage.removeItem("pendingBookingId");
+                              pendingPaymentBookingIdRef.current = null;
+                              setWaitingPayment(false);
+                              toast("Thanh toán thành công!", "success");
+                              navigate("/profile");
+                            } else {
+                              toast("Chưa nhận được kết quả thanh toán. Vui lòng hoàn tất ở tab VNPay rồi thử lại.", "info");
+                            }
+                          } catch (err) {
+                            console.error("Lỗi kiểm tra trạng thái thanh toán:", err);
+                          }
+                        }}
+                      >
+                        🔄 Tôi đã thanh toán xong — Kiểm tra lại
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
