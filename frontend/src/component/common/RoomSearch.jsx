@@ -3,10 +3,14 @@ import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import "react-datepicker/dist/react-datepicker.css";
 import ApiService from "../../service/ApiService";
+import { getRoomTranslation } from "../../data/roomTranslations";
 import "../../UiverseElements.css";
 
 const RoomSearch = ({ handleSearchResult }) => {
   const { t, i18n } = useTranslation("common");
+  const lang = i18n.language.split("-")[0];
+  const getRoomTypeLabel = (type) =>
+    getRoomTranslation(type, lang)?.roomType || type;
   const getDateFormat = () => {
     switch (i18n.language) {
       case "vi":
@@ -111,7 +115,9 @@ const RoomSearch = ({ handleSearchResult }) => {
     }
   };
 
-  const selectedLabel = roomType || t("search.selectRoomType");
+  const selectedLabel = roomType
+    ? getRoomTypeLabel(roomType)
+    : t("search.selectRoomType");
 
   return (
     <section>
@@ -181,7 +187,7 @@ const RoomSearch = ({ handleSearchResult }) => {
                   setDropOpen(false);
                 }}
               >
-                Tất cả loại phòng
+                {t("search.allTypes")}
               </div>
               {roomTypes.map((type) => (
                 <div
@@ -195,7 +201,7 @@ const RoomSearch = ({ handleSearchResult }) => {
                   {roomType === type && (
                     <span className="search-drop-check">✓</span>
                   )}
-                  {type}
+                  {getRoomTypeLabel(type)}
                 </div>
               ))}
             </div>
