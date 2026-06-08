@@ -81,6 +81,23 @@ public class EmailService {
         return sendEmail(toEmail, "🔐 Mã OTP đặt lại mật khẩu - BBHH Resort", content);
     }
 
+    // ── Gửi OTP xác minh email khi đăng ký ─────────────────────────────────
+    public boolean sendRegistrationOtpEmail(String toEmail, String otp) {
+        String content =
+                "Xin chào,\n\n" +
+                        "Cảm ơn bạn đã đăng ký tài khoản tại BBHH Resort!\n" +
+                        "Vui lòng nhập mã bên dưới để xác minh email của bạn.\n\n" +
+                        "━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                        "  Mã xác minh của bạn: " + otp + "\n" +
+                        "━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                        "⏱️ Mã có hiệu lực trong 5 phút.\n" +
+                        "⚠️ Không chia sẻ mã này với bất kỳ ai.\n\n" +
+                        "Nếu bạn không yêu cầu đăng ký, hãy bỏ qua email này.\n\n" +
+                        "BBHH Resort | 📞 0909.448.608";
+
+        return sendEmail(toEmail, "✅ Xác minh email đăng ký - BBHH Resort", content);
+    }
+
     // ── Gửi email xác nhận đặt phòng ───────────────────────────────────────
     public void sendBookingConfirmationEmail(
             String toEmail,
