@@ -53,5 +53,11 @@
     "spa": "Free Spa",
     "spaDesc": "With Deluxe+ booking",
     "viewAll": "View all offers →"
-  }
+  },
+  "user": {
+    "loggedIn": "Logged in",
+    "administrator": "Administrator",
+    "member": "Member"
+  },
+  "language": "Language"
 }

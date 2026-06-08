@@ -53,5 +53,11 @@
     "spa": "スパ無料",
     "spaDesc": "デラックス以上予約時",
     "viewAll": "全オファーを見る →"
-  }
+  },
+  "user": {
+    "loggedIn": "ログイン済み",
+    "administrator": "管理者",
+    "member": "メンバー"
+  },
+  "language": "言語"
 }

@@ -1,24 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import ApiService from "../../service/ApiService";
 
-const STORAGE_PREFIX = "bbhh_reviews_";
-
-const loadAllReviews = () => {
-  const groups = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (!key?.startsWith(STORAGE_PREFIX)) continue;
-    const roomId = key.slice(STORAGE_PREFIX.length);
-    try {
-      const reviews = JSON.parse(localStorage.getItem(key) || "[]");
-      if (reviews.length > 0) groups.push({ roomId, reviews });
-    } catch {
-      /* skip */
-    }
-  }
-  return groups.sort((a, b) =>
-    a.roomId.localeCompare(b.roomId, undefined, { numeric: true }),
-  );
+const groupReviewsByRoom = (reviews) => {
+  const map = new Map();
+  reviews.forEach((r) => {
+    const roomId = String(r.roomId);
+    if (!map.has(roomId)) map.set(roomId, []);
+    map.get(roomId).push(r);
+  });
+  return Array.from(map.entries())
+    .map(([roomId, list]) => ({ roomId, reviews: list }))
+    .sort((a, b) =>
+      a.roomId.localeCompare(b.roomId, undefined, { numeric: true }),
+    );
 };
 
 const Stars = ({ value }) => (
@@ -43,26 +38,32 @@ const ManageReviewsPage = () => {
   const [search, setSearch] = useState("");
   const [minRating, setMinRating] = useState(0);
 
-  const refresh = useCallback(() => setGroups(loadAllReviews()), []);
+  const refresh = useCallback(() => {
+    ApiService.getAllReviews()
+      .then((r) => setGroups(groupReviewsByRoom(r.reviewList || r || [])))
+      .catch(() => setGroups([]));
+  }, []);
   useEffect(() => {
     refresh();
   }, [refresh]);
 
-  const deleteReview = (roomId, reviewId) => {
-    const key = STORAGE_PREFIX + roomId;
-    const next = JSON.parse(localStorage.getItem(key) || "[]").filter(
-      (r) => r.id !== reviewId,
-    );
-    next.length === 0
-      ? localStorage.removeItem(key)
-      : localStorage.setItem(key, JSON.stringify(next));
-    refresh();
+  const deleteReview = async (roomId, reviewId) => {
+    try {
+      await ApiService.deleteReview(reviewId);
+      refresh();
+    } catch {
+      /* ignore */
+    }
   };
 
-  const clearRoom = (roomId) => {
+  const clearRoom = async (roomId) => {
     if (!window.confirm(`${t("reviews.confirmClear")} #${roomId}?`)) return;
-    localStorage.removeItem(STORAGE_PREFIX + roomId);
-    refresh();
+    try {
+      await ApiService.deleteReviewsByRoom(roomId);
+      refresh();
+    } catch {
+      /* ignore */
+    }
   };
 
   const totalCount = groups.reduce((s, g) => s + g.reviews.length, 0);

@@ -20,7 +20,7 @@ public class UserController {
 
 
     @GetMapping("/all")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STAFF')")
     public ResponseEntity<Response> getAllUsers() {
         Response response = userService.getAllUsers();
         return ResponseEntity.status(response.getStatusCode()).body(response);
@@ -65,6 +65,15 @@ public class UserController {
                 updates.get("name"),
                 updates.get("phoneNumber")
         );
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PutMapping("/set-role/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Response> setUserRole(
+            @PathVariable("userId") String userId,
+            @RequestBody Map<String, String> body) {
+        Response response = userService.setUserRole(userId, body.get("role"));
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

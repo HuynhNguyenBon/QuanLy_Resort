@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 
-const STAFF_KEY = "bbhh_staff_list";
-const STAFF_META_KEY = "bbhh_staff_meta"; // metadata cho nhân viên từ API
 const ROLES = [
   "receptionist",
   "manager",
@@ -36,27 +34,6 @@ const EMPTY = {
   note: "",
 };
 
-const getStaff = () => {
-  try {
-    return JSON.parse(localStorage.getItem(STAFF_KEY) || "[]");
-  } catch {
-    return [];
-  }
-};
-const saveStaff = (list) =>
-  localStorage.setItem(STAFF_KEY, JSON.stringify(list));
-
-// meta: { [apiId]: { role, startDate, note, phone } }
-const getMeta = () => {
-  try {
-    return JSON.parse(localStorage.getItem(STAFF_META_KEY) || "{}");
-  } catch {
-    return {};
-  }
-};
-const saveMeta = (meta) =>
-  localStorage.setItem(STAFF_META_KEY, JSON.stringify(meta));
-
 const COLORS = [
   "#6366f1",
   "#0d9488",
@@ -82,35 +59,25 @@ const ManageStaffPage = () => {
   const [msg, setMsg] = useState({ text: "", ok: true });
   const [modalErr, setModalErr] = useState("");
 
-  const reloadStaff = () => {
-    const local = getStaff();
-    const meta = getMeta();
-    ApiService.getAllUsers()
-      .then((r) => {
-        const apiStaff = (r.userList || [])
-          .filter((u) => (u.role || "").toUpperCase() === "STAFF")
-          .map((u) => {
-            const m = meta[u.id] || {};
-            return {
-              id: `api_${u.id}`,
-              _apiId: u.id,
-              name: u.name,
-              email: u.email,
-              phone: m.phone || u.phoneNumber || "",
-              role: m.role || "other",
-              startDate: m.startDate || "",
-              note: m.note || "",
-              hasAccount: true,
-              _fromApi: true,
-            };
-          });
-        const apiEmails = new Set(apiStaff.map((s) => s.email));
-        const localExtra = local.filter(
-          (s) => !s.email || !apiEmails.has(s.email),
-        );
-        setStaff([...apiStaff, ...localExtra]);
-      })
-      .catch(() => setStaff(local));
+  const reloadStaff = async () => {
+    try {
+      const r = await ApiService.getAllStaffProfiles();
+      const list = r.staffProfileList || r || [];
+      setStaff(
+        list.map((p) => ({
+          id: p.id,
+          name: p.name || "",
+          email: p.email || "",
+          phone: p.phoneNumber || "",
+          role: p.role || "other",
+          startDate: p.startDate || "",
+          note: p.note || "",
+          hasAccount: !!p.hasAccount,
+        })),
+      );
+    } catch {
+      setStaff([]);
+    }
   };
 
   useEffect(() => {
@@ -135,8 +102,8 @@ const ManageStaffPage = () => {
     setModalErr("");
   };
 
-  const handleSave = () => {
-    const { name, role, phone } = modal.data;
+  const handleSave = async () => {
+    const { name, role, phone, email, startDate, note } = modal.data;
     if (!name.trim()) {
       setModalErr(
         t("staff.field_required", { field: t("staff.addModal.nameLabel") }),
@@ -156,50 +123,42 @@ const ManageStaffPage = () => {
       return;
     }
     setSaving(true);
-    const list = getStaff();
-    if (modal.mode === "add") {
-      const next = [
-        ...list,
-        {
-          ...modal.data,
-          id: Date.now(),
-          name: name.trim(),
-          phone: phone.trim(),
-        },
-      ];
-      saveStaff(next);
-      showMsg(t("staff.addSuccess"));
-    } else if (modal.data._fromApi) {
-      // Lưu metadata cho nhân viên từ API
-      const meta = getMeta();
-      meta[modal.data._apiId] = {
-        role: modal.data.role,
-        phone: phone.trim(),
-        startDate: modal.data.startDate || "",
-        note: modal.data.note || "",
-      };
-      saveMeta(meta);
-      showMsg(t("staff.updateSuccess"));
-    } else {
-      // Nhân viên thủ công — update localStorage
-      const next = list.map((s) =>
-        s.id === modal.data.id ? { ...modal.data, name: name.trim() } : s,
+    const payload = {
+      name: name.trim(),
+      email: email?.trim() || "",
+      phoneNumber: phone.trim(),
+      role,
+      startDate: startDate || "",
+      note: note || "",
+    };
+    try {
+      if (modal.mode === "add") {
+        await ApiService.addStaffProfile(payload);
+        showMsg(t("staff.addSuccess"));
+      } else {
+        await ApiService.updateStaffProfile(modal.data.id, payload);
+        showMsg(t("staff.updateSuccess"));
+      }
+      closeModal();
+      reloadStaff();
+    } catch (e) {
+      setModalErr(
+        e.response?.data?.message || e.message || t("staff.create_failed"),
       );
-      saveStaff(next);
-      showMsg(t("staff.updateSuccess"));
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    closeModal();
-    reloadStaff();
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm(t("staff.confirmDelete"))) return;
-    // Chỉ xoá khỏi localStorage, không xoá tài khoản backend
-    const next = getStaff().filter((s) => s.id !== id);
-    saveStaff(next);
-    showMsg(t("staff.deleteSuccess"));
-    reloadStaff();
+    try {
+      await ApiService.deleteStaffProfile(id);
+      showMsg(t("staff.deleteSuccess"));
+      reloadStaff();
+    } catch (e) {
+      showMsg(e.response?.data?.message || e.message, false);
+    }
   };
 
   const openAccountModal = (s) => {
@@ -250,13 +209,17 @@ const ManageStaffPage = () => {
           email: email.trim(),
         }),
       );
-      const localList = getStaff();
-      const updated = localList.map((s) =>
-        s.id === accountModal.staffId
-          ? { ...s, email: email.trim(), hasAccount: true }
-          : s,
-      );
-      saveStaff(updated);
+      const staffItem = staff.find((s) => s.id === accountModal.staffId);
+      if (staffItem) {
+        await ApiService.updateStaffProfile(accountModal.staffId, {
+          name: staffItem.name,
+          email: email.trim(),
+          phoneNumber: phone.trim(),
+          role: staffItem.role,
+          startDate: staffItem.startDate,
+          note: staffItem.note,
+        });
+      }
       setAccountModal(null);
       reloadStaff();
     } catch (e) {
@@ -275,11 +238,6 @@ const ManageStaffPage = () => {
         s.phone?.includes(search) ||
         s.email?.toLowerCase().includes(search.toLowerCase())) &&
       (!roleFilter || s.role === roleFilter),
-  );
-
-  const roleCounts = ROLES.reduce(
-    (acc, r) => ({ ...acc, [r]: staff.filter((s) => s.role === r).length }),
-    {},
   );
 
   const fieldStyle = {

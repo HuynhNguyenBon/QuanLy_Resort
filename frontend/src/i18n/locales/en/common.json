@@ -43,12 +43,18 @@
     "checkOut": "Check-out Date",
     "roomType": "Room Type",
     "tc": "(Options)",
+    "allTypes": "All Room Types",
     "selectCheckIn": "Select Check-in Date",
     "selectCheckOut": "Select Check-out Date",
     "selectRoomType": "Select Room Type",
     "button": "Search Rooms",
     "fillAll": "Please select all fields",
     "notAvailable": "No rooms available",
-    "error": "Error: "
+    "error": "Error: ",
+    "searching": "Searching...",
+    "selectDates": "Please select check-in and check-out dates.",
+    "invalidCheckoutDate": "Check-out date must be after check-in date.",
+    "noAvailableRooms": "No rooms are available for the selected dates. Please try different dates.",
+    "searchError": "An error occurred while searching. Please try again."
   }
 }
