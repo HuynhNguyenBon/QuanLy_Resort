@@ -134,7 +134,7 @@ function LoginPage() {
           </p>
 
           <p className="auth-switch">
-            Chưa xác minh email?{" "}
+            {t("login.notVerifiedEmail")}{" "}
             <button
               type="button"
               className="auth-link-btn"
@@ -142,7 +142,7 @@ function LoginPage() {
                 navigate("/verify-email", { state: { email } })
               }
             >
-              Nhập mã OTP
+              {t("login.enterOtpLink")}
             </button>
           </p>
         </div>
