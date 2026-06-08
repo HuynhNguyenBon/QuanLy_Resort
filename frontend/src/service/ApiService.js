@@ -44,6 +44,32 @@ export default class ApiService {
     );
   }
 
+  static async verifyEmail(email, otp) {
+    return axios.post(
+      `${this.BASE_URL}/auth/verify-email`,
+      { email, otp },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      },
+    );
+  }
+
+  static async resendVerificationOtp(email) {
+    return axios.post(
+      `${this.BASE_URL}/auth/resend-verification-otp`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      },
+    );
+  }
+
   static async resetPassword(email, otp, newPassword) {
     return axios.post(
       `${this.BASE_URL}/auth/reset-password`,
