@@ -9,9 +9,19 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [, setAuthVersion] = useState(0);
   const isAuthenticated = ApiService.isAuthenticated();
   const isAdmin = ApiService.isAdmin();
   const isUser = ApiService.isUser();
+
+  // localStorage không tự kích hoạt re-render trong React. Lắng nghe sự kiện "authChanged"
+  // (phát ra khi token được khôi phục lặng lẽ, ví dụ sau khi quay về từ VNPay) để Navbar
+  // đọc lại localStorage và cập nhật trạng thái đăng nhập ngay trên trang hiện tại.
+  useEffect(() => {
+    const onAuthChanged = () => setAuthVersion((v) => v + 1);
+    window.addEventListener("authChanged", onAuthChanged);
+    return () => window.removeEventListener("authChanged", onAuthChanged);
+  }, []);
 
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
