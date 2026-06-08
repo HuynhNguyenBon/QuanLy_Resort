@@ -35,6 +35,11 @@ public class User implements UserDetails {
 
     private String role;
 
+    // Mặc định true để tài khoản hiện có không bị khoá đăng nhập khi triển khai cột này;
+    // register() sẽ chủ động set false cho tài khoản mới, buộc xác minh email qua OTP.
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private boolean verified = true;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
