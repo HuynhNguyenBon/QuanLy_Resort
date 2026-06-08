@@ -53,5 +53,11 @@
     "spa": "Spa miễn phí",
     "spaDesc": "Khi đặt Deluxe+",
     "viewAll": "Xem tất cả ưu đãi →"
-  }
+  },
+  "user": {
+    "loggedIn": "Đã đăng nhập",
+    "administrator": "Quản trị viên",
+    "member": "Thành viên"
+  },
+  "language": "Ngôn ngữ"
 }
