@@ -3024,9 +3024,11 @@ button[type="submit"]:hover { background: var(--teal-dark); }
 .auth-link-btn {
   background: none; border: none; cursor: pointer;
   color: #5BB8D4; font-weight: 700; font-size: 14px;
-  font-family: inherit; padding: 0;
+  font-family: inherit; padding: 2px 4px; border-radius: 4px;
+  outline: none;
 }
 .auth-link-btn:hover:not(:disabled) { text-decoration: underline; }
+.auth-link-btn:focus-visible:not(:disabled) { box-shadow: 0 0 0 2px rgba(91, 184, 212, 0.35); }
 .auth-link-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
 @media (max-width: 768px) {
