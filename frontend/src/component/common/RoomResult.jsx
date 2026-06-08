@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
 import { formatPrice } from "../../utils/formatPrice";
+import { getRoomTranslation } from "../../data/roomTranslations";
 import "../../UiverseElements.css";
 
 const RoomResult = ({ roomSearchResults }) => {
@@ -10,6 +11,42 @@ const RoomResult = ({ roomSearchResults }) => {
   const { t, i18n } = useTranslation("common");
   const lang = i18n.language.split("-")[0];
   const isAdmin = ApiService.isAdmin();
+  const [translations, setTranslations] = useState({});
+
+  useEffect(() => {
+    if (!roomSearchResults || roomSearchResults.length === 0) return;
+
+    const fetchAllTranslations = async () => {
+      const results = await Promise.allSettled(
+        roomSearchResults.map((room) =>
+          ApiService.getRoomTranslation(room.id, lang)
+            .then((trans) => ({ id: room.id, trans }))
+            .catch(() => ({ id: room.id, trans: null })),
+        ),
+      );
+
+      const map = {};
+      results.forEach((r) => {
+        if (r.status === "fulfilled" && r.value.trans) {
+          map[r.value.id] = r.value.trans;
+        }
+      });
+      setTranslations(map);
+    };
+    fetchAllTranslations();
+  }, [roomSearchResults, lang]);
+
+  const getRoomType = (room) =>
+    translations[room.id]?.roomType ||
+    getRoomTranslation(room.roomType, lang)?.roomType ||
+    room.roomType ||
+    "";
+
+  const getRoomDescription = (room) =>
+    translations[room.id]?.roomDescription ||
+    getRoomTranslation(room.roomType, lang)?.roomDescription ||
+    room.roomDescription ||
+    "";
 
   if (!roomSearchResults || roomSearchResults.length === 0) return null;
 
@@ -19,14 +56,14 @@ const RoomResult = ({ roomSearchResults }) => {
         {roomSearchResults.map((room) => (
           <div key={room.id} className="room-card-uiverse">
             <div className="room-image-box">
-              <img src={room.roomPhotoUrl} alt={room.roomType} />
+              <img src={room.roomPhotoUrl} alt={getRoomType(room)} />
             </div>
             <div className="room-content-box">
-              <h3 className="room-title">{room.roomType}</h3>
+              <h3 className="room-title">{getRoomType(room)}</h3>
               <p className="room-price">
                 {formatPrice(room.roomPrice, lang)} / {t("room.perNight")}
               </p>
-              <p className="room-desc">{room.roomDescription}</p>
+              <p className="room-desc">{getRoomDescription(room)}</p>
               <div className="room-amenities-tags">
                 <span>{t("room.wifi")}</span>
                 <span>{t("room.pool")}</span>
