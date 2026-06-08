@@ -25,6 +25,7 @@ const LoginPage              = lazy(() => import('./component/auth/LoginPage'));
 const RegisterPage           = lazy(() => import('./component/auth/RegisterPage'));
 const ForgotPasswordPage     = lazy(() => import('./component/auth/ForgotPasswordPage'));
 const ResetPasswordPage      = lazy(() => import('./component/auth/ResetPasswordPage'));
+const VerifyEmailPage        = lazy(() => import('./component/auth/VerifyEmailPage'));
 const RoomDetailsBookingPage = lazy(() => import('./component/booking_rooms/RoomDetailsPage'));
 const ProfilePage            = lazy(() => import('./component/profile/ProfilePage'));
 const EditProfilePage        = lazy(() => import('./component/profile/EditProfilePage'));
@@ -107,6 +108,7 @@ function PublicSite() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/rooms" element={<AllRoomsPage />} />
             <Route path="/find-booking" element={<FindBookingPage />} />
             <Route path="/services" element={<ServicePage />} />
