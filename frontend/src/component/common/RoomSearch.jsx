@@ -59,11 +59,11 @@ const RoomSearch = ({ handleSearchResult }) => {
 
   const handleSearch = async () => {
     if (!startDate || !endDate) {
-      showError("Vui lòng chọn ngày nhận và ngày trả phòng.");
+      showError(t("search.selectDates"));
       return;
     }
     if (startDate >= endDate) {
-      showError("Ngày trả phòng phải sau ngày nhận phòng.");
+      showError(t("search.invalidCheckoutDate"));
       return;
     }
 
@@ -100,15 +100,13 @@ const RoomSearch = ({ handleSearchResult }) => {
       }
 
       if (availableRooms.length === 0) {
-        showError(
-          "Không có phòng trống trong khoảng thời gian này. Hãy thử ngày khác.",
-        );
+        showError(t("search.noAvailableRooms"));
         return;
       }
 
       handleSearchResult(availableRooms);
     } catch (err) {
-      showError("Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.");
+      showError(t("search.searchError"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -214,7 +212,7 @@ const RoomSearch = ({ handleSearchResult }) => {
           disabled={loading}
           style={{ opacity: loading ? 0.7 : 1 }}
         >
-          {loading ? "Đang tìm..." : t("search.button")}
+          {loading ? t("search.searching") : t("search.button")}
         </button>
       </div>
 

@@ -47,6 +47,11 @@
     "button": "Tìm phòng",
     "fillAll": "Vui lòng chọn đầy đủ thông tin",
     "notAvailable": "Không có phòng trống",
-    "error": "Lỗi: "
+    "error": "Lỗi: ",
+    "searching": "Đang tìm...",
+    "selectDates": "Vui lòng chọn ngày nhận và ngày trả phòng.",
+    "invalidCheckoutDate": "Ngày trả phòng phải sau ngày nhận phòng.",
+    "noAvailableRooms": "Không có phòng nào khả dụng cho các ngày đã chọn. Vui lòng thử các ngày khác.",
+    "searchError": "Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại."
   }
 }
