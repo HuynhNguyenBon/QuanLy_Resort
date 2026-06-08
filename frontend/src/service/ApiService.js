@@ -39,6 +39,33 @@ export default class ApiService {
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: 15000,
+      },
+    );
+  }
+
+  static async verifyEmail(email, otp) {
+    return axios.post(
+      `${this.BASE_URL}/auth/verify-email`,
+      { email, otp },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      },
+    );
+  }
+
+  static async resendVerificationOtp(email) {
+    return axios.post(
+      `${this.BASE_URL}/auth/resend-verification-otp`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
       },
     );
   }
@@ -281,6 +308,7 @@ export default class ApiService {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userEmail");
+    sessionStorage.removeItem("bbhh_auth_backup");
   }
 
   static isAuthenticated() {
@@ -364,6 +392,113 @@ export default class ApiService {
       {
         headers: this.getHeader(),
       },
+    );
+    return response.data;
+  }
+
+  // =================== STAFF PROFILES (Admin) ===================
+  static async getAllStaffProfiles() {
+    const response = await axios.get(
+      `${this.BASE_URL}/staff-profiles/all`,
+      { headers: this.getHeader() },
+    );
+    return response.data;
+  }
+
+  static async addStaffProfile(staffData) {
+    const params = new URLSearchParams();
+    params.append("name", staffData.name ?? "");
+    params.append("email", staffData.email ?? "");
+    params.append("phoneNumber", staffData.phoneNumber ?? "");
+    params.append("role", staffData.role ?? "");
+    params.append("startDate", staffData.startDate ?? "");
+    params.append("note", staffData.note ?? "");
+    params.append("hasAccount", staffData.hasAccount ?? false);
+    const response = await axios.post(
+      `${this.BASE_URL}/staff-profiles/add`,
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
+    );
+    return response.data;
+  }
+
+  static async updateStaffProfile(staffId, staffData) {
+    const params = new URLSearchParams();
+    params.append("name", staffData.name ?? "");
+    params.append("email", staffData.email ?? "");
+    params.append("phoneNumber", staffData.phoneNumber ?? "");
+    params.append("role", staffData.role ?? "");
+    params.append("startDate", staffData.startDate ?? "");
+    params.append("note", staffData.note ?? "");
+    const response = await axios.put(
+      `${this.BASE_URL}/staff-profiles/update/${staffId}`,
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
+    );
+    return response.data;
+  }
+
+  static async deleteStaffProfile(staffId) {
+    const response = await axios.delete(
+      `${this.BASE_URL}/staff-profiles/delete/${staffId}`,
+      { headers: this.getHeader() },
+    );
+    return response.data;
+  }
+
+  // =================== REVIEWS ===================
+  static async getReviewsByRoom(roomId) {
+    const response = await axios.get(
+      `${this.BASE_URL}/reviews/room/${roomId}`,
+    );
+    return response.data;
+  }
+
+  // (Dành cho Admin) Lấy tất cả đánh giá
+  static async getAllReviews() {
+    const response = await axios.get(`${this.BASE_URL}/reviews/all`, {
+      headers: this.getHeader(),
+    });
+    return response.data;
+  }
+
+  // Gửi đánh giá mới (khách không cần đăng nhập)
+  static async addReview(roomId, reviewData) {
+    const params = new URLSearchParams();
+    params.append("roomId", roomId);
+    params.append("name", reviewData.name);
+    params.append("rating", reviewData.rating);
+    params.append("comment", reviewData.comment);
+    const response = await axios.post(`${this.BASE_URL}/reviews/add`, params, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+    return response.data;
+  }
+
+  // (Dành cho Admin) Xoá 1 đánh giá
+  static async deleteReview(reviewId) {
+    const response = await axios.delete(
+      `${this.BASE_URL}/reviews/delete/${reviewId}`,
+      { headers: this.getHeader() },
+    );
+    return response.data;
+  }
+
+  // (Dành cho Admin) Xoá toàn bộ đánh giá của 1 phòng
+  static async deleteReviewsByRoom(roomId) {
+    const response = await axios.delete(
+      `${this.BASE_URL}/reviews/room/${roomId}`,
+      { headers: this.getHeader() },
     );
     return response.data;
   }
