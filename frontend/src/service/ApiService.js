@@ -308,6 +308,7 @@ export default class ApiService {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userEmail");
+    sessionStorage.removeItem("bbhh_auth_backup");
   }
 
   static isAuthenticated() {

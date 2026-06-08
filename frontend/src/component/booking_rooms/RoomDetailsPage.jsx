@@ -257,6 +257,19 @@ const RoomDetailsPage = () => {
         );
         if (paymentRes.status === "OK") {
           sessionStorage.setItem("pendingBookingId", bookingRes.bookingId);
+          // Một số trình duyệt (Safari ITP, Firefox Redirect Tracking...) coi luồng
+          // resort -> VNPay -> resort là "bounce tracking" và xoá sạch localStorage
+          // của domain resort ngay khi quay lại, khiến người dùng bị đăng xuất dù
+          // không có code nào gọi logout(). Sao lưu sang sessionStorage để khôi phục
+          // lại sau khi quay về (xem index.js).
+          sessionStorage.setItem(
+            "bbhh_auth_backup",
+            JSON.stringify({
+              token: localStorage.getItem("token"),
+              role: localStorage.getItem("role"),
+              userEmail: localStorage.getItem("userEmail"),
+            }),
+          );
           window.location.href = paymentRes.paymentUrl;
         } else {
           setError(t("roomDetailsPage.paymentError") + paymentRes.message);
