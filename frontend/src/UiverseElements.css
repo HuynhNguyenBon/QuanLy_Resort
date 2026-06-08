@@ -3026,6 +3026,27 @@ button[type="submit"]:hover { background: var(--teal-dark); }
 }
 .auth-switch a { color: #5BB8D4; font-weight: 700; text-decoration: none; }
 .auth-switch a:hover { text-decoration: underline; }
+.auth-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 700;
+  color: #5BB8D4;
+  cursor: pointer;
+  text-decoration: none;
+}
+.auth-link-btn:hover:not(:disabled) { text-decoration: underline; }
+.auth-link-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-link-btn:focus,
+.auth-link-btn:active,
+.auth-link-btn:focus-visible {
+  background: none;
+  outline: none;
+  box-shadow: none;
+  color: #5BB8D4;
+}
 
 @media (max-width: 768px) {
   .auth-page { flex-direction: column; }
