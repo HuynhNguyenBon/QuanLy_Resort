@@ -36,7 +36,7 @@ public class Booking {
 
     private Double totalPrice;
 
-    private String bookingStatus;
+    private String bookingStatus; // BOOKED | CANCELLED
 
     private String paymentStatus; // PENDING | PAID | FAILED
 
@@ -46,6 +46,10 @@ public class Booking {
     private String vnpayTransactionId;
 
     private LocalDate createdAt;
+
+    private LocalDate cancelledAt;
+
+    private String refundStatus; // NONE | PENDING | REFUNDED
 
     private String promoCode;
 

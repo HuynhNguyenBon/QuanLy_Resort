@@ -7,11 +7,11 @@ import Pagination from "../common/Pagination";
 const PER_PAGE = 10;
 
 const getStatusKey = (b) => {
+  const s = (b.bookingStatus || "").toLowerCase();
+  if (s === "cancelled" || s === "canceled") return "cancelled";
   const p = (b.paymentStatus || "").toUpperCase();
   if (p === "PAID") return "paid";
-  const s = (b.bookingStatus || b.status || "").toLowerCase();
   if (s === "confirmed" || s === "true") return "paid";
-  if (s === "cancelled" || s === "canceled") return "cancelled";
   return "pending";
 };
 
@@ -217,6 +217,22 @@ const ManageBookingsPage = () => {
                         <span style={{ width: 6, height: 6, borderRadius: "50%", background: sc.dot, flexShrink: 0 }} />
                         {stLabel}
                       </span>
+                      {b.refundStatus === "PENDING" && (
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4,
+                          marginLeft: 6, padding: "2px 8px", borderRadius: 20, fontSize: "0.72rem",
+                          fontWeight: 600, background: "#fff7ed", color: "#c2410c",
+                          border: "1px solid #fed7aa", whiteSpace: "nowrap" }}>
+                          💸 Chờ hoàn tiền
+                        </span>
+                      )}
+                      {b.refundStatus === "REFUNDED" && (
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4,
+                          marginLeft: 6, padding: "2px 8px", borderRadius: 20, fontSize: "0.72rem",
+                          fontWeight: 600, background: "#f0fdf4", color: "#15803d",
+                          border: "1px solid #bbf7d0", whiteSpace: "nowrap" }}>
+                          ✓ Đã hoàn tiền
+                        </span>
+                      )}
                     </td>
 
                     <td style={{ padding: "14px 16px" }}>
