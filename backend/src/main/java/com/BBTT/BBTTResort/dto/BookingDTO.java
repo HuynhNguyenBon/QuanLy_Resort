@@ -19,6 +19,8 @@ public class BookingDTO {
     private Double totalPrice;
     private String bookingStatus;
     private String paymentStatus;
+    private LocalDate cancelledAt;
+    private String refundStatus;
     private String promoCode;
     private Double discountPercent;
     private Double discountAmount;
