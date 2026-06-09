@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.BBTT.BBTTResort.entity.PasswordResetToken;
+import com.BBTT.BBTTResort.entity.EmailVerificationToken;
 import com.BBTT.BBTTResort.repo.PasswordResetTokenRepository;
 import com.BBTT.BBTTResort.service.EmailService;
 import java.time.LocalDateTime;
@@ -37,7 +38,30 @@ public class UserService implements IUserService {
     private PasswordResetTokenRepository tokenRepository;
 
     @Autowired
+    private com.BBTT.BBTTResort.repo.EmailVerificationTokenRepository emailVerificationTokenRepository;
+
+    @Autowired
     private EmailService emailService;
+
+    // Danh sách domain email tạm thời/ảo phổ biến — chặn để đảm bảo người dùng đăng ký bằng email thật
+    private static final java.util.Set<String> DISPOSABLE_EMAIL_DOMAINS = java.util.Set.of(
+            "10minutemail.com", "20minutemail.com", "guerrillamail.com", "guerrillamail.info",
+            "mailinator.com", "mailinator.net", "tempmail.com", "temp-mail.org", "tempmail.net",
+            "yopmail.com", "yopmail.fr", "trashmail.com", "throwawaymail.com", "fakeinbox.com",
+            "getnada.com", "dispostable.com", "mintemail.com", "moakt.com", "sharklasers.com",
+            "spamgourmet.com", "mailnesia.com", "maildrop.cc", "mohmal.com", "emailondeck.com",
+            "mailcatch.com", "tempinbox.com", "discardmail.com", "spam4.me", "33mail.com",
+            "tempr.email", "fakemailgenerator.com", "trbvm.com", "mytemp.email", "tmpmail.org",
+            "throwawayemailaddresses.com", "10minemail.com", "anonbox.net", "burnermail.io",
+            "nada.email", "tempmailo.com", "luxusmail.org", "inboxkitten.com", "emailfake.com"
+    );
+
+    private boolean isDisposableEmail(String email) {
+        int at = email.lastIndexOf('@');
+        if (at < 0) return false;
+        String domain = email.substring(at + 1).trim().toLowerCase();
+        return DISPOSABLE_EMAIL_DOMAINS.contains(domain);
+    }
 
 
     @Override
@@ -67,6 +91,12 @@ public class UserService implements IUserService {
                 return response;
             }
 
+            if (isDisposableEmail(user.getEmail())) {
+                response.setStatusCode(400);
+                response.setMessage("Vui lòng sử dụng email thật, không dùng email tạm thời/email ảo");
+                return response;
+            }
+
             if (userRepository.existsByEmail(user.getEmail())) {
                 response.setStatusCode(400);
                 response.setMessage("Email đã tồn tại");
@@ -92,13 +122,26 @@ public class UserService implements IUserService {
             }
 
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setVerified(false);
 
             User savedUser = userRepository.save(user);
+
+            String otp = String.valueOf(100000 + new Random().nextInt(900000));
+
+            EmailVerificationToken token = new EmailVerificationToken();
+            token.setEmail(savedUser.getEmail());
+            token.setOtp(otp);
+            token.setExpiryTime(LocalDateTime.now().plusMinutes(5));
+
+            emailVerificationTokenRepository.deleteByEmail(savedUser.getEmail());
+            emailVerificationTokenRepository.save(token);
+
+            emailService.sendRegistrationOtpEmail(savedUser.getEmail(), otp);
 
             UserDTO userDTO = Utils.mapUserEntityToUserDTO(savedUser);
 
             response.setStatusCode(200);
-            response.setMessage("Đăng ký thành công");
+            response.setMessage("Đăng ký thành công. Vui lòng kiểm tra email để nhập mã xác minh trước khi đăng nhập");
             response.setUser(userDTO);
 
         } catch (Exception e) {
@@ -124,6 +167,12 @@ public class UserService implements IUserService {
             if (user == null) {
                 response.setStatusCode(404);
                 response.setMessage("Email không tồn tại");
+                return response;
+            }
+
+            if (!user.isVerified()) {
+                response.setStatusCode(403);
+                response.setMessage("Vui lòng xác minh email trước khi đăng nhập");
                 return response;
             }
 
@@ -219,6 +268,25 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Response deleteUserByEmail(String email) {
+        Response response = new Response();
+        try {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new OurException("User Not Found"));
+            userRepository.deleteById(user.getId());
+            response.setStatusCode(200);
+            response.setMessage("successful");
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error deleting user: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
     public Response getUserById(String userId) {
 
         Response response = new Response();
@@ -306,7 +374,13 @@ public class UserService implements IUserService {
             tokenRepository.deleteByEmail(email);
             tokenRepository.save(token);
 
-            emailService.sendOtpEmail(email, otp);
+            boolean emailSent = emailService.sendOtpEmail(email, otp);
+
+            if (!emailSent) {
+                response.setStatusCode(502);
+                response.setMessage("Không thể gửi email OTP lúc này, vui lòng thử lại sau ít phút");
+                return response;
+            }
 
             response.setStatusCode(200);
             response.setMessage("Mã OTP đã được gửi đến email của bạn");
@@ -321,6 +395,129 @@ public class UserService implements IUserService {
     }
 
 
+
+    @Override
+    public Response verifyEmail(String email, String otp) {
+
+        Response response = new Response();
+
+        try {
+
+            if (email == null || email.trim().isEmpty()) {
+                response.setStatusCode(400);
+                response.setMessage("Vui lòng nhập email");
+                return response;
+            }
+
+            if (otp == null || otp.trim().isEmpty()) {
+                response.setStatusCode(400);
+                response.setMessage("Vui lòng nhập mã xác minh");
+                return response;
+            }
+
+            User user = userRepository.findByEmail(email).orElse(null);
+
+            if (user == null) {
+                response.setStatusCode(404);
+                response.setMessage("Email không tồn tại");
+                return response;
+            }
+
+            if (user.isVerified()) {
+                response.setStatusCode(200);
+                response.setMessage("Email đã được xác minh trước đó");
+                return response;
+            }
+
+            EmailVerificationToken token = emailVerificationTokenRepository
+                    .findByEmailAndOtp(email, otp)
+                    .orElse(null);
+
+            if (token == null) {
+                response.setStatusCode(400);
+                response.setMessage("Mã xác minh không chính xác hoặc email không khớp");
+                return response;
+            }
+
+            if (token.getExpiryTime().isBefore(LocalDateTime.now())) {
+                response.setStatusCode(400);
+                response.setMessage("Mã xác minh đã hết hạn");
+                return response;
+            }
+
+            user.setVerified(true);
+            userRepository.save(user);
+
+            emailVerificationTokenRepository.deleteByEmail(email);
+
+            response.setStatusCode(200);
+            response.setMessage("Xác minh email thành công. Bạn có thể đăng nhập ngay bây giờ");
+
+        } catch (Exception e) {
+
+            response.setStatusCode(500);
+            response.setMessage("Lỗi xác minh email: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response resendVerificationOtp(String email) {
+
+        Response response = new Response();
+
+        try {
+
+            if (email == null || email.trim().isEmpty()) {
+                response.setStatusCode(400);
+                response.setMessage("Vui lòng nhập email");
+                return response;
+            }
+
+            User user = userRepository.findByEmail(email).orElse(null);
+
+            if (user == null) {
+                response.setStatusCode(404);
+                response.setMessage("Email không tồn tại");
+                return response;
+            }
+
+            if (user.isVerified()) {
+                response.setStatusCode(200);
+                response.setMessage("Email đã được xác minh trước đó");
+                return response;
+            }
+
+            String otp = String.valueOf(100000 + new Random().nextInt(900000));
+
+            EmailVerificationToken token = new EmailVerificationToken();
+            token.setEmail(email);
+            token.setOtp(otp);
+            token.setExpiryTime(LocalDateTime.now().plusMinutes(5));
+
+            emailVerificationTokenRepository.deleteByEmail(email);
+            emailVerificationTokenRepository.save(token);
+
+            boolean emailSent = emailService.sendRegistrationOtpEmail(email, otp);
+
+            if (!emailSent) {
+                response.setStatusCode(502);
+                response.setMessage("Không thể gửi email mã xác minh lúc này, vui lòng thử lại sau ít phút");
+                return response;
+            }
+
+            response.setStatusCode(200);
+            response.setMessage("Mã xác minh mới đã được gửi đến email của bạn");
+
+        } catch (Exception e) {
+
+            response.setStatusCode(500);
+            response.setMessage("Lỗi gửi lại mã xác minh: " + e.getMessage());
+        }
+
+        return response;
+    }
 
     @Override
     public Response updateMyProfile(String userId, String email, String name, String phoneNumber) {
@@ -352,6 +549,40 @@ public class UserService implements IUserService {
             response.setStatusCode(500);
             response.setMessage("Lỗi cập nhật: " + e.getMessage());
         }
+        return response;
+    }
+
+    @Override
+    public Response setUserRole(String userId, String role) {
+
+        Response response = new Response();
+
+        try {
+            User user = userRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new OurException("User Not Found"));
+
+            if (role == null || role.isBlank()) {
+                response.setStatusCode(400);
+                response.setMessage("Vui lòng chọn vai trò");
+                return response;
+            }
+
+            user.setRole(role.trim().toUpperCase());
+            userRepository.save(user);
+
+            response.setStatusCode(200);
+            response.setMessage("Cập nhật vai trò thành công");
+            response.setUser(Utils.mapUserEntityToUserDTO(user));
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Lỗi cập nhật vai trò: " + e.getMessage());
+        }
+
         return response;
     }
 

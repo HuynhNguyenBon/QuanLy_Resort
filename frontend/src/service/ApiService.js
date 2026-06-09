@@ -39,6 +39,33 @@ export default class ApiService {
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: 15000,
+      },
+    );
+  }
+
+  static async verifyEmail(email, otp) {
+    return axios.post(
+      `${this.BASE_URL}/auth/verify-email`,
+      { email, otp },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      },
+    );
+  }
+
+  static async resendVerificationOtp(email) {
+    return axios.post(
+      `${this.BASE_URL}/auth/resend-verification-otp`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
       },
     );
   }
@@ -113,9 +140,9 @@ export default class ApiService {
     return response.data;
   }
 
-  static async deleteUser(userId) {
+  static async deleteUser() {
     const response = await axios.delete(
-      `${this.BASE_URL}/users/delete/${userId}`,
+      `${this.BASE_URL}/users/delete-my-account`,
       {
         headers: this.getHeader(),
       },

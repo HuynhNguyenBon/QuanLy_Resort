@@ -16,13 +16,21 @@ public interface IUserService {
 
     Response deleteUser(String userId);
 
+    Response deleteUserByEmail(String email);
+
     Response getUserById(String userId);
 
     Response getMyInfo(String email);
 
     Response forgotPassword(String email);
 
+    Response verifyEmail(String email, String otp);
+
+    Response resendVerificationOtp(String email);
+
     Response resetPassword(String email, String otp, String newPassword);
 
     Response updateMyProfile(String userId, String email, String name, String phoneNumber);
+
+    Response setUserRole(String userId, String role);
 }
