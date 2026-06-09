@@ -62,8 +62,13 @@ const ProfilePage = () => {
   };
 
   const activeBookings = (user?.bookings || []).filter((b) => {
-    const s = (b.bookingStatus || b.status || "").toString().toLowerCase();
-    return s !== "cancelled" && s !== "canceled" && s !== "false" && s !== "0";
+    const s = (b.bookingStatus || "").toString().toLowerCase();
+    return s !== "cancelled" && s !== "canceled";
+  });
+
+  const cancelledBookings = (user?.bookings || []).filter((b) => {
+    const s = (b.bookingStatus || "").toString().toLowerCase();
+    return s === "cancelled" || s === "canceled";
   });
 
   const getNights = (ci, co) => {
@@ -363,6 +368,62 @@ const ProfilePage = () => {
                 })}
               </div>
             )}
+          {/* Cancelled bookings */}
+          {cancelledBookings.length > 0 && (
+            <div className="pf-card pf-card-wide" style={{ marginTop: 16 }}>
+              <div className="pf-card-header">
+                <h2 className="pf-card-title" style={{ color: "#b91c1c" }}>✕ {t("cancelledBookings") || "Đặt phòng đã hủy"}</h2>
+                <span className="pf-count-badge" style={{ background: "#fef2f2", color: "#b91c1c" }}>{cancelledBookings.length}</span>
+              </div>
+              <div className="pf-booking-list">
+                {cancelledBookings.map((booking) => {
+                  const refund = booking.refundStatus;
+                  return (
+                    <div key={booking.id} className="pf-booking-card" style={{ opacity: 0.75 }}>
+                      <div className="pf-booking-img">
+                        <img src={booking.room?.roomPhotoUrl} alt={booking.room?.roomType} />
+                        <span className="pf-room-type-badge">{booking.room?.roomType}</span>
+                      </div>
+                      <div className="pf-booking-details">
+                        <div className="pf-booking-top">
+                          <span className="pf-booking-code">{booking.bookingConfirmationCode}</span>
+                          <span className="pf-status-badge" style={{ background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca" }}>
+                            ✕ {t("statusCancelled") || "Đã hủy"}
+                          </span>
+                        </div>
+                        <div className="pf-booking-meta">
+                          <div className="pf-meta-item">
+                            <span>📅</span>
+                            <span>{booking.checkInDate} → {booking.checkOutDate}</span>
+                          </div>
+                          {booking.cancelledAt && (
+                            <div className="pf-meta-item" style={{ color: "#b91c1c", fontSize: "0.8rem" }}>
+                              <span>🗓</span>
+                              <span>{t("cancelledOn") || "Hủy lúc"}: {booking.cancelledAt}</span>
+                            </div>
+                          )}
+                        </div>
+                        {refund === "PENDING" && (
+                          <div style={{ marginTop: 8, padding: "6px 12px", borderRadius: 8,
+                            background: "#fff7ed", color: "#c2410c", border: "1px solid #fed7aa",
+                            fontSize: "0.82rem", fontWeight: 600 }}>
+                            💸 {t("refundPending") || "Đang chờ hoàn tiền"}
+                          </div>
+                        )}
+                        {refund === "REFUNDED" && (
+                          <div style={{ marginTop: 8, padding: "6px 12px", borderRadius: 8,
+                            background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0",
+                            fontSize: "0.82rem", fontWeight: 600 }}>
+                            ✓ {t("refundDone") || "Đã hoàn tiền"}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           </div>
         </div>
       </div>
