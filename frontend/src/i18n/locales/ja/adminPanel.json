@@ -79,7 +79,9 @@
     "statusPending": "支払待ち",
     "statusCancelled": "キャンセル済",
     "details": "詳細",
-    "noBookings": "予約が見つかりません。"
+    "noBookings": "予約が見つかりません。",
+    "refundPending": "返金待ち",
+    "refundDone": "返金済み"
   },
   "editBooking": {
     "title": "予約詳細",
@@ -113,7 +115,10 @@
     "errMaxAdults": "{{type}}タイプは大人最大{{count}}人です。",
     "errMaxChildren": "{{type}}タイプは子供最大{{count}}人です。",
     "errMaxTotal": "{{type}}タイプは合計最大{{count}}人です。",
-    "errSave": "保存に失敗しました"
+    "errSave": "保存に失敗しました",
+    "refundBtn": "返金を確認",
+    "confirmRefund": "お客様への返金が完了したことを確認しますか？",
+    "refundSuccess": "返金を確認しました。"
   },
   "addRoom": {
     "title": "新しい客室を追加",

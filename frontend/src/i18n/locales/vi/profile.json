@@ -71,5 +71,10 @@
   "phoneInvalid": "Số điện thoại phải từ 10–11 chữ số.",
   "updateLocalSuccess": "Đã cập nhật thành công! (Lưu trên thiết bị)",
   "deleteKeywordInvalid": "Nhập đúng cụm từ xác nhận để tiếp tục.",
-  "deleteFailed": "Xóa thất bại"
+  "deleteFailed": "Xóa thất bại",
+  "cancelledBookings": "Đặt phòng đã hủy",
+  "statusCancelled": "Đã hủy",
+  "cancelledOn": "Hủy ngày",
+  "refundPending": "Đang chờ hoàn tiền",
+  "refundDone": "Đã hoàn tiền"
 }

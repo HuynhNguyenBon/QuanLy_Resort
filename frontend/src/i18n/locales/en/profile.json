@@ -71,5 +71,10 @@
   "phoneInvalid": "Phone number must be 10–11 digits.",
   "updateLocalSuccess": "Updated successfully! (Saved locally)",
   "deleteKeywordInvalid": "Please enter the correct confirmation phrase to proceed.",
-  "deleteFailed": "Failed to delete"
+  "deleteFailed": "Failed to delete",
+  "cancelledBookings": "Cancelled Bookings",
+  "statusCancelled": "Cancelled",
+  "cancelledOn": "Cancelled on",
+  "refundPending": "Refund pending",
+  "refundDone": "Refunded"
 }

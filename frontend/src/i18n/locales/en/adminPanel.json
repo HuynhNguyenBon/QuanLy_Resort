@@ -79,7 +79,9 @@
     "statusPending": "Pending Payment",
     "statusCancelled": "Cancelled",
     "details": "Details",
-    "noBookings": "No bookings found."
+    "noBookings": "No bookings found.",
+    "refundPending": "Refund pending",
+    "refundDone": "Refunded"
   },
   "editBooking": {
     "title": "Booking Details",
@@ -113,7 +115,10 @@
     "errMaxAdults": "Max {{count}} adults for {{type}} room.",
     "errMaxChildren": "Max {{count}} children for {{type}} room.",
     "errMaxTotal": "Max {{count}} total guests for {{type}} room.",
-    "errSave": "Save failed"
+    "errSave": "Save failed",
+    "refundBtn": "Confirm Refund",
+    "confirmRefund": "Confirm that the refund has been issued to the guest?",
+    "refundSuccess": "Refund confirmed successfully."
   },
   "addRoom": {
     "title": "Add New Room",

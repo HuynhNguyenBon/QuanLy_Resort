@@ -79,7 +79,9 @@
     "statusPending": "Chờ thanh toán",
     "statusCancelled": "Đã huỷ",
     "details": "Chi tiết",
-    "noBookings": "Không tìm thấy đặt phòng nào."
+    "noBookings": "Không tìm thấy đặt phòng nào.",
+    "refundPending": "Chờ hoàn tiền",
+    "refundDone": "Đã hoàn tiền"
   },
   "editBooking": {
     "title": "Chi tiết đặt phòng",
@@ -113,7 +115,10 @@
     "errMaxAdults": "Tối đa {{count}} người lớn cho phòng {{type}}.",
     "errMaxChildren": "Tối đa {{count}} trẻ em cho phòng {{type}}.",
     "errMaxTotal": "Tổng tối đa {{count}} khách cho phòng {{type}}.",
-    "errSave": "Lưu thất bại"
+    "errSave": "Lưu thất bại",
+    "refundBtn": "Xác nhận hoàn tiền",
+    "confirmRefund": "Xác nhận đã hoàn tiền cho khách?",
+    "refundSuccess": "Đã xác nhận hoàn tiền thành công."
   },
   "addRoom": {
     "title": "Thêm phòng mới",

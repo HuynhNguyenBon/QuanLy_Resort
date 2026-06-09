@@ -133,12 +133,12 @@ const EditBookingPage = () => {
   };
 
   const handleConfirmRefund = async () => {
-    if (!window.confirm("Xác nhận đã hoàn tiền cho khách?")) return;
+    if (!window.confirm(t("editBooking.confirmRefund"))) return;
     setRefunding(true);
     try {
       const res = await ApiService.confirmRefund(booking.id);
       if (res.statusCode === 200) {
-        setSuccess("Đã xác nhận hoàn tiền thành công");
+        setSuccess(t("editBooking.refundSuccess"));
         setBooking((prev) => ({ ...prev, refundStatus: "REFUNDED" }));
       }
     } catch (e) {
@@ -508,16 +508,29 @@ const EditBookingPage = () => {
                 onClick={handleConfirmRefund}
                 disabled={refunding}
                 style={{
-                  padding: "10px 20px", borderRadius: 10,
-                  border: "1.5px solid #fed7aa", background: "#fff7ed",
-                  color: "#c2410c", cursor: refunding ? "not-allowed" : "pointer",
-                  fontWeight: 700, fontSize: "0.9rem", transition: "all 0.15s",
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  border: "1.5px solid #fed7aa",
+                  background: "#fff7ed",
+                  color: "#c2410c",
+                  cursor: refunding ? "not-allowed" : "pointer",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  transition: "all 0.15s",
                   opacity: refunding ? 0.6 : 1,
                 }}
-                onMouseEnter={(e) => { if (!refunding) { e.currentTarget.style.background = "#c2410c"; e.currentTarget.style.color = "#fff"; } }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "#fff7ed"; e.currentTarget.style.color = "#c2410c"; }}
+                onMouseEnter={(e) => {
+                  if (!refunding) {
+                    e.currentTarget.style.background = "#c2410c";
+                    e.currentTarget.style.color = "#fff";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#fff7ed";
+                  e.currentTarget.style.color = "#c2410c";
+                }}
               >
-                {refunding ? "..." : "💸 Xác nhận hoàn tiền"}
+                {refunding ? "..." : `💸 ${t("editBooking.refundBtn")}`}
               </button>
             )}
             {(booking?.bookingStatus || "").toLowerCase() !== "cancelled" && (
@@ -525,14 +538,27 @@ const EditBookingPage = () => {
                 onClick={handleCancel}
                 disabled={cancelling}
                 style={{
-                  padding: "10px 20px", borderRadius: 10,
-                  border: "1.5px solid #fca5a5", background: "#fff5f5",
-                  color: "#e74c3c", cursor: cancelling ? "not-allowed" : "pointer",
-                  fontWeight: 700, fontSize: "0.9rem", transition: "all 0.15s",
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  border: "1.5px solid #fca5a5",
+                  background: "#fff5f5",
+                  color: "#e74c3c",
+                  cursor: cancelling ? "not-allowed" : "pointer",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  transition: "all 0.15s",
                   opacity: cancelling ? 0.6 : 1,
                 }}
-                onMouseEnter={(e) => { if (!cancelling) { e.currentTarget.style.background = "#e74c3c"; e.currentTarget.style.color = "#fff"; } }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "#fff5f5"; e.currentTarget.style.color = "#e74c3c"; }}
+                onMouseEnter={(e) => {
+                  if (!cancelling) {
+                    e.currentTarget.style.background = "#e74c3c";
+                    e.currentTarget.style.color = "#fff";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#fff5f5";
+                  e.currentTarget.style.color = "#e74c3c";
+                }}
               >
                 {cancelling ? "..." : `🗑 ${t("editBooking.cancelBtn")}`}
               </button>
