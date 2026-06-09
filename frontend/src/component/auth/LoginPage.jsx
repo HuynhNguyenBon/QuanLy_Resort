@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { resolveApiError } from "../../utils/apiErrorMap";
 import "../../UiverseElements.css";
 
 function LoginPage() {
@@ -44,7 +45,7 @@ function LoginPage() {
         navigate(dest, { replace: true });
       }
     } catch (err) {
-      setError(err.response?.data?.message || t("login.failed"));
+      setError(resolveApiError(err.response?.data?.message, t, "login.failed"));
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);
@@ -131,6 +132,17 @@ function LoginPage() {
           <p className="auth-switch">
             {t("login.noAccount")}{" "}
             <a href="/register">{t("login.registerLink")}</a>
+          </p>
+
+          <p className="auth-switch">
+            {t("login.notVerifiedEmail")}{" "}
+            <button
+              type="button"
+              className="auth-link-btn"
+              onClick={() => navigate("/verify-email", { state: { email } })}
+            >
+              {t("login.enterOtpLink")}
+            </button>
           </p>
         </div>
       </div>
