@@ -23,6 +23,7 @@ const EditBookingPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [cancelling, setCancelling] = useState(false);
+  const [refunding, setRefunding] = useState(false);
 
   const fmtDate = (d) => {
     if (!d) return "—";
@@ -40,6 +41,15 @@ const EditBookingPage = () => {
 
   const getStatusConfig = (b) => {
     if (!b) return null;
+    const s = (b.bookingStatus || "").toLowerCase();
+    if (s === "cancelled" || s === "canceled")
+      return {
+        label: t("editBooking.statusCancelled"),
+        bg: "#fef2f2",
+        color: "#b91c1c",
+        border: "#fecaca",
+        dot: "#ef4444",
+      };
     const p = (b.paymentStatus || "").toUpperCase();
     if (p === "PAID")
       return {
@@ -49,7 +59,6 @@ const EditBookingPage = () => {
         border: "#bbf7d0",
         dot: "#22c55e",
       };
-    const s = (b.bookingStatus || "").toLowerCase();
     if (s === "confirmed" || s === "true")
       return {
         label: t("editBooking.statusConfirmed"),
@@ -57,14 +66,6 @@ const EditBookingPage = () => {
         color: "#15803d",
         border: "#bbf7d0",
         dot: "#22c55e",
-      };
-    if (s === "cancelled" || s === "canceled")
-      return {
-        label: t("editBooking.statusCancelled"),
-        bg: "#fef2f2",
-        color: "#b91c1c",
-        border: "#fecaca",
-        dot: "#ef4444",
       };
     return {
       label: t("editBooking.statusPending"),
@@ -128,6 +129,23 @@ const EditBookingPage = () => {
       setTimeout(() => setError(""), 5000);
     } finally {
       setCancelling(false);
+    }
+  };
+
+  const handleConfirmRefund = async () => {
+    if (!window.confirm(t("editBooking.confirmRefund"))) return;
+    setRefunding(true);
+    try {
+      const res = await ApiService.confirmRefund(booking.id);
+      if (res.statusCode === 200) {
+        setSuccess(t("editBooking.refundSuccess"));
+        setBooking((prev) => ({ ...prev, refundStatus: "REFUNDED" }));
+      }
+    } catch (e) {
+      setError(e.response?.data?.message || e.message);
+      setTimeout(() => setError(""), 5000);
+    } finally {
+      setRefunding(false);
     }
   };
 
@@ -485,34 +503,66 @@ const EditBookingPage = () => {
             >
               {t("editBooking.back")}
             </button>
-            <button
-              onClick={handleCancel}
-              disabled={cancelling}
-              style={{
-                padding: "10px 20px",
-                borderRadius: 10,
-                border: "1.5px solid #fca5a5",
-                background: "#fff5f5",
-                color: "#e74c3c",
-                cursor: cancelling ? "not-allowed" : "pointer",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                transition: "all 0.15s",
-                opacity: cancelling ? 0.6 : 1,
-              }}
-              onMouseEnter={(e) => {
-                if (!cancelling) {
-                  e.currentTarget.style.background = "#e74c3c";
-                  e.currentTarget.style.color = "#fff";
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#fff5f5";
-                e.currentTarget.style.color = "#e74c3c";
-              }}
-            >
-              {cancelling ? "..." : `🗑 ${t("editBooking.cancelBtn")}`}
-            </button>
+            {booking?.refundStatus === "PENDING" && ApiService.isAdmin() && (
+              <button
+                onClick={handleConfirmRefund}
+                disabled={refunding}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  border: "1.5px solid #fed7aa",
+                  background: "#fff7ed",
+                  color: "#c2410c",
+                  cursor: refunding ? "not-allowed" : "pointer",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  transition: "all 0.15s",
+                  opacity: refunding ? 0.6 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!refunding) {
+                    e.currentTarget.style.background = "#c2410c";
+                    e.currentTarget.style.color = "#fff";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#fff7ed";
+                  e.currentTarget.style.color = "#c2410c";
+                }}
+              >
+                {refunding ? "..." : `💸 ${t("editBooking.refundBtn")}`}
+              </button>
+            )}
+            {(booking?.bookingStatus || "").toLowerCase() !== "cancelled" && (
+              <button
+                onClick={handleCancel}
+                disabled={cancelling}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  border: "1.5px solid #fca5a5",
+                  background: "#fff5f5",
+                  color: "#e74c3c",
+                  cursor: cancelling ? "not-allowed" : "pointer",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  transition: "all 0.15s",
+                  opacity: cancelling ? 0.6 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!cancelling) {
+                    e.currentTarget.style.background = "#e74c3c";
+                    e.currentTarget.style.color = "#fff";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#fff5f5";
+                  e.currentTarget.style.color = "#e74c3c";
+                }}
+              >
+                {cancelling ? "..." : `🗑 ${t("editBooking.cancelBtn")}`}
+              </button>
+            )}
           </div>
         </div>
       )}

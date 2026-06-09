@@ -71,5 +71,10 @@
   "phoneInvalid": "電話番号は10〜11桁でなければなりません。",
   "updateLocalSuccess": "更新しました！(デバイスに保存)",
   "deleteKeywordInvalid": "確認キーワードを正しく入力してください。",
-  "deleteFailed": "削除に失敗しました"
+  "deleteFailed": "削除に失敗しました",
+  "cancelledBookings": "キャンセル済み予約",
+  "statusCancelled": "キャンセル済み",
+  "cancelledOn": "キャンセル日",
+  "refundPending": "返金待ち",
+  "refundDone": "返金済み"
 }
