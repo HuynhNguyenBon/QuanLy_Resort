@@ -1,4 +1,51 @@
 export const ROOM_TRANSLATIONS = {
+  en: {
+    Bali: {
+      roomType: "Bali Room",
+      roomDescription:
+        "A modern Bali-style retreat featuring a private pool area, luxury wooden furniture and a balcony overlooking the resort.",
+    },
+    Queen: {
+      roomType: "Queen Room",
+      roomDescription:
+        "A stylish Boutique Queen room with warm ambient lighting, premium velvet seating and sophisticated décor perfect for couples.",
+    },
+    King: {
+      roomType: "King Room",
+      roomDescription:
+        "A tropical Luxury King Room featuring an exotic jungle-themed décor, premium king-size bed and a spacious open layout.",
+    },
+    Standrad: {
+      roomType: "Standard Room",
+      roomDescription:
+        "A cozy Standard Double Queen Room featuring vibrant orange bedding, full amenities and a comfortable design for every guest.",
+    },
+    Studio: {
+      roomType: "Studio Room",
+      roomDescription:
+        "An ultra-chic Luxury Studio Suite featuring rose gold metallic accents, open-plan living and top-tier modern amenities.",
+    },
+    Suit: {
+      roomType: "Suite Room",
+      roomDescription:
+        "A contemporary Executive Suite featuring a low-profile platform bed, sleek furnishings and a dedicated living area.",
+    },
+    Family: {
+      roomType: "Family Room",
+      roomDescription:
+        "A playful Kid-Friendly Family Suite featuring multiple large beds, shared living space and child-friendly amenities.",
+    },
+    Executive: {
+      roomType: "Executive Room",
+      roomDescription:
+        "An Executive room tailored for business travelers with a dedicated workspace, high-speed internet and priority room service.",
+    },
+    Precidential: {
+      roomType: "Presidential Room",
+      roomDescription:
+        "A top-tier Presidential Room with panoramic views, designer furnishings, a private pool and 24/7 personal butler service.",
+    },
+  },
   vi: {
     Bali: {
       roomType: "Phòng Bali",
