@@ -87,6 +87,13 @@ public class BookingController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    @PostMapping("/confirm-refund/{bookingId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Response> confirmRefund(@PathVariable Long bookingId) {
+        Response response = bookingService.confirmRefund(bookingId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
     @PostMapping("/send-confirmation-email/{bookingId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<Response> sendConfirmationEmail(@PathVariable Long bookingId) {
