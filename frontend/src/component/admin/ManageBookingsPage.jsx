@@ -30,7 +30,10 @@ const ManageBookingsPage = () => {
   const [loading, setLoading]           = useState(true);
   const [search, setSearch]             = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [currentPage, setCurrentPage]   = useState(1);
+  const [currentPage, setCurrentPage]   = useState(() => {
+    const saved = parseInt(sessionStorage.getItem("manageBookings_currentPage"), 10);
+    return saved > 0 ? saved : 1;
+  });
 
   const handleDetail = (b) => {
     const base = ApiService.isAdmin() ? "/admin" : "/staff";
@@ -47,6 +50,11 @@ const ManageBookingsPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  // Ghi nhớ trang hiện tại để khi quay lại từ trang chi tiết đặt phòng thì không bị nhảy về trang 1
+  useEffect(() => {
+    sessionStorage.setItem("manageBookings_currentPage", String(currentPage));
+  }, [currentPage]);
+
   const filtered = bookings.filter(b => {
     const matchSearch = !search ||
       (b.bookingConfirmationCode || "").toLowerCase().includes(search.toLowerCase()) ||
@@ -57,6 +65,12 @@ const ManageBookingsPage = () => {
   });
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
+
+  // Đảm bảo trang đã lưu vẫn hợp lệ khi danh sách thay đổi (vd. lọc/tìm kiếm)
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) setCurrentPage(totalPages);
+  }, [totalPages, currentPage]);
+
   const paginated  = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
   const counts = {

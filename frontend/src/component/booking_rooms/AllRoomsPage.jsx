@@ -51,7 +51,10 @@ const AllRoomsPage = () => {
 
   const initialType = searchParams.get("type") || "";
   const [selectedType, setSelectedType] = useState(initialType);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const saved = parseInt(sessionStorage.getItem("allRooms_currentPage"), 10);
+    return saved > 0 ? saved : 1;
+  });
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
@@ -90,6 +93,18 @@ const AllRoomsPage = () => {
     };
     init();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ─── Ghi nhớ trang hiện tại để khi quay lại từ trang chi tiết phòng / đánh giá thì không bị nhảy về trang 1 ──
+  useEffect(() => {
+    sessionStorage.setItem("allRooms_currentPage", String(currentPage));
+  }, [currentPage]);
+
+  // ─── Đảm bảo trang đã lưu vẫn hợp lệ khi danh sách phòng thay đổi (vd. lọc/tìm kiếm) ──
+  useEffect(() => {
+    if (loading) return;
+    const totalPages = Math.max(1, Math.ceil(filteredRooms.length / roomsPerPage));
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [filteredRooms, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Tải bản dịch khi ngôn ngữ hoặc danh sách phòng thay đổi ───────────────
   useEffect(() => {

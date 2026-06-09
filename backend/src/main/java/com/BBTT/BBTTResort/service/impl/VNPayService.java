@@ -4,8 +4,10 @@ import java.util.ArrayList;  // nếu chưa có
 import com.BBTT.BBTTResort.dto.VNPayRequest;
 import com.BBTT.BBTTResort.dto.VNPayResponse;
 import com.BBTT.BBTTResort.entity.Booking;
+import com.BBTT.BBTTResort.entity.User;
 import com.BBTT.BBTTResort.exception.OurException;
 import com.BBTT.BBTTResort.repo.BookingRepository;
+import com.BBTT.BBTTResort.utils.JWTUtils;
 import com.BBTT.BBTTResort.utils.VNPayConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class VNPayService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private JWTUtils jwtUtils;
 
     /**
      * Tạo URL thanh toán VNPAY từ bookingId
@@ -322,6 +327,16 @@ public class VNPayService {
                         booking.setVnpayTransactionId(transactionNo);
                         // bookingCode in return is the numeric ID-based string; use the stored code
                         bookingCode = booking.getBookingConfirmationCode();
+
+                        // Trình duyệt có thể xóa localStorage (kể cả token đăng nhập)
+                        // do cơ chế chống bounce-tracking khi điều hướng qua VNPay rồi quay lại.
+                        // Cấp lại token mới cho user của booking để frontend tự khôi phục phiên đăng nhập.
+                        User user = booking.getUser();
+                        if (user != null) {
+                            result.put("token", jwtUtils.generateToken(user));
+                            result.put("role", user.getRole());
+                            result.put("userEmail", user.getEmail());
+                        }
                     } else {
                         booking.setPaymentStatus("FAILED");
                     }

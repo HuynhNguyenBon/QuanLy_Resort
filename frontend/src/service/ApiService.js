@@ -397,9 +397,10 @@ export default class ApiService {
 
   // =================== STAFF PROFILES (Admin) ===================
   static async getAllStaffProfiles() {
-    const response = await axios.get(`${this.BASE_URL}/staff-profiles/all`, {
-      headers: this.getHeader(),
-    });
+    const response = await axios.get(
+      `${this.BASE_URL}/staff-profiles/all`,
+      { headers: this.getHeader() },
+    );
     return response.data;
   }
 
@@ -456,7 +457,9 @@ export default class ApiService {
 
   // =================== REVIEWS ===================
   static async getReviewsByRoom(roomId) {
-    const response = await axios.get(`${this.BASE_URL}/reviews/room/${roomId}`);
+    const response = await axios.get(
+      `${this.BASE_URL}/reviews/room/${roomId}`,
+    );
     return response.data;
   }
 
