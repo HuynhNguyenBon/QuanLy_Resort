@@ -256,7 +256,7 @@ const EditRoomPage = () => {
 
       {/* Page header */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-        <button onClick={() => navigate("/admin/manage-rooms")}
+        <button onClick={() => navigate(-1)}
           style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 14px",
             borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff",
             color: "#555", cursor: "pointer", fontSize: "0.83rem", fontWeight: 600,
