@@ -257,8 +257,25 @@ public class BookingService implements IBookingService {
         Response response = new Response();
 
         try {
-            bookingRepository.findById(bookingId).orElseThrow(() -> new OurException("Booking Does Not Exist"));
-            bookingRepository.deleteById(bookingId);
+            Booking booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new OurException("Booking Does Not Exist"));
+
+            if ("CANCELLED".equals(booking.getBookingStatus())) {
+                response.setStatusCode(400);
+                response.setMessage("Booking already cancelled");
+                return response;
+            }
+
+            booking.setBookingStatus("CANCELLED");
+            booking.setCancelledAt(LocalDate.now());
+
+            if ("PAID".equals(booking.getPaymentStatus())) {
+                booking.setRefundStatus("PENDING");
+            } else {
+                booking.setRefundStatus("NONE");
+            }
+
+            bookingRepository.save(booking);
             response.setStatusCode(200);
             response.setMessage("successful");
 
@@ -317,6 +334,40 @@ public class BookingService implements IBookingService {
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error updating booking: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response confirmRefund(Long bookingId) {
+        Response response = new Response();
+        try {
+            Booking booking = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new OurException("Booking Does Not Exist"));
+
+            if (!"CANCELLED".equals(booking.getBookingStatus())) {
+                response.setStatusCode(400);
+                response.setMessage("Booking is not cancelled");
+                return response;
+            }
+
+            if (!"PENDING".equals(booking.getRefundStatus())) {
+                response.setStatusCode(400);
+                response.setMessage("No pending refund for this booking");
+                return response;
+            }
+
+            booking.setRefundStatus("REFUNDED");
+            bookingRepository.save(booking);
+            response.setStatusCode(200);
+            response.setMessage("Refund confirmed successfully");
+
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error confirming refund: " + e.getMessage());
         }
         return response;
     }

@@ -292,6 +292,15 @@ export default class ApiService {
     return result.data;
   }
 
+  static async confirmRefund(bookingId) {
+    const result = await axios.post(
+      `${this.BASE_URL}/bookings/confirm-refund/${bookingId}`,
+      {},
+      { headers: this.getHeader() },
+    );
+    return result.data;
+  }
+
   static async updateBooking(bookingId, bookingData) {
     const result = await axios.put(
       `${this.BASE_URL}/bookings/update/${bookingId}`,

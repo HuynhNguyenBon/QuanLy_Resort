@@ -18,4 +18,6 @@ public interface IBookingService {
     Response getBookingServicesByBookingId(Long bookingId);
 
     Response updateBooking(Long bookingId, Booking updateRequest);
+
+    Response confirmRefund(Long bookingId);
 }
