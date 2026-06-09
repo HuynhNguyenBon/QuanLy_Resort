@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { resolveApiError } from "../../utils/apiErrorMap";
 import "../../UiverseElements.css";
 
 const ResetPasswordPage = () => {
@@ -47,7 +48,13 @@ const ResetPasswordPage = () => {
       setSuccess(response.data?.message || t("resetPassword.success"));
       setTimeout(() => navigate("/login"), 2500);
     } catch (err) {
-      setError(err.response?.data?.message || t("resetPassword.generalError"));
+      setError(
+        resolveApiError(
+          err.response?.data?.message,
+          t,
+          "resetPassword.generalError",
+        ),
+      );
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { resolveApiError } from "../../utils/apiErrorMap";
 import "../../UiverseElements.css";
 
 function RegisterPage() {
@@ -68,12 +69,15 @@ function RegisterPage() {
         // rồi quay lại "/verify-email", trang vẫn biết email cần xác minh là gì.
         sessionStorage.setItem("pendingVerifyEmail", registeredEmail);
         setTimeout(
-          () => navigate("/verify-email", { state: { email: registeredEmail } }),
+          () =>
+            navigate("/verify-email", { state: { email: registeredEmail } }),
           2500,
         );
       }
     } catch (err) {
-      setError(err.response?.data?.message || t("register.failed"));
+      setError(
+        resolveApiError(err.response?.data?.message, t, "register.failed"),
+      );
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);

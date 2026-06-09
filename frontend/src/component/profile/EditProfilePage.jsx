@@ -24,7 +24,8 @@ const EditProfilePage = () => {
         setUser(res.user);
         setForm({
           name: res.user.name || localStorage.getItem("userName") || "",
-          phoneNumber: res.user.phoneNumber || localStorage.getItem("userPhone") || "",
+          phoneNumber:
+            res.user.phoneNumber || localStorage.getItem("userPhone") || "",
         });
       })
       .catch((err) => showMsg(err.message, "error"));
@@ -79,7 +80,7 @@ const EditProfilePage = () => {
       return;
     }
     try {
-      await ApiService.deleteUser(user.id);
+      await ApiService.deleteUser();
       ApiService.logout();
       navigate("/home");
     } catch (err) {

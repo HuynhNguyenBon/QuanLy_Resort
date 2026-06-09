@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { resolveApiError } from "../../utils/apiErrorMap";
 import "../../UiverseElements.css";
 
 const ForgotPasswordPage = () => {
@@ -31,9 +32,20 @@ const ForgotPasswordPage = () => {
       setTimeout(() => navigate("/reset-password"), 2500);
     } catch (err) {
       if (err.code === "ECONNABORTED") {
-        setError(t("forgotPassword.timeout", "Hệ thống phản hồi quá lâu, vui lòng thử lại sau ít phút."));
+        setError(
+          t(
+            "forgotPassword.timeout",
+            "Hệ thống phản hồi quá lâu, vui lòng thử lại sau ít phút.",
+          ),
+        );
       } else {
-        setError(err.response?.data?.message || t("forgotPassword.notFound"));
+        setError(
+          resolveApiError(
+            err.response?.data?.message,
+            t,
+            "forgotPassword.notFound",
+          ),
+        );
       }
       setTimeout(() => setError(""), 5000);
     } finally {

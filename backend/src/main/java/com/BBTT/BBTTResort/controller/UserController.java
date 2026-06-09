@@ -39,6 +39,14 @@ public class UserController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    @DeleteMapping("/delete-my-account")
+    public ResponseEntity<Response> deleteMyAccount() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Response response = userService.deleteUserByEmail(email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
     @GetMapping("/get-logged-in-profile-info")
     public ResponseEntity<Response> getLoggedInUserProfile() {
 

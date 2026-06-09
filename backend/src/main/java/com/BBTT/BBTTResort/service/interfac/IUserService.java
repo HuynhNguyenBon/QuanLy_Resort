@@ -16,6 +16,8 @@ public interface IUserService {
 
     Response deleteUser(String userId);
 
+    Response deleteUserByEmail(String email);
+
     Response getUserById(String userId);
 
     Response getMyInfo(String email);

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApiService from "../../service/ApiService";
+import { resolveApiError } from "../../utils/apiErrorMap";
 import "../../UiverseElements.css";
 
 const VerifyEmailPage = () => {
@@ -9,7 +10,10 @@ const VerifyEmailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [form, setForm] = useState({
-    email: location.state?.email || sessionStorage.getItem("pendingVerifyEmail") || "",
+    email:
+      location.state?.email ||
+      sessionStorage.getItem("pendingVerifyEmail") ||
+      "",
     otp: "",
   });
   const [loading, setLoading] = useState(false);
@@ -35,7 +39,13 @@ const VerifyEmailPage = () => {
       sessionStorage.removeItem("pendingVerifyEmail");
       setTimeout(() => navigate("/login"), 2500);
     } catch (err) {
-      setError(err.response?.data?.message || t("verifyEmail.generalError"));
+      setError(
+        resolveApiError(
+          err.response?.data?.message,
+          t,
+          "verifyEmail.generalError",
+        ),
+      );
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);
@@ -55,7 +65,13 @@ const VerifyEmailPage = () => {
       setSuccess(response.data?.message || t("verifyEmail.resendSuccess"));
       setTimeout(() => setSuccess(""), 4000);
     } catch (err) {
-      setError(err.response?.data?.message || t("verifyEmail.generalError"));
+      setError(
+        resolveApiError(
+          err.response?.data?.message,
+          t,
+          "verifyEmail.generalError",
+        ),
+      );
       setTimeout(() => setError(""), 5000);
     } finally {
       setResending(false);
@@ -131,7 +147,9 @@ const VerifyEmailPage = () => {
               className="auth-submit-btn"
               disabled={loading}
             >
-              {loading ? t("verifyEmail.verifying") : t("verifyEmail.verifyButton")}
+              {loading
+                ? t("verifyEmail.verifying")
+                : t("verifyEmail.verifyButton")}
             </button>
           </form>
 
@@ -142,7 +160,9 @@ const VerifyEmailPage = () => {
               onClick={handleResend}
               disabled={resending}
             >
-              {resending ? t("verifyEmail.resending") : t("verifyEmail.resendButton")}
+              {resending
+                ? t("verifyEmail.resending")
+                : t("verifyEmail.resendButton")}
             </button>
           </p>
 

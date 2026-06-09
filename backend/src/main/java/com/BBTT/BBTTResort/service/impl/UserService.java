@@ -268,6 +268,25 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Response deleteUserByEmail(String email) {
+        Response response = new Response();
+        try {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new OurException("User Not Found"));
+            userRepository.deleteById(user.getId());
+            response.setStatusCode(200);
+            response.setMessage("successful");
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error deleting user: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
     public Response getUserById(String userId) {
 
         Response response = new Response();
