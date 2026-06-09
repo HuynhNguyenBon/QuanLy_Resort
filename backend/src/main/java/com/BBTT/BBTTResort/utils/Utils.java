@@ -57,6 +57,8 @@ public class Utils {
         bookingDTO.setBookingConfirmationCode(booking.getBookingConfirmationCode());
         bookingDTO.setBookingStatus(booking.getBookingStatus());
         bookingDTO.setPaymentStatus(booking.getPaymentStatus());
+        bookingDTO.setCancelledAt(booking.getCancelledAt());
+        bookingDTO.setRefundStatus(booking.getRefundStatus());
         bookingDTO.setTotalPrice(booking.getTotalPrice());
         if (booking.getRoom() != null) {
             RoomDTO roomDTO = new RoomDTO();
@@ -105,6 +107,9 @@ public class Utils {
         bookingDTO.setBookingConfirmationCode(booking.getBookingConfirmationCode());
         bookingDTO.setBookingStatus(booking.getBookingStatus());
         bookingDTO.setPaymentStatus(booking.getPaymentStatus());
+        bookingDTO.setCancelledAt(booking.getCancelledAt());
+        bookingDTO.setRefundStatus(booking.getRefundStatus());
+        bookingDTO.setTotalPrice(booking.getTotalPrice());
         if (mapUser) {
             bookingDTO.setUser(Utils.mapUserEntityToUserDTO(booking.getUser()));
         }
