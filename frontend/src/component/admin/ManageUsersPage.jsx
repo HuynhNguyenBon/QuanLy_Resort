@@ -43,6 +43,22 @@ const ManageUsersPage = () => {
       setUsers((prev) =>
         prev.map((u) => (u.id === user.id ? { ...u, role: newRole } : u)),
       );
+      // Khi thăng cấp lên STAFF thì tự tạo staff profile nếu chưa có
+      if (newRole === "STAFF") {
+        try {
+          await ApiService.addStaffProfile({
+            name: user.name || "",
+            email: user.email || "",
+            phone: user.phoneNumber || "",
+            role: "other",
+            startDate: new Date().toISOString().split("T")[0],
+            note: "",
+            hasAccount: true,
+          });
+        } catch (_) {
+          // Bỏ qua nếu đã có profile rồi
+        }
+      }
       showMsg(t("users.setRoleSuccess", { name: user.name, role: label }));
     } catch (e) {
       showMsg(
