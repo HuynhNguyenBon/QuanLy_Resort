@@ -14,6 +14,7 @@ Dự án quản lý khách sạn và đặt phòng trực tuyến được xây 
 - **Quản lý phòng:** Thêm, sửa, xóa thông tin phòng và hình ảnh.
 - **Quản lý đặt phòng:** Xem và điều phối các đơn đặt phòng của khách hàng.
 - **Quản lý người dùng:** Kiểm soát danh sách khách hàng.
+- **Tài khoản ADMIN trên deploy:** Tài khoản: admin@gmail.com, mật khẩu: Admin@123.
 
 ## 🛠 Công nghệ sử dụng
 
